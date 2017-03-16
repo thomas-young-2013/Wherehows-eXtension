@@ -1,0 +1,68 @@
+[0m[[0minfo[0m] [0mLoading project definition from /thomas/wherehows/web/project[0m
+[0m[[0minfo[0m] [0mSet current project to wherehows (in build file:/thomas/wherehows/web/)[0m
+
+[35m--- (Running the application, auto-reloading is enabled) ---[0m
+
+[[37minfo[0m] p.c.s.NettyServer - Listening for HTTP on /0.0.0.0:19005
+
+[32m(Server started, use Ctrl+D to stop and go back to the console...)[0m
+
+java.io.IOException: Bad file descriptor
+	at java.io.FileInputStream.read0(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:207)
+	at jline.internal.NonBlockingInputStream.read(NonBlockingInputStream.java:245)
+	at jline.internal.InputStreamReader.read(InputStreamReader.java:257)
+	at jline.internal.InputStreamReader.read(InputStreamReader.java:194)
+	at jline.console.ConsoleReader.readCharacter(ConsoleReader.java:2136)
+	at jline.console.ConsoleReader.readCharacter(ConsoleReader.java:2126)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.play$sbt$PlayConsoleInteractionMode$$anonfun$$waitEOF$1(PlayInteractionMode.scala:62)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1$$anonfun$apply$1.apply$mcV$sp(PlayInteractionMode.scala:73)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$doWithoutEcho$1.apply(PlayInteractionMode.scala:80)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$doWithoutEcho$1.apply(PlayInteractionMode.scala:77)
+	at play.sbt.PlayConsoleInteractionMode$.withConsoleReader(PlayInteractionMode.scala:57)
+	at play.sbt.PlayConsoleInteractionMode$.doWithoutEcho(PlayInteractionMode.scala:77)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.apply(PlayInteractionMode.scala:73)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.apply(PlayInteractionMode.scala:60)
+	at play.sbt.PlayConsoleInteractionMode$.withConsoleReader(PlayInteractionMode.scala:57)
+	at play.sbt.PlayConsoleInteractionMode$.waitForKey(PlayInteractionMode.scala:60)
+	at play.sbt.PlayConsoleInteractionMode$.waitForCancel(PlayInteractionMode.scala:83)
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3.apply(PlayRun.scala:123)
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3.apply(PlayRun.scala:53)
+	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:47)
+[0m[[31mtrace[0m] [0mStack trace suppressed: run [34mlast compile:run[0m for the full output.[0m
+[0m[[31merror[0m] [0m(compile:[31mrun[0m) java.io.IOException: Bad file descriptor[0m
+[0m[[31merror[0m] [0mTotal time: 1 s, completed Mar 6, 2017 7:16:59 PM[0m
+[0m[[0minfo[0m] [0mLoading project definition from /thomas/wherehows/web/project[0m
+[0m[[0minfo[0m] [0mSet current project to wherehows (in build file:/thomas/wherehows/web/)[0m
+
+[35m--- (Running the application, auto-reloading is enabled) ---[0m
+
+[[37minfo[0m] p.c.s.NettyServer - Listening for HTTP on /0.0.0.0:19005
+
+[32m(Server started, use Ctrl+D to stop and go back to the console...)[0m
+
+java.io.IOException: Bad file descriptor
+	at java.io.FileInputStream.read0(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:207)
+	at jline.internal.NonBlockingInputStream.read(NonBlockingInputStream.java:245)
+	at jline.internal.InputStreamReader.read(InputStreamReader.java:257)
+	at jline.internal.InputStreamReader.read(InputStreamReader.java:194)
+	at jline.console.ConsoleReader.readCharacter(ConsoleReader.java:2136)
+	at jline.console.ConsoleReader.readCharacter(ConsoleReader.java:2126)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.play$sbt$PlayConsoleInteractionMode$$anonfun$$waitEOF$1(PlayInteractionMode.scala:62)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1$$anonfun$apply$1.apply$mcV$sp(PlayInteractionMode.scala:73)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$doWithoutEcho$1.apply(PlayInteractionMode.scala:80)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$doWithoutEcho$1.apply(PlayInteractionMode.scala:77)
+	at play.sbt.PlayConsoleInteractionMode$.withConsoleReader(PlayInteractionMode.scala:57)
+	at play.sbt.PlayConsoleInteractionMode$.doWithoutEcho(PlayInteractionMode.scala:77)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.apply(PlayInteractionMode.scala:73)
+	at play.sbt.PlayConsoleInteractionMode$$anonfun$waitForKey$1.apply(PlayInteractionMode.scala:60)
+	at play.sbt.PlayConsoleInteractionMode$.withConsoleReader(PlayInteractionMode.scala:57)
+	at play.sbt.PlayConsoleInteractionMode$.waitForKey(PlayInteractionMode.scala:60)
+	at play.sbt.PlayConsoleInteractionMode$.waitForCancel(PlayInteractionMode.scala:83)
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3.apply(PlayRun.scala:123)
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3.apply(PlayRun.scala:53)
+	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:47)
+[0m[[31mtrace[0m] [0mStack trace suppressed: run [34mlast compile:run[0m for the full output.[0m
+[0m[[31merror[0m] [0m(compile:[31mrun[0m) java.io.IOException: Bad file descriptor[0m
+[0m[[31merror[0m] [0mTotal time: 1 s, completed Mar 6, 2017 7:17:53 PM[0m

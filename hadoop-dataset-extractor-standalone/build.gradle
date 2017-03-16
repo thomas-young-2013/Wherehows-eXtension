@@ -1,0 +1,61 @@
+configurations {
+  // configuration that holds jars to copy into lib
+  extraLibs
+  provided
+
+  all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+  all*.exclude group: 'log4j'
+
+  all*.resolutionStrategy {
+      dependencySubstitution {
+          substitute module('org.slf4j:slf4j-log4j12') with module('ch.qos.logback:logback-classic:1.1.7')
+          //prefer 'log4j-over-slf4j' over 'log4j'
+      }
+  }
+}
+
+dependencies {
+  extraLibs project(":wherehows-common")
+  //extraLibs files("extralibs/linkedin-pig-0.11.1.49.jar")
+  //extraLibs files("extralibs/voldemort-0.91.li1.jar")
+  extraLibs externalDependency.avro_mapred
+  extraLibs externalDependency.hive_exec
+  extraLibs externalDependency.pig
+
+  compile project(":wherehows-common")
+  compile externalDependency.hadoop_common
+  provided externalDependency.hadoop_client
+  compile externalDependency.pig
+  compile externalDependency.avro
+  compile externalDependency.avro_mapred
+  compile externalDependency.hive_exec
+  compile externalDependency.http_client
+  compile externalDependency.http_core
+  compile externalDependency.logback
+
+  testCompile externalDependency.testng
+  testCompile externalDependency.hadoop_client
+}
+
+jar {
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA', '*/antlr-runtime-3.4.jar'
+  archiveName = "schemaFetch.jar"
+
+  into('lib') {
+    from configurations.extraLibs
+  }
+
+  manifest {
+    attributes 'Main-Class': "wherehows.SchemaFetch"
+  }
+}
+
+test {
+  useTestNG() {
+    excludeGroups 'ignore'
+  }
+
+  testLogging {
+    showStandardStreams = true
+  }
+}
