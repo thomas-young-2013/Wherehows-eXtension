@@ -250,8 +250,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 				edge.source = node.id;
 				edge.target = jobNode.id;
 				// edge.label = node.operation;	
-			        edge.label = "label:"+edge.id+":"+node.operation;
-                                edge.chain = "";
+				edge.label = "label:"+edge.id+":"+node.operation;
+                edge.chain = "";
 				edges.add(edge);
 			}
 		}
@@ -323,7 +323,7 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 				edge.source = jobNode.id;
 				edge.target = node.id;
 				// edge.label = node.operation;
-			        edge.label = "label:"+edge.id + ":"+node.operation;
+				edge.label = "label:"+edge.id + ":"+node.operation;
 				edge.chain = "";
 				edges.add(edge);
 			}
