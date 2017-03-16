@@ -14,7 +14,7 @@ bin/
 *.class
 *.ipr
 *.iws
-*.env
+## *.env
 /RUNNING_PID
 backend-service/lib
 metadata-etl/src/main/resources/application.properties
