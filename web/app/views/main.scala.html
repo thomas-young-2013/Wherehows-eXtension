@@ -62,12 +62,12 @@
 					<ul class="nav navbar-nav navbar-left category-header">
 						<li id="datasetlink">
 							<a href="/#/datasets/page/1">
-								<span>Datasets</span>
+								<span>@Messages("data_set")</span>
 							</a>
 						</li>
 						<li id="flowlink">
 							<a href="/#/flows/page/1">
-								<span>Flows</span>
+								<span>@Messages("flow")</span>
 							</a>
 						</li>
 						<li id = "toolslink" class="dropdown" dropdown>
@@ -78,7 +78,7 @@
 							style="color : #808080"
 							aria-expand="false"
 							dropdown-toggle>
-								Tools
+								@Messages("tool")
 								<i class="fa fa-angle-down"></i>
 							</a>
 							<ul class="dropdown-menu" role="menu">
@@ -109,10 +109,10 @@
 							        </li>
 							        -->
 							        <li id="categoryDatasets" class="active">
-							            <a href="#" class="searchCategory">Datasets</a>
+							            <a href="#" class="searchCategory">@Messages("data_set")</a>
 							        </li>
 							        <li id="categoryComments" >
-							            <a href="#" class="searchCategory">Comments</a>
+							            <a href="#" class="searchCategory">@Messages("comment")</a>
 							        </li>
 							        <!--
 									<li id="categoryMetrics" >
@@ -120,10 +120,10 @@
 							        </li>
 							        -->
 							        <li id="categoryFlows" >
-							            <a href="#" class="searchCategory">Flows</a>
+							            <a href="#" class="searchCategory">@Messages("flow")</a>
 							        </li>
 									<li id="categoryJobs" >
-							            <a href="#" class="searchCategory">Jobs</a>
+							            <a href="#" class="searchCategory">@Messages("job")</a>
 									</li>
 								</ul>
 							</div>
@@ -131,7 +131,7 @@
 								<input id="searchInput"
 									type="text"
 									class="form-control input-sm keyword-search"
-									placeholder="Enter Keywords..."
+									placeholder=@Messages("keyword")
 								/>
 								<span class="input-group-btn">
 									<button id="searchBtn"
@@ -152,7 +152,7 @@
 						title="Advanced Search"
 						aria-label="Advanced Search"
 						>
-							Advanced
+							@Messages("advanced")
 						</button>
 					</div>
 					<ul class="nav navbar-nav navbar-right">
@@ -165,13 +165,13 @@
 								<li>
 									<a id="settingsbtn" role="button">
 										<i class="fa fa-gear"></i>
-										Settings
+										@Messages("setting")
 									</a>
 								</li>
 								<li>
 									<a href="@routes.Application.logout()" title="Log out">
 										<i class="fa fa-sign-out"></i>
-										Logout
+										@Messages("logout")
 									</a>
 								</li>
 							</ul>
@@ -185,7 +185,7 @@
               aria-haspopup="true"
               title="WhereHows Help"
               aria-expanded="true">
-                Help
+                @Messages("help")
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                 <i class="fa fa-angle-down" aria-hidden="true"></i>
           </button>
@@ -194,7 +194,7 @@
               <a href="https://iwww.corp.linkedin.com/wiki/cf/display/ENGS/Metadata+Coverage"
                  title="Metadata Coverage"
                  target="_blank">
-                     Metadata Coverage
+                     @Messages("meta_data_coverage")
               </a>
             </li>
           </ul>
@@ -206,7 +206,7 @@
 							<input
 							id="username"
 							type="text"
-							placeholder="username"
+							placeholder=@Messages("username")
 							name="username"
 							class="form-control"
 							/>
@@ -215,19 +215,19 @@
 							<input
 							id="password"
 							type="password"
-							placeholder="password"
+							placeholder=@Messages("password")
 							name="password"
 							class="form-control"
 							/>
 						</div>
-						<button type="submit" class="btn btn-primary">Sign In</button>
+						<button type="submit" class="btn btn-primary">@Messages("sign_in")</button>
 						<button type="button"
 							class="btn btn-link"
 							data-toggle="modal"
 							data-target="#signUpModal"
 							title="Sign Up"
 							aria-label="Sign Up">
-								Not a Member Yet? Join Now!
+							@Messages("not_member")
 						</button>
 					</form>
 				}
@@ -241,12 +241,13 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h3 class="modal-title" id="myModalLabel">Advanced Search</h3>
+						<h3 class="modal-title" id="myModalLabel">@Messages("ad_search")</h3>
 					</div>
 					<div class="modal-body advSearch">
 						<ul id="advsearchtabs" class="nav nav-tabs">
-							<li id="datasetAdvSearchLink"><a data-toggle="tab" href="#datasetAdvTab">Datasets</a></li>
-							<li><a data-toggle="tab" href="#flowAdvtab">Flows</a></li>
+							<li id="datasetAdvSearchLink"><a data-toggle="tab" href="#datasetAdvTab">
+							@Messages("data_set")</a></li>
+							<li><a data-toggle="tab" href="#flowAdvtab">@Messages("flow")</a></li>
 						</ul>
 						<div class="tab-content">
 							<div id="datasetAdvTab" class="tab-pane">
@@ -255,7 +256,7 @@
 										<div class="row">
 											<div class="col-md-12">
 												<div class="control-group col-md-12">
-													<label class="control-label">Scope</label>
+													<label class="control-label">@Messages("scope")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -290,7 +291,7 @@
 											</div>
 											<div class="col-md-12">
 												<div class="control-group col-md-12">
-													<label class="control-label">Table</label>
+													<label class="control-label">@Messages("table")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -325,7 +326,7 @@
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group col-md-12">
-													<label class="control-label">Fields</label>
+													<label class="control-label">@Messages("field")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -371,7 +372,7 @@
 											</div>
 											<div class="col-md-12">
 												<div class="form-group col-md-12">
-													<label class="control-label">Comments</label>
+													<label class="control-label">@Messages("comment")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -391,7 +392,7 @@
 										</div>
 									</div>
 									<div id="advSearchSource" class="col-md-2">
-										<h4>Sources</h4>
+										<h4>@Messages("source")</h4>
 									</div>
 								</div>
 							</div>
@@ -401,7 +402,7 @@
 										<div class="row">
 											<div class="col-md-12">
 												<div class="control-group col-md-12">
-													<label class="control-label">Cluster</label>
+													<label class="control-label">@Messages("cluster")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -436,7 +437,7 @@
 											</div>
 											<div class="col-md-12">
 												<div class="control-group col-md-12">
-													<label class="control-label">Flow Name</label>
+													<label class="control-label">@Messages("flow_name")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -469,7 +470,7 @@
 											</div>
 											<div class="col-md-12">
 												<div class="control-group col-md-12">
-													<label class="control-label">Job Name</label>
+													<label class="control-label">@Messages("job_name")</label>
 													<div class="controls">
 														<div class="row">
 															<div class="col-xs-3 text-right">
@@ -509,8 +510,8 @@
 
 					<div class="modal-footer">
 						<button type="button" id="advSearchBtn"
-							data-dismiss="modal" class="btn btn-primary">Search</button>
-						<button type="button" id="advSearchResetBtn" class="btn btn-default">Reset</button>
+							data-dismiss="modal" class="btn btn-primary">@Messages("search")</button>
+						<button type="button" id="advSearchResetBtn" class="btn btn-default">@Messages("reset")</button>
 					</div>
 				</div>
 			</div>
@@ -526,14 +527,14 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h3 class="modal-title" id="signUpModalLabel">Sign Up</h3>
+							<h3 class="modal-title" id="signUpModalLabel">@Messages("sign_up")</h3>
 						</div>
 						<div class="modal-body">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-xs-11">
 										<input type="text" class="form-control" name="inputName"
-											id="inputName" style="width: 100%;" placeholder="User Name" required>
+											id="inputName" style="width: 100%;" placeholder=@Messages("username") required>
 									</div>
 								</div>
 							</div>
@@ -541,11 +542,11 @@
 								<div class="row">
 									<div class="col-xs-5">
 										<input type="text" class="form-control" name="inputFirstName"
-											id="inputFistName" style="width: 100%;" placeholder="First Name" required>
+											id="inputFistName" style="width: 100%;" placeholder=@Messages("first_name") required>
 									</div>
 									<div class="col-xs-5 col-xs-offset-1">
 										<input type="text" class="form-control" name="inputLastName"
-											id="inputLastName" style="width: 100%;" placeholder="Last Name" required>
+											id="inputLastName" style="width: 100%;" placeholder=@Messages("last_name") required>
 									</div>
 								</div>
 							</div>
@@ -553,7 +554,7 @@
 								<div class="row">
 									<div class="col-xs-11">
 										<input type="email" class="form-control" name="inputEmail" id="inputEmail"
-											style="width: 100%;" placeholder="Email"
+											style="width: 100%;" placeholder=@Messages("email")
 											data-error="Please input a valid email address" required>
 										<div class="help-block with-errors"></div>
 									</div>
@@ -565,7 +566,7 @@
 										<input type="password" data-minlength="6" class="form-control"
 											name="inputPassword" id="inputPassword" style="width: 100%;"
 											data-error="Minimum of 6 characters"
-											placeholder="Password minimum of 6 characters" required>
+											placeholder=@Messages("pwd_require") required>
 										<span class="help-block with-errors"></span>
 									</div>
 								</div>
@@ -576,7 +577,7 @@
 										<input type="password" class="form-control" id="inputPasswordConfirm"
 											style="width: 100%;" data-match="#inputPassword"
 											data-match-error="Password does not match"
-											placeholder="Confirm Password" required>
+											placeholder=@Messages("pwd_confirm") required>
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
@@ -584,7 +585,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="form-group">
-								<button type="submit" class="btn btn-primary">Sign Up</button>
+								<button type="submit" class="btn btn-primary">@Messages("sign_up")</button>
 							</div>
 						</div>
 					</div>

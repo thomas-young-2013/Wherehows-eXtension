@@ -4,18 +4,18 @@
       <div id="mainSplitter">
         <div id="tabSplitter">
           <div class="btn-group" role="group" aria-label="Toggle List/Tree View">
-            <button id="listviewbtn" type="button" class="btn btn-primary">List View</button>
-            <button id="treeviewbtn" type="button" class="btn btn-default">Tree View</button>
+            <button id="listviewbtn" type="button" class="btn btn-primary">@Messages("list_view")</button>
+            <button id="treeviewbtn" type="button" class="btn btn-default">@Messages("tree_view")</button>
           </div>
           <ul id="menutabs" style="display:none" class="nav nav-tabs category-header">
             <li>
-              <a data-toggle="tab" href="#filtertab">Datasets</a>
+              <a data-toggle="tab" href="#filtertab">@Messages("data_set")</a>
             </li>
-            <li><a data-toggle="tab" href="#flowtab">Flows</a></li>
+            <li><a data-toggle="tab" href="#flowtab">@Messages("flow")</a></li>
           </ul>
           <div class="tab-content">
             <div class="filter">
-              <input id="filterinput" placeholder="Filter By">
+              <input id="filterinput" placeholder=@Messages("filter_by")>
             </div>
             <div id="filtertab" class="tab-pane">
               <div id="datasetlist" class="list-group"></div>
@@ -85,9 +85,9 @@
       </i>
       {{#if showText}}
         {{#if dataset.watchId}}
-          Unwatch
+          @Messages("un_watch")
         {{else}}
-          Watch
+          @Messages("watch")
         {{/if}}
       {{/if}}
     </script>
@@ -100,9 +100,9 @@
       </i>
       {{#if showText}}
         {{#if metric.watchId}}
-          Unwatch
+          @Messages("un_watch")
         {{else}}
-          Watch
+          @Messages("watch")
         {{/if}}
       {{/if}}
     </script>
@@ -146,7 +146,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} datasets - page {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} @Messages("data_set") - @Messages("page") {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
@@ -541,9 +541,9 @@
                 {{/dataset-favorite}}
                 <span class="hidden-sm hidden-xs">
                   {{#if model.isFavorite}}
-                    Unfavorite
+                    @Messages("un_favorite")
                   {{else}}
-                    Favorite
+                    @Messages("favorite")
                   {{/if}}
                 </span>
               </li>
@@ -1062,19 +1062,19 @@
           type="button"
           class="btn {{if isComments 'btn-primary'}} {{unless isComments 'btn-default'}}"
           {{action 'switchSearchToComments' keyword}}>
-          Comments
+          @Messages("comment")
         </button>
         <button
           type="button"
           class="btn {{if isFlows 'btn-primary'}} {{unless isFlows 'btn-default'}}"
           {{action 'switchSearchToFlow' keyword}}>
-          Flows
+          @Messages("flow")
         </button>
         <button
           type="button"
           class="btn {{if isJobs 'btn-primary'}} {{unless isJobs 'btn-default'}}"
           {{action 'switchSearchToJob' keyword}}>
-          Jobs
+          @Messages("job")
         </button>
       </div>
 
@@ -1328,7 +1328,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} flows - page {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} @Messages("flow") - @Messages("page") {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">

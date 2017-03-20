@@ -7,3 +7,52 @@ sample_data=Samples
 downstream=Downstream
 relation=Relations
 accessibility=Accessibility
+
+data_set=Datasets
+flow=Flows
+tool=Tools
+list_view=List View
+tree_view=Tree View
+keyword=Enter Keywords..
+owner=Owners
+instance=Instance
+favorite=Favorite
+un_favorite=Unfavorite
+lineage=Lineage
+watch=Watch
+unwatch=Unwatch
+help=Help
+setting=Settings
+logout=Logout
+contact=Contact Us
+advanced=Advanced
+page=page
+result=results
+filter_by=Filter By
+no_items_found=No Items Found
+job=Jobs
+meta_data_coverage=Metadata Coverage
+
+username=username
+password=password
+sign_in=Sign In
+not_member=Not a Member Yet? Join Now!
+sign_up=Sign Up
+first_name=First Name
+last_name=Last Name
+email=Email
+pwd_require=Password minimum of 6 characters
+pwd_confirm=Confirm Password
+
+
+
+ad_search=Advanced Search
+scope=Scope
+table=Table
+field=Fields
+source=Sources
+reset=Reset
+cluster=Cluster
+flow_name=Flow Name
+job_name=Job Name
+search=Search
