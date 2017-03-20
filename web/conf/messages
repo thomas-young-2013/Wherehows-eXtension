@@ -1,0 +1,9 @@
+system.name=Template System
+properties=Properties
+comment=Comments
+schema=Schema
+ownership=Ownership
+sample_data=Samples
+downstream=Downstream
+relation=Relations
+accessibility=Accessibility

@@ -1,0 +1,9 @@
+system.name=模板系统
+properties=属性
+comment=评论
+schema=模式
+ownership=所有权
+sample_data=示例数据
+downstream=下游数据
+relation=关系
+accessibility=可用性

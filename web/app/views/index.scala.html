@@ -640,39 +640,39 @@
           {{#unless isPinot}}
           <li id="properties">
             <a data-toggle="tab" href="#propertiestab">
-              Properties
+              @Messages("properties")
             </a>
           </li>
           {{/unless}}
           <li id="properties">
             <a data-toggle="tab" href="#commentstab">
-              Comments
+              @Messages("comment")
             </a>
           </li>
-          <li id="schemas" class="active"><a data-toggle="tab" href="#schematab">Schema</a></li>
-          <li id="ownership"><a data-toggle="tab" href="#ownertab">Ownership</a></li>
+          <li id="schemas" class="active"><a data-toggle="tab" href="#schematab">@Messages("schema")</a></li>
+          <li id="ownership"><a data-toggle="tab" href="#ownertab">@Messages("ownership")</a></li>
           {{#unless isSFDC}}
-            <li id="samples"><a data-toggle="tab" href="#sampletab">Sample Data</a></li>
+            <li id="samples"><a data-toggle="tab" href="#sampletab">@Messages("sample_data")</a></li>
           {{/unless}}
           <li id="impacts">
             <a data-toggle="tab"
               title="Down Stream Impact Analysis"
               href="#impacttab">
-              Downstream
+              @Messages("downstream")
             </a>
           </li>
           <li id="depends">
             <a data-toggle="tab"
               title="Relations"
               href="#dependtab">
-              Relations
+              @Messages("relation")
             </a>
           </li>
           <li id="access">
             <a data-toggle="tab"
               title="Accessibilities"
               href="#accesstab">
-              Accessibilities
+              @Messages("accessibility")
             </a>
           </li>
         </ul>
