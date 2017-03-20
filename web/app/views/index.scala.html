@@ -85,7 +85,7 @@
       </i>
       {{#if showText}}
         {{#if dataset.watchId}}
-          @Messages("un_watch")
+          @Messages("unwatch")
         {{else}}
           @Messages("watch")
         {{/if}}
@@ -100,7 +100,7 @@
       </i>
       {{#if showText}}
         {{#if metric.watchId}}
-          @Messages("un_watch")
+          @Messages("unwatch")
         {{else}}
           @Messages("watch")
         {{/if}}
@@ -583,7 +583,7 @@
                 {{/dataset-watch}}
                 <span class="hidden-xs hidden-sm">
                   {{#if model.isWatched}}
-                    @Messages("un_watch")
+                    @Messages("unwatch")
                   {{else}}
                     @Messages("watch")
                   {{/if}}
@@ -1419,7 +1419,7 @@
                     <i class="fa {{if urnWatched 'fa-eye-slash'}} {{unless urnWatched 'fa-eye'}}"></i>
                     <span class="hidden-sm hidden-xs">
                       {{#if urnWatched}}
-                        @Messages("un_watch")
+                        @Messages("unwatch")
                       {{else}}
                         @Messages("watch")
                       {{/if}}
