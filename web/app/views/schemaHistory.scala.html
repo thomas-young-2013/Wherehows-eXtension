@@ -8,8 +8,8 @@
         <div class="col-xs-12">
           <form class="form-inline">
             <div class="form-group">
-              <label for="name">Name</label>
-              <input id="name" type="text" class="form-control" placeholder="Filter by Name"/>
+              <label for="name">@Messages("name")</label>
+              <input id="name" type="text" class="form-control" placeholder=@Messages("filter_by")/>
             </div>
           </form>
         </div>
@@ -28,7 +28,7 @@
                     </li>
                   {{/unless}}
                   <li>
-                    {{ model.data.count }} scripts - page {{ model.data.page }} of {{ model.data.totalPages }}
+                    {{ model.data.count }} <i>@Messages("script")</i> - <i>@Messages("page")</i> {{ model.data.page }} of {{ model.data.totalPages }}
                   </li>
                   {{#unless last}}
                     <li class="next">
@@ -42,9 +42,9 @@
               <table id="schematable" class="table table-bordered table-hover search-results">
                 <thead>
                   <tr class="results-header">
-                    <th class="span3">Dataset Name</th>
-                    <th class="span6">Dataset URN</th>
-                    <th class="span3">Last Modified Date</th>
+                    <th class="span3">@Messages("dataset_name")</th>
+                    <th class="span6">@Messages("dataset_urn")</th>
+                    <th class="span3">@Messages("last_modify_date")</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -28,6 +28,7 @@ contact=Contact Us
 advanced=Advanced
 page=page
 result=results
+name=Name
 filter_by=Filter By
 no_items_found=No Items Found
 job=Jobs
@@ -54,3 +55,19 @@ cluster=Cluster
 flow_name=Flow Name
 job_name=Job Name
 search=Search
+
+schema_history=Schema History
+dataset_name=Dataset Name
+dataset_urn=Dataset URN
+last_modify_date=Last Modified Date
+script=scripts
+
+flow_path=Flow Path
+flow_name=Flow Name
+flow_level=Flow Level
+job_count=Job Count
+create_time=Created Time
+modify_time=Modified Time
+
+job=jobs
+metric=metrics

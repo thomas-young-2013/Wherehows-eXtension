@@ -28,6 +28,7 @@ contact=联系我们
 advanced=高级
 page=页
 result=结果
+name=名称
 filter_by=过滤依据
 no_items_found=没有相关的结果项
 job=任务
@@ -54,3 +55,19 @@ cluster=集群
 flow_name=数据流名称
 job_name=任务名称
 search=搜索
+
+schema_history=模式历史
+dataset_name=数据集名称
+dataset_urn=数据集URN
+last_modify_date=最后修改时间
+script=脚本
+
+flow_path=流路径
+flow_name=流名称
+flow_level=流级别
+job_count=任务数量
+create_time=创建时间
+modify_time=修改时间
+
+job=个任务
+metric=个度量

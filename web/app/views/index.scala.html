@@ -146,7 +146,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} {{@Messages("data_set")}} - {{@Messages("page")}} {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} <i>@Messages("data_set")</i> - <i>@Messages("page")</i> {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
@@ -181,7 +181,7 @@
                           </div>
                           {{#if dataset.owners}}
                           <div class="col-xs-12">
-                            <span>owner:</span>
+                            <span>@Messages("owner"):</span>
                             {{#each dataset.owners as |owner|}}
                               <p style="display:inline" title={{owner.name}}>{{ owner.userName }} </p>
                             {{/each}}
@@ -360,7 +360,7 @@
 <script type="text/x-handlebars" id="components/dataset-owner-list">
   {{#if owners}}
     <header>
-      Owners:
+      @Messages("owner"):
       <ul>
         {{#each owners as |owner|}}
           <li>
@@ -563,7 +563,7 @@
                   title="View Lineage">
                   <i class="fa fa-sitemap"></i>
                   <span class="hidden-sm hidden-xs">
-                    Lineage
+                    @Messages("lineage")
                   </span>
                 </a>
               </li>
@@ -573,7 +573,7 @@
                     title="View Schema History">
                     <i class="fa fa-history"></i>
                     <span class="hidden-sm hidden-xs">
-                      Schema History
+                      @Messages("schema_history")
                     </span>
                   </a>
                 </li>
@@ -583,9 +583,9 @@
                 {{/dataset-watch}}
                 <span class="hidden-xs hidden-sm">
                   {{#if model.isWatched}}
-                    Unwatch
+                    @Messages("un_watch")
                   {{else}}
-                    Watch
+                    @Messages("watch")
                   {{/if}}
                 </span>
               </li>
@@ -897,7 +897,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} metrics - page {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} <i>@Messages("metric")</i> - <i>@Messages("page")</i> {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
@@ -1092,7 +1092,7 @@
                     </li>
                   {{/unless}}
                   <li>
-                    {{ model.count }} results - page {{ model.page }} of {{ model.totalPages }}
+                    {{ model.count }} <i>@Messages("result")</i> - <i>@Messages("page")</i> {{ model.page }} of {{ model.totalPages }}
                   </li>
                   {{#unless last}}
                     <li class="next">
@@ -1206,7 +1206,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.count }} results - page {{ model.page }} of {{ model.totalPages }}
+                  {{ model.count }} <i>@Messages("result")</i> - <i>@Messages("page")</i> {{ model.page }} of {{ model.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
@@ -1328,7 +1328,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} @Messages("flow") - @Messages("page") {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} <i>@Messages("flow")</i> - <i>@Messages("page")</i> {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
@@ -1348,12 +1348,12 @@
             <table class="table table-bordered search-results">
               <thead>
                 <tr class="results-header">
-                  <th class="col-xs-3">Flow Path</th>
-                  <th class="col-xs-2">Flow Name</th>
-                  <th class="col-xs-1">Flow Level</th>
-                  <th class="col-xs-1">Job Count</th>
-                  <th class="col-xs-2">Created Time</th>
-                  <th class="col-xs-2">Modified Time</th>
+                  <th class="col-xs-3">@Messages("flow_path")</th>
+                  <th class="col-xs-2">@Messages("flow_name")</th>
+                  <th class="col-xs-1">@Messages("flow_level")</th>
+                  <th class="col-xs-1">@Messages("job_count")</th>
+                  <th class="col-xs-2">@Messages("create_time")</th>
+                  <th class="col-xs-2">@Messages("modify_time")</th>
                 </tr>
               </thead>
               <tbody>
@@ -1419,9 +1419,9 @@
                     <i class="fa {{if urnWatched 'fa-eye-slash'}} {{unless urnWatched 'fa-eye'}}"></i>
                     <span class="hidden-sm hidden-xs">
                       {{#if urnWatched}}
-                        Unwatch
+                        @Messages("un_watch")
                       {{else}}
-                        Watch
+                        @Messages("watch")
                       {{/if}}
                     </span>
                   </li>
@@ -1446,7 +1446,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} jobs - page {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} <i>@Messages("job")</i> - <i>@Messages("page")</i> {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
