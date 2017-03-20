@@ -146,7 +146,7 @@
                   </li>
                 {{/unless}}
                 <li>
-                  {{ model.data.count }} @Messages("data_set") - @Messages("page") {{ model.data.page }} of {{ model.data.totalPages }}
+                  {{ model.data.count }} {{@Messages("data_set")}} - {{@Messages("page")}} {{ model.data.page }} of {{ model.data.totalPages }}
                 </li>
                 {{#unless last}}
                   <li class="next">
