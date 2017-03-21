@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 cd ./backend-service/
-./runBackend
+chmod 777 ./runBackend
+./runBackend &
 
 cd ../web/
-./runWeb.sh
+chmod 777 ./runWeb.sh
+./runWeb.sh &
 
 cd ..
-
 echo "launched successfully"

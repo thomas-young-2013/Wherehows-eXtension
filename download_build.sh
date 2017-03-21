@@ -11,3 +11,5 @@ cd ./wherehowsX
 ./gradlew clean build dist
 
 echo "build completed"
+
+chmod 777 ./run.sh
