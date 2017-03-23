@@ -48,9 +48,7 @@ public class AzLogParser {
     }
     
     if(patterns.length() > 0) patterns.deleteCharAt(patterns.length() - 1);
-    
-    System.out.println("no happen!");
-    
+
     Pattern hadoopJobIdPattern = Pattern.compile(patterns.toString());
     Matcher matcher = hadoopJobIdPattern.matcher(log);
     Set<String> listMatches = new HashSet<>();

@@ -43,10 +43,7 @@ public class AzLineageExtractor {
     throws Exception {
 
     List<LineageRecord> oneAzkabanJobLineage = new ArrayList<>();
-   
-    // create from thomas for debugging.
-    String flowString = message.azkabanJobExecution.getFlowPath();
-    logger.info(flowString);
+
     // azkaban job name should have subflow name append in front
     String []flowSequence = message.azkabanJobExecution.getFlowPath().split(":")[1].split("/");
     
