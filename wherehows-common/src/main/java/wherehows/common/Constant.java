@@ -59,6 +59,34 @@ public class Constant {
   public static final String AZ_SERVICE_USERNAME_KEY = "az.server.username";
   public static final String AZ_SERVICE_PASSWORD_KEY = "az.server.password";
 
+
+  // Lhotse Lineage
+  /** The property_name field in wh_etl_job_property table. Azkaban database connection info */
+  public static final String LZ_DB_URL_KEY = "lz.db.jdbc.url";
+  public static final String LZ_DB_USERNAME_KEY = "lz.db.username";
+  public static final String LZ_DB_PASSWORD_KEY = "lz.db.password";
+  public static final String LZ_DB_DRIVER_KEY = "lz.db.driver";
+
+  /** The property_name field in wh_etl_job_property table. The time period backtrace for execution data ETL */
+  public static final String LZ_EXEC_ETL_LOOKBACK_MINS_KEY = "lz.exec_etl.lookback_period.in.minutes";
+
+  /** The property_name field in wh_etl_job_property table. Hadoop job history url for retrieving map-reduce job logs */
+  public static final String LZ_HADOOP_JOBHISTORY_KEY = "lz.hadoop.jobhistory.server.url";
+  /** The property_name field in wh_etl_job_property table. Default hadoop database id for this azkaban instance */
+  public static final String LZ_DEFAULT_HADOOP_DATABASE_ID_KEY = "lz.default.hadoop.database.id";
+  /** The property_name field in wh_etl_job_property table. For this period of jobs that finished, we will extract their lineage */
+  public static final String LZ_LINEAGE_ETL_LOOKBACK_MINS_KEY = "lz.lineage_etl.lookback_period.in.minutes";
+  /** The property_name field in wh_etl_job_property table. In lineage ETl, Akka actor time out time */
+  public static final String LZ_LINEAGE_ACTOR_TIMEOUT_KEY = "lz.lineage.actor.timeout";
+
+  public static final String LZ_LINEAGE_ACTOR_NUM = "lz.lineage.actor.num";
+  /** The property_name field in wh_etl_job_property table. Optional property used for debug. Default end timestamp is now */
+  public static final String LZ_LINEAGE_ETL_END_TIMESTAMP_KEY = "lz.lineage_etl.end_timestamp";
+  /** The property_name field in wh_etl_job_property table. Azkaban Server URL (optional way to get azkaban execution log) */
+  public static final String LZ_SERVICE_URL_KEY = "lz.server.url";
+  public static final String LZ_SERVICE_USERNAME_KEY = "lz.server.username";
+  public static final String LZ_SERVICE_PASSWORD_KEY = "lz.server.password";
+
   // Oozie
   /** The property_name field in wh_etl_job_property table. Oozie database connection info */
   public static final String OZ_DB_URL_KEY = "oz.db.jdbc.url";
