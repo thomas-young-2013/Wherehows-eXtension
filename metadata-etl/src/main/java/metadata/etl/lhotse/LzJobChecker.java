@@ -1,21 +1,15 @@
 package metadata.etl.lhotse;
 
 import metadata.etl.lineage.AzJobChecker;
-import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
-import wherehows.common.schemas.AzkabanJobExecRecord;
-import wherehows.common.utils.AzkabanJobExecUtil;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Created by hadoop on 3/30/17.
@@ -69,7 +63,8 @@ public class LzJobChecker {
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");
-            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId);
+            Integer typeId = rs.getInt("type_id");
+            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId);
             results.add(lzTaskExecRecord);
         }
         return results;

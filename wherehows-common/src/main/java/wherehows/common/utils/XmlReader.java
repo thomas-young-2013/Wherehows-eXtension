@@ -18,8 +18,7 @@ public class XmlReader {
         Document doc = builder.build(new File(fileLocation));
         Element foo = doc.getRootElement();
 
-        List<?> allChildren = foo.getChildren();
-        return null;*/
+        List<?> allChildren = foo.getChildren();*/
         return null;
     }
 }
