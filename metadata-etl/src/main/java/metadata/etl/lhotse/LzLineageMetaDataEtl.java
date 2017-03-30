@@ -62,17 +62,17 @@ public class LzLineageMetaDataEtl extends EtlJob {
                 "DELETE FROM stg_job_execution_data_lineage WHERE app_id = " + this.prop.getProperty(Constant.APP_ID_KEY);
         conn.createStatement().execute(emptyStaggingTable);
 
-        /*AzLineageExtractorMaster azLineageExtractorMaster = new AzLineageExtractorMaster(prop);
+        LzLineageExtractorMaster lzLineageExtractorMaster = new LzLineageExtractorMaster(prop);
         // get lineage
         if (timeFrame != null && endTimeStamp != null && endTimeStamp != 0) {
-            azLineageExtractorMaster.run(timeFrame, endTimeStamp);
+            lzLineageExtractorMaster.run(timeFrame, endTimeStamp);
         }
 
         else if (timeFrame != null) {
-            azLineageExtractorMaster.run(timeFrame);
+            lzLineageExtractorMaster.run(timeFrame);
         } else {
-            azLineageExtractorMaster.run(10);
-        }*/
+            lzLineageExtractorMaster.run(10);
+        }
         logger.info("Lhotse lineage metadata extract for {} end", this.prop.getProperty(Constant.APP_ID_KEY));
     }
 

@@ -57,9 +57,9 @@ public class AzLineageExtractor {
     // String log =
     //   message.adc.getExecLog(message.azkabanJobExecution.getFlowExecId(), jobPrefix + message.azkabanJobExecution.getJobName());
     String log = message.adc.getExecLog(message.azkabanJobExecution.getFlowExecId(), message.azkabanJobExecution.getJobName());
-    logger.info(log);
+
     Set<String> hadoopJobIds = AzLogParser.getHadoopJobIdFromLog(log);
-    logger.info("finish hadoop id");
+
     for (String hadoopJobId : hadoopJobIds) {
       logger.debug("Get Hadoop job config: {} from Azkaban job: {}" + hadoopJobId, message.azkabanJobExecution.toString());
       // TODO persist this mapping?

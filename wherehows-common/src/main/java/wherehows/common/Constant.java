@@ -70,6 +70,9 @@ public class Constant {
   /** The property_name field in wh_etl_job_property table. The time period backtrace for execution data ETL */
   public static final String LZ_EXEC_ETL_LOOKBACK_MINS_KEY = "lz.exec_etl.lookback_period.in.minutes";
 
+  /* The default dir that locates the log file and xml file*/
+  public static final String LZ_LINEAGE_LOG_DEFAULT_DIR = "lz.lineage.log.default_dir";
+
   /** The property_name field in wh_etl_job_property table. Hadoop job history url for retrieving map-reduce job logs */
   public static final String LZ_HADOOP_JOBHISTORY_KEY = "lz.hadoop.jobhistory.server.url";
   /** The property_name field in wh_etl_job_property table. Default hadoop database id for this azkaban instance */
