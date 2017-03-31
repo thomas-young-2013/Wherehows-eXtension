@@ -1,5 +1,20 @@
+/**
+ * Copyright 2017 tencent. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
 package metadata.etl.lhotse;
 
+import metadata.etl.lhotse.extractor.BaseLineageExtractor;
+import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.schemas.LineageRecord;
@@ -36,9 +51,19 @@ public class LzLineageExtractor {
         String logLocation = message.prop.getProperty(LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
         // the full path
         logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+        // it is assumed that the logs and files in the same host.
 
+        BaseLineageExtractor lineageExtractor = null;
+        switch (lzRecord.taskType) {
+            case 72:
+                lineageExtractor = new Hive2HdfsLineageExtractor();
+                break;
+            default:
+                throw new Exception("Not Supported Task Type!");
+        }
 
-
+        List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation);
+        jobLineage.addAll(lineageRecords);
 
         return jobLineage;
     }
