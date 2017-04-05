@@ -17,12 +17,11 @@ import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wherehows.common.Constant;
 import wherehows.common.schemas.LineageRecord;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static wherehows.common.Constant.LZ_LINEAGE_LOG_DEFAULT_DIR;
 
 /**
  * Created by thomas on 3/28/17.
@@ -48,7 +47,7 @@ public class LzLineageExtractor {
         List<LineageRecord> jobLineage = new ArrayList<>();
 
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
-        String logLocation = message.prop.getProperty(LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
+        String logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
         // the full path
         logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
         // it is assumed that the logs and files in the same host.
@@ -61,10 +60,11 @@ public class LzLineageExtractor {
             default:
                 throw new Exception("Not Supported Task Type!");
         }
-
-        List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation);
-        jobLineage.addAll(lineageRecords);
-
+        Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
+        if (lineageExtractor != null) {
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation, message.lzTaskExecRecord, defaultDatabaseId);
+            jobLineage.addAll(lineageRecords);
+        }
         return jobLineage;
     }
 

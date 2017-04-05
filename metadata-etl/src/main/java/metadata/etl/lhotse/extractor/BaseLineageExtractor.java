@@ -1,5 +1,6 @@
 package metadata.etl.lhotse.extractor;
 
+import metadata.etl.lhotse.LzTaskExecRecord;
 import wherehows.common.schemas.LineageRecord;
 
 import java.util.List;
@@ -8,5 +9,5 @@ import java.util.List;
  * Created by hadoop on 3/31/17.
  */
 public interface BaseLineageExtractor {
-    public List<LineageRecord> getLineageRecord(String logLocation);
+    public List<LineageRecord> getLineageRecord(String logLocation, LzTaskExecRecord lzTaskExecRecord, int defaultDatabaseId);
 }
