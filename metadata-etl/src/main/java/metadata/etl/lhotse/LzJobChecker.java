@@ -74,10 +74,14 @@ public class LzJobChecker {
         logger.info("Get recent task sql : " + cmd);
         final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
 
+        // TO DO LIST: PROBLEMS MAY HAPPEN HERE.
+
         while (rs.next()) {
             String taskId = rs.getString("task_id");
             Integer typeId = rs.getInt("type_id");
-            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId);
+            Integer taskStartTime = rs.getInt("start_time");
+            Integer taskEndTime = rs.getInt("end_time");
+            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskStartTime, taskEndTime);
             results.add(lzTaskExecRecord);
         }
         return results;
