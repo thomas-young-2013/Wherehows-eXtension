@@ -34,7 +34,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
         String taskName = lzTaskExecRecord.taskName;
         long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
 
-        String flowPath = "/hive2hdfs/" + taskName;
+        String flowPath = "/hive2hdfs/" + taskName + "/" + flowExecId;
         String operation = null;
         long num = 0L;
 
@@ -44,17 +44,16 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hive");
 
             lineageRecord.setOperationInfo("source", operation, num, num,
-                    num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime,
-                    flowPath);
+                    num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
             lineageRecords.add(lineageRecord);
         }
 
         // target lineage record.
-        LineageRecord lineageRecord1 = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
-        lineageRecord1.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
-        lineageRecord1.setOperationInfo("target", operation, num, num,
+        LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+        lineageRecord.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
+        lineageRecord.setOperationInfo("target", operation, num, num,
                 num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-        lineageRecords.add(lineageRecord1);
+        lineageRecords.add(lineageRecord);
 
         return lineageRecords;
     }
