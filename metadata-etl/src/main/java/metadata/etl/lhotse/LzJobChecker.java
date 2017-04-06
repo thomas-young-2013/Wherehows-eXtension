@@ -75,6 +75,7 @@ public class LzJobChecker {
         final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
 
         // TO DO LIST: PROBLEMS MAY HAPPEN HERE.
+        final String taskCmd = "";
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");

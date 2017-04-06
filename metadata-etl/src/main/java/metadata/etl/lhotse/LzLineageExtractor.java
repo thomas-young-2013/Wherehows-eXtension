@@ -50,7 +50,12 @@ public class LzLineageExtractor {
         String logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
         // the full path
         logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-        // it is assumed that the logs and files in the same host.
+        logger.info("log file location: %s", logLocation);
+
+        /* to do list: whether log file in the same host or not!
+         * 1. in same host: parse the file directly
+         * 2. scp to host and read the file (conf: id_rsa file, username, pwd, temp_dir)
+         * */
 
         BaseLineageExtractor lineageExtractor = null;
         switch (lzRecord.taskType) {
@@ -62,7 +67,7 @@ public class LzLineageExtractor {
         }
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation, message.lzTaskExecRecord, defaultDatabaseId);
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation, lzRecord, defaultDatabaseId);
             jobLineage.addAll(lineageRecords);
         }
         return jobLineage;
