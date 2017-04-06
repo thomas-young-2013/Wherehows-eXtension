@@ -147,7 +147,6 @@ public class HdfsMetadataEtl extends EtlJob {
 
   private void extractRemote()
       throws JSchException, SftpException, IOException {
-    logger.info("Remote mode!");
     JSch jsch = new JSch();
     //jsch.setLogger(logger);
     final Log4JOutputStream log4JOutputStream = new Log4JOutputStream();
@@ -173,9 +172,7 @@ public class HdfsMetadataEtl extends EtlJob {
       channelSftp.connect();
 
       InputStream localJarStream = classLoader.getResourceAsStream("jar/schemaFetch.jar");
-      logger.info("zero step");
       channelSftp.put(localJarStream, remoteJarFile, ChannelSftp.OVERWRITE);
-      logger.info("first step"); 
       localJarStream.close();
 
       String localSchemaFile = prop.getProperty(Constant.HDFS_SCHEMA_LOCAL_PATH_KEY);

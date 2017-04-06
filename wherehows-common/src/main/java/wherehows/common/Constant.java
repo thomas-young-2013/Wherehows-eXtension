@@ -72,6 +72,16 @@ public class Constant {
 
   /* The default dir that locates the log file and xml file*/
   public static final String LZ_LINEAGE_LOG_DEFAULT_DIR = "lz.lineage.log.default_dir";
+  /* The log file in the remote or local*/
+  public static final String LZ_LINEAGE_LOG_REMOTE = "lz.lineage.log.remote";
+
+  public static final String LZ_REMOTE_USER_KEY = "lz.remote.user";
+
+  public static final String LZ_REMOTE_MACHINE_KEY = "lz.remote.machine";
+
+  public static final String LZ_PRIVATE_KEY_LOCATION_KEY = "lz.private_key_location";
+
+  public static final String LZ_REMOTE_LOG_DIR = "lz.remote.log_dir";
 
   /** The property_name field in wh_etl_job_property table. Hadoop job history url for retrieving map-reduce job logs */
   public static final String LZ_HADOOP_JOBHISTORY_KEY = "lz.hadoop.jobhistory.server.url";

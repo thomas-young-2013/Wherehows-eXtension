@@ -13,6 +13,9 @@
  */
 package metadata.etl.lhotse;
 
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
 import wherehows.common.schemas.LineageRecord;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,17 +49,58 @@ public class LzLineageExtractor {
             throws Exception {
 
         List<LineageRecord> jobLineage = new ArrayList<>();
-
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
-        String logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
-        // the full path
-        logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-        logger.info("log file location: %s", logLocation);
+        String logLocation = null;
 
-        /* to do list: whether log file in the same host or not!
-         * 1. in same host: parse the file directly
-         * 2. scp to host and read the file (conf: id_rsa file, username, pwd, temp_dir)
-         * */
+        if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
+            // the full path
+            logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
+            logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+        } else {
+            // move the log file from remote host to local host
+            String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
+            remoteLogLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+
+            String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+            localLogFile += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            new File(localLogFile).getParentFile().mkdirs();
+
+            JSch jsch = new JSch();
+            Session session = null;
+            try {
+                // set up session
+                session = jsch.getSession(message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY),
+                                message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY));
+                // use private key instead of username/password
+                session.setConfig(
+                        "PreferredAuthentications",
+                        "publickey,gssapi-with-mic,keyboard-interactive,password");
+                jsch.addIdentity(message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY));
+                java.util.Properties config = new java.util.Properties();
+                config.put("StrictHostKeyChecking", "no");
+                session.setConfig(config);
+                session.connect();
+
+                // copy remote log file to localhost.
+                ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
+                channelSftp.connect();
+                channelSftp.get(remoteLogLocation, localLogFile);
+                channelSftp.exit();
+
+                logLocation = localLogFile;
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                session.disconnect();
+            }
+        }
+
+        // for debug.
+        if (logLocation == null) {
+            logger.error("log file location error!");
+        } else {
+            logger.info("log file location: %s", logLocation);
+        }
 
         BaseLineageExtractor lineageExtractor = null;
         switch (lzRecord.taskType) {
