@@ -13,7 +13,6 @@
  */
 package metadata.etl.lhotse;
 
-import org.python.core.stringlib.IntegerFormatter;
 import wherehows.common.schemas.AbstractRecord;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class LzTaskExecRecord extends AbstractRecord {
     public Integer appId;
     public String taskId;
     public Integer taskType;
+    public String taskName;
     public Integer taskStartTime;
     public Integer taskEndTime;
 
@@ -35,15 +35,18 @@ public class LzTaskExecRecord extends AbstractRecord {
         allFields.add(appId);
         allFields.add(taskId);
         allFields.add(taskType);
+        allFields.add(taskName);
         allFields.add(taskStartTime);
         allFields.add(taskEndTime);
         return allFields;
     }
 
-    public LzTaskExecRecord(Integer appId, String taskId, Integer taskType, Integer taskStartTime, Integer taskEndTime) {
+    public LzTaskExecRecord(Integer appId, String taskId, Integer taskType, String taskName,
+                            Integer taskStartTime, Integer taskEndTime) {
         this.appId = appId;
         this.taskId = taskId;
         this.taskType = taskType;
+        this.taskName = taskName;
         this.taskStartTime = taskStartTime;
         this.taskEndTime = taskEndTime;
     }

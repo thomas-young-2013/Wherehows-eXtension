@@ -31,8 +31,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
         if (opType.equals(HiveSqlType.QUERY)) {}
 
         long taskId = Long.parseLong(lzTaskExecRecord.taskId);
-        String taskName = "task_name"; // get from database table `lb_task`
-        // task_name, task_id
+        String taskName = lzTaskExecRecord.taskName;
         long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
 
         String flowPath = "/hive2hdfs/" + taskName;

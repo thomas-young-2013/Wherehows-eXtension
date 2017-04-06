@@ -75,14 +75,20 @@ public class LzJobChecker {
         final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
 
         // TO DO LIST: PROBLEMS MAY HAPPEN HERE.
-        final String taskCmd = "";
+        /*
+        * topological sort.
+        * */
+        final String taskCmd = "select task_name from lb_task where task_id = %s";
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");
             Integer typeId = rs.getInt("type_id");
             Integer taskStartTime = rs.getInt("start_time");
             Integer taskEndTime = rs.getInt("end_time");
-            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskStartTime, taskEndTime);
+            // get task name
+            final ResultSet resultSet = stmt.executeQuery(String.format(taskCmd, taskId));
+            String taskName = resultSet.getString("task_name");
+            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
             results.add(lzTaskExecRecord);
         }
         return results;
