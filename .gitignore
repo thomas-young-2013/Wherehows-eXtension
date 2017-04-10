@@ -9,8 +9,7 @@ bin/
 .classpath
 *.swp
 
-## for convenience, disable it: *.jar
-# *.jar
+*.jar
 
 *.idea
 *.iml
