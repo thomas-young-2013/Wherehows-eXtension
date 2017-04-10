@@ -10,6 +10,7 @@ cd ${backend}
 zip -r "backend.zip" *
 scp -r "./backend.zip" ${TARGET_SERVER}/backend/;
 
+cd ${app_home}
 cd ${web}
 zip -r "web.zip" *
 scp -r "./web.zip" ${TARGET_SERVER}/web/;
