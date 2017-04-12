@@ -99,7 +99,7 @@ public class LzLineageExtractor {
         if (logLocation == null) {
             logger.error("log file location error!");
         } else {
-            logger.info("log file location: %s", logLocation);
+            logger.info("log file location: {}", logLocation);
         }
 
         BaseLineageExtractor lineageExtractor = null;

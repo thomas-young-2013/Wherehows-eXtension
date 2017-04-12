@@ -23,21 +23,24 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId) {
         List<LineageRecord> lineageRecords = new ArrayList<>();
         try {
+            logger.info("start to parse the log: {}", logLocation);
             XmlParser xmlParser = new XmlParser(logLocation);
             // get info from logs
             String destPath = xmlParser.getExtProperty("extProperties/entry/destFilePath");
             String sql = xmlParser.getExtProperty("extProperties/entry/filterSQL");
+            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
             List<String> idesTableNames = new ArrayList<String>();
-            String opType = HiveSqlAnalyzer.analyzeSql(sql, isrcTableNames, idesTableNames);
-            if (opType.equals(HiveSqlType.QUERY)) {
+            if (sql != null) {
+                String opType = HiveSqlAnalyzer.analyzeSql(sql, isrcTableNames, idesTableNames);
+                if (opType.equals(HiveSqlType.QUERY)) {
+                }
             }
 
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
-            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
 
             String flowPath = "/hive2hdfs/" + taskName + "/" + flowExecId;
             String operation = null;
