@@ -68,15 +68,15 @@ public class LzJobChecker {
             throws SQLException, IOException {
 
         logger.info("Get the jobs from time : {} to time : {}", startTimeStamp, endTimeStamp);
-        String startTime = "\"" + DateFormater.transform(startTimeStamp) + "\"";
-        String endTime = "\"" + DateFormater.transform(endTimeStamp) + "\"";
+        String startTime = DateFormater.transform(startTimeStamp);
+        String endTime = DateFormater.transform(endTimeStamp);
         logger.info("the time interval is: [" + startTime + " -> " + endTime + "]");
 
         List<LzTaskExecRecord> results = new ArrayList<>();
         Statement stmt = conn.createStatement();
         final String cmd =
-                "select * from lb_task_run where start_time > " + startTime
-                        + " and end_time < " + endTime;
+                "select * from lb_task_run where start_time > \"" + startTime
+                        + "\" and end_time < \"" + endTime + "\"";
         logger.info("Get recent task sql : " + cmd);
         final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
 
@@ -94,8 +94,11 @@ public class LzJobChecker {
             // get task name
             logger.info("get task_name: " + String.format(taskCmd, taskId));
             final ResultSet resultSet = stmt.executeQuery(String.format(taskCmd, taskId));
-            resultSet.next();
-            String taskName = resultSet.getString("task_name");
+            String taskName = null;
+            while (resultSet.next()) {
+                taskName = resultSet.getString("task_name");
+                break;
+            }
             LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
             results.add(lzTaskExecRecord);
         }
