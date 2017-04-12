@@ -53,6 +53,7 @@ public class LzJobChecker {
      */
     public List<LzTaskExecRecord> getRecentFinishedJobFromFlow(int timeFrameMinutes, long endTimeStamp)
             throws IOException, SQLException {
+        logger.info("time frame is: " + timeFrameMinutes);
         long beginTimeStamp = endTimeStamp -  60 * timeFrameMinutes * 1000; // convert minutes to milli seconds
         return getRecentFinishedJobFromFlow(beginTimeStamp, endTimeStamp);
     }
@@ -67,8 +68,8 @@ public class LzJobChecker {
             throws SQLException, IOException {
 
         logger.info("Get the jobs from time : {} to time : {}", startTimeStamp, endTimeStamp);
-        String startTime = DateFormater.transform(startTimeStamp);
-        String endTime = DateFormater.transform(endTimeStamp);
+        String startTime = "\"" + DateFormater.transform(startTimeStamp) + "\"";
+        String endTime = "\"" + DateFormater.transform(endTimeStamp) + "\"";
         logger.info("the time interval is: [" + startTime + " -> " + endTime + "]");
 
         List<LzTaskExecRecord> results = new ArrayList<>();
@@ -91,7 +92,9 @@ public class LzJobChecker {
             Integer taskStartTime = rs.getInt("start_time");
             Integer taskEndTime = rs.getInt("end_time");
             // get task name
+            logger.info("get task_name: " + String.format(taskCmd, taskId));
             final ResultSet resultSet = stmt.executeQuery(String.format(taskCmd, taskId));
+            resultSet.next();
             String taskName = resultSet.getString("task_name");
             LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
             results.add(lzTaskExecRecord);

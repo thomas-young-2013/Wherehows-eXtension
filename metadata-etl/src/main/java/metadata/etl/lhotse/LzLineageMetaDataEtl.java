@@ -76,6 +76,7 @@ public class LzLineageMetaDataEtl extends EtlJob {
         conn.createStatement().execute(emptyStaggingTable);
 
         LzLineageExtractorMaster lzLineageExtractorMaster = new LzLineageExtractorMaster(prop);
+        logger.info("time frame is: " + timeFrame);
         // get lineage
         if (timeFrame != null && endTimeStamp != null && endTimeStamp != 0) {
             lzLineageExtractorMaster.run(timeFrame, endTimeStamp);
