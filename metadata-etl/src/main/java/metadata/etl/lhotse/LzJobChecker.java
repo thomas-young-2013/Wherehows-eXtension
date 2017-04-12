@@ -14,6 +14,7 @@
 package metadata.etl.lhotse;
 
 import metadata.etl.lineage.AzJobChecker;
+import metadata.etl.utils.DateFormater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
@@ -31,7 +32,7 @@ public class LzJobChecker {
     final int DEFAULT_LOOK_BACK_TIME_MINUTES = 10;
     int appId;
     Connection conn = null;
-    private static final Logger logger = LoggerFactory.getLogger(AzJobChecker.class);
+    private static final Logger logger = LoggerFactory.getLogger(LzJobChecker.class);
 
     public LzJobChecker(Properties prop) throws SQLException {
         appId = Integer.valueOf(prop.getProperty(Constant.APP_ID_KEY));
@@ -66,11 +67,15 @@ public class LzJobChecker {
             throws SQLException, IOException {
 
         logger.info("Get the jobs from time : {} to time : {}", startTimeStamp, endTimeStamp);
+        String startTime = DateFormater.transform(startTimeStamp);
+        String endTime = DateFormater.transform(endTimeStamp);
+        logger.info("the time interval is: [" + startTime + " -> " + endTime + "]");
+
         List<LzTaskExecRecord> results = new ArrayList<>();
         Statement stmt = conn.createStatement();
         final String cmd =
-                "select * from lb_task_run where end_time > " + startTimeStamp
-                        + " and end_time < " + endTimeStamp;
+                "select * from lb_task_run where start_time > " + startTime
+                        + " and end_time < " + endTime;
         logger.info("Get recent task sql : " + cmd);
         final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
 
@@ -82,7 +87,7 @@ public class LzJobChecker {
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");
-            Integer typeId = rs.getInt("type_id");
+            Integer typeId = rs.getInt("task_type");
             Integer taskStartTime = rs.getInt("start_time");
             Integer taskEndTime = rs.getInt("end_time");
             // get task name
