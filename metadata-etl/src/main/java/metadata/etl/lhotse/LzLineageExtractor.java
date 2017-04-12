@@ -18,6 +18,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
+import metadata.etl.utils.FileOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
@@ -55,14 +56,16 @@ public class LzLineageExtractor {
         if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
             // the full path
             logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
-            logLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            logLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            String fileName = FileOperator.getOneLogFile(logLocation);
+            logLocation += "/" + fileName;
         } else {
             // move the log file from remote host to local host
             String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
-            remoteLogLocation += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            remoteLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
 
             String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
-            localLogFile += String.format("logtasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            localLogFile += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
             new File(localLogFile).getParentFile().mkdirs();
 
             JSch jsch = new JSch();
