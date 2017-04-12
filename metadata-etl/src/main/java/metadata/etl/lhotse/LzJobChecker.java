@@ -74,31 +74,24 @@ public class LzJobChecker {
 
         List<LzTaskExecRecord> results = new ArrayList<>();
         Statement stmt = conn.createStatement();
-        final String cmd =
-                "select * from lb_task_run where start_time > \"" + startTime
-                        + "\" and end_time < \"" + endTime + "\"";
-        logger.info("Get recent task sql : " + cmd);
-        final ResultSet rs = stmt.executeQuery(cmd); // this sql take 3 second to execute
+        final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, task_run.end_time, ref.task_name " +
+                "from lb_task_run as task_run, lb_task as ref where task_run.start_time > \"%s\" " +
+                "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
+        logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
+        final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
 
         // TO DO LIST: PROBLEMS MAY HAPPEN HERE.
         /*
         * topological sort.
         * */
-        final String taskCmd = "select task_name from lb_task where task_id = \"%s\"";
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");
             Integer typeId = rs.getInt("task_type");
             Integer taskStartTime = rs.getInt("start_time");
             Integer taskEndTime = rs.getInt("end_time");
-            // get task name
-            logger.info("get task_name: " + String.format(taskCmd, taskId));
-            final ResultSet resultSet = stmt.executeQuery(String.format(taskCmd, taskId));
-            String taskName = null;
-            while (resultSet.next()) {
-                taskName = resultSet.getString("task_name");
-                break;
-            }
+            String taskName = rs.getString("task_name");
+
             LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
             results.add(lzTaskExecRecord);
         }
