@@ -84,7 +84,7 @@ public class LzJobChecker {
         /*
         * topological sort.
         * */
-        final String taskCmd = "select task_name from lb_task where task_id = %s";
+        final String taskCmd = "select task_name from lb_task where task_id = \"%s\"";
 
         while (rs.next()) {
             String taskId = rs.getString("task_id");
