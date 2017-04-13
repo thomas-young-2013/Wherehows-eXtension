@@ -29,15 +29,11 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String destPath = xmlParser.getExtProperty("extProperties/entry/destFilePath");
             String sql = xmlParser.getExtProperty("extProperties/entry/filterSQL");
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+
             logger.info("extract props from log file finished.");
-            if (destPath == null) {
-                logger.error("dest path is null");
-                destPath = "/project/T405/out";
-            }
-            if (sql == null) {
-                logger.error("sql is null");
-                sql = "select * from young";
-            }
+            logger.info("the dest path is: {}", destPath);
+            logger.info("the sql is: {}", sql);
+            logger.info("the flow exce id is: {}", flowExecId);
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
@@ -82,7 +78,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             lineageRecords.add(lineageRecord);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("error happened in collecting lineage record..");
+            logger.info("error happened in collecting lineage record.");
         }
         return lineageRecords;
     }
