@@ -59,18 +59,26 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             // source lineage record.
             for (String sourcePath : isrcTableNames) {
                 LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+                // set lineage record details.
                 lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hive");
-
                 lineageRecord.setOperationInfo("source", operation, num, num,
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
+                lineageRecord.setAbstractObjectName(flowPath+"/hive");
+                lineageRecord.setFullObjectName("tmp/hdfs");
+                lineageRecord.setSrlNo(1);
                 lineageRecords.add(lineageRecord);
             }
 
             // target lineage record.
             LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+            // set lineage record details.
             lineageRecord.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
             lineageRecord.setOperationInfo("target", operation, num, num,
                     num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
+            lineageRecord.setAbstractObjectName(flowPath+"/hdfs");
+            lineageRecord.setFullObjectName("tmp/hdfs");
+            lineageRecord.setSrlNo(2);
+
             lineageRecords.add(lineageRecord);
         } catch (Exception e) {
             e.printStackTrace();
