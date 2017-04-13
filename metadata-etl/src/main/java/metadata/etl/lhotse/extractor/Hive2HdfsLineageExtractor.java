@@ -30,6 +30,14 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String sql = xmlParser.getExtProperty("extProperties/entry/filterSQL");
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
             logger.info("extract props from log file finished.");
+            if (destPath == null) {
+                logger.error("dest path is null");
+                destPath = "/project/T405/out";
+            }
+            if (sql == null) {
+                logger.error("sql is null");
+                sql = "select * from young";
+            }
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
