@@ -13,9 +13,6 @@
  */
 package metadata.etl.lhotse;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
 import metadata.etl.utils.FileOperator;
