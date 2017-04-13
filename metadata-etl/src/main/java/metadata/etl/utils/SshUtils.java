@@ -1,6 +1,7 @@
 package metadata.etl.utils;
 
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
@@ -49,5 +50,34 @@ public class SshUtils {
             }
         }
         return result;
+    }
+
+    public static void fileFetch(String host, String user, String keyLocation, String sourceDir, String destDir) {
+        JSch jsch = new JSch();
+        Session session = null;
+        try {
+            // set up session
+            session = jsch.getSession(user,host);
+            // use private key instead of username/password
+            session.setConfig(
+                    "PreferredAuthentications",
+                    "publickey,gssapi-with-mic,keyboard-interactive,password");
+            jsch.addIdentity(keyLocation);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            session.setConfig(config);
+            session.connect();
+
+            // copy remote log file to localhost.
+            ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
+            channelSftp.connect();
+            channelSftp.get(sourceDir, destDir);
+            channelSftp.exit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.disconnect();
+        }
     }
 }

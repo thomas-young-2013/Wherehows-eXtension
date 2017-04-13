@@ -19,6 +19,7 @@ import com.jcraft.jsch.Session;
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
 import metadata.etl.utils.FileOperator;
+import metadata.etl.utils.SshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
@@ -26,6 +27,7 @@ import wherehows.common.schemas.LineageRecord;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,58 +53,47 @@ public class LzLineageExtractor {
 
         List<LineageRecord> jobLineage = new ArrayList<>();
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
-        String logLocation = null;
+        String localLogLocation = null;
 
         if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
             // the full path
-            logLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
-            logLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-            String fileName = FileOperator.getOneLogFile(logLocation);
-            logLocation += "/" + fileName;
+            localLogLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
+            localLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
+            // find the latest file name.
+            String fileName = FileOperator.getOneLogFile(localLogLocation);
+            localLogLocation += "/" + fileName;
         } else {
+            String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
+            String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
+            // in remote mode, this field stands for the local dir to store the log files.
+            String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+
             // move the log file from remote host to local host
             String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
             remoteLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-
-            String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+            // get the file list in the remote directory.
+            String fileList = SshUtils.exec(remoteHost, remoteUser, keyLocation, "ls " + remoteLogLocation);
+            String []files = fileList.split(" ");
+            if (files.length > 0) {
+                Arrays.sort(files);
+            } else {
+                logger.error("no log file found! task_id is: {}", message.lzTaskExecRecord.taskId);
+                return jobLineage;
+            }
+            String remoteLogFile = String.format("%s/%s", remoteLogLocation, files[files.length - 1]);
             localLogFile += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
             new File(localLogFile).getParentFile().mkdirs();
-
-            JSch jsch = new JSch();
-            Session session = null;
-            try {
-                // set up session
-                session = jsch.getSession(message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY),
-                                message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY));
-                // use private key instead of username/password
-                session.setConfig(
-                        "PreferredAuthentications",
-                        "publickey,gssapi-with-mic,keyboard-interactive,password");
-                jsch.addIdentity(message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY));
-                java.util.Properties config = new java.util.Properties();
-                config.put("StrictHostKeyChecking", "no");
-                session.setConfig(config);
-                session.connect();
-
-                // copy remote log file to localhost.
-                ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
-                channelSftp.connect();
-                channelSftp.get(remoteLogLocation, localLogFile);
-                channelSftp.exit();
-
-                logLocation = localLogFile;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                session.disconnect();
-            }
+            // fetch the remote log file to local directory.
+            SshUtils.fileFetch(remoteHost, remoteUser, keyLocation, remoteLogFile, localLogFile);
+            localLogLocation = localLogFile + files[files.length - 1];
         }
 
         // for debug.
-        if (logLocation == null) {
+        if (localLogLocation == null) {
             logger.error("log file location error!");
         } else {
-            logger.info("log file location: {}", logLocation);
+            logger.info("log file to parse: {}", localLogLocation);
         }
 
         BaseLineageExtractor lineageExtractor = null;
@@ -115,7 +106,7 @@ public class LzLineageExtractor {
         }
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(logLocation, lzRecord, defaultDatabaseId);
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, lzRecord, defaultDatabaseId);
             jobLineage.addAll(lineageRecords);
         }
         return jobLineage;
