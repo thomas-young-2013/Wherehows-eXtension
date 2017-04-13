@@ -78,12 +78,17 @@ public class LzLineageExtractor {
                 logger.error("no log file found! task_id is: {}", message.lzTaskExecRecord.taskId);
                 return jobLineage;
             }
-            String remoteLogFile = String.format("%s/%s", remoteLogLocation, files[files.length - 1]);
-            localLogFile += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-            new File(localLogFile).getParentFile().mkdirs();
+            // prepare the remote log file.
+            String remoteLogFileName = files[files.length - 1];
+            String remoteLogFile = String.format("%s/%s", remoteLogLocation, remoteLogFileName);
+            // prepare the local log file.
+            localLogFile += String.format("tasklog/%d/%s/", lzRecord.taskType, lzRecord.taskId);
+            new File(localLogFile).mkdirs();
+
             // fetch the remote log file to local directory.
+            logger.info("local log directory is: {}", localLogFile);
             SshUtils.fileFetch(remoteHost, remoteUser, keyLocation, remoteLogFile, localLogFile);
-            localLogLocation = localLogFile + files[files.length - 1];
+            localLogLocation = localLogFile + remoteLogFileName;
         }
 
         // for debug.

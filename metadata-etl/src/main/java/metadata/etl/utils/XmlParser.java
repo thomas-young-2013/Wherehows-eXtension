@@ -3,6 +3,8 @@ package metadata.etl.utils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.List;
  * Created by hadoop on 3/31/17.
  */
 public class XmlParser {
+    private static final Logger logger = LoggerFactory.getLogger(XmlParser.class);
+
     public String logLocation;
     public Document doc;
 
@@ -21,6 +25,7 @@ public class XmlParser {
             doc = builder.build(new File(logLocation));
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(e.toString());
             doc = null;
         }
     }
@@ -40,6 +45,7 @@ public class XmlParser {
     }
 
     public String getExtProperty(String key) {
+        if (doc == null) return null;
         try {
             String []parts = key.split("/");
             int partSize = parts.length;

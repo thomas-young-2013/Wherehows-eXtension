@@ -29,6 +29,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String destPath = xmlParser.getExtProperty("extProperties/entry/destFilePath");
             String sql = xmlParser.getExtProperty("extProperties/entry/filterSQL");
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            logger.info("extract props from log file finished.");
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
@@ -38,6 +39,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                 if (opType.equals(HiveSqlType.QUERY)) {
                 }
             }
+            logger.info("hive sql parse finished.");
 
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
