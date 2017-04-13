@@ -12,4 +12,8 @@ public class DateFormater {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(date);
     }
+    public static int getInt(String dateStr) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return (int) (sdf.parse(dateStr).getTime()/1000);
+    }
 }

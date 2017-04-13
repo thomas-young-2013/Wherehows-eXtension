@@ -84,16 +84,20 @@ public class LzJobChecker {
         /*
         * topological sort.
         * */
+        try {
+            while (rs.next()) {
+                String taskId = rs.getString("task_id");
+                Integer typeId = rs.getInt("task_type");
+                Integer taskStartTime = DateFormater.getInt(rs.getString("start_time"));
+                Integer taskEndTime = DateFormater.getInt(rs.getString("end_time"));
+                String taskName = rs.getString("task_name");
 
-        while (rs.next()) {
-            String taskId = rs.getString("task_id");
-            Integer typeId = rs.getInt("task_type");
-            Integer taskStartTime = rs.getInt("start_time");
-            Integer taskEndTime = rs.getInt("end_time");
-            String taskName = rs.getString("task_name");
-
-            LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
-            results.add(lzTaskExecRecord);
+                LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
+                results.add(lzTaskExecRecord);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("read lhotse record from database: error found!");
         }
         return results;
     }
