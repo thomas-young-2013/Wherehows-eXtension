@@ -30,7 +30,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         // give it a try.
         if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
 
-        InputStream inputStream = fs.open(targetFilePath);
+        /*InputStream inputStream = fs.open(targetFilePath);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String str;
         int columnNum = 0;
@@ -42,7 +42,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         System.out.println("the number of column is: " + columnNum);
 
         inputStream.close();
-        bufferedReader.close();
+        bufferedReader.close();*/
 
         String codec = "file.codec";
         String schemaString = "{\"fields\": [{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"age\", \"type\": \"int\"}], \"name\": \"Result\", \"namespace\": \"com.tencent\", \"type\": \"record\", \"uri\": \"hdfs:///apps/hbase/data/hehe.avro\"} ";
@@ -65,17 +65,18 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         // give it a try.
         if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
 
-        InputStream inputStream = fs.open(targetFilePath);
+        /*InputStream inputStream = fs.open(targetFilePath);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String str;
-        int count = 0;
+        int count = 0;*/
         List<Object> list = new ArrayList<Object>();
-
-        while((str = bufferedReader.readLine()) != null && count < 10) {
+        list.add("thomas\t22");
+        list.add("yuan\t22");
+        /*while((str = bufferedReader.readLine()) != null && count < 10) {
             list.add(str);
             count++;
         }
-        System.out.println("the count is : " + count);
+        System.out.println("the count is : " + count);*/
         System.out.println("the sample data is : " + list.toString());
 
         SampleDataRecord sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);

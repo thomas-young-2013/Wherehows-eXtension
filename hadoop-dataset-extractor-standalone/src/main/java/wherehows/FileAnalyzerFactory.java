@@ -48,6 +48,7 @@ public class FileAnalyzerFactory {
         sampleData = fileAnalyzer.getSampleData(path);
         sampleData.setAbstractPath(abstractPath);
       } catch (Exception ignored) {
+        System.out.println("Debug: " + ignored);
       }
       if (sampleData != null) {
         break;
