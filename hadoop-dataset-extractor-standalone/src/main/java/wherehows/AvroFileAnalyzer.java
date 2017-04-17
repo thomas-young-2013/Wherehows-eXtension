@@ -61,6 +61,8 @@ public class AvroFileAnalyzer extends FileAnalyzer {
         fstat.getPermission().toString(), codec, storage, "");
     reader.close();
     sin.close();
+    // for debug
+    System.out.println(datasetJsonRecord.toCsvString());
     return datasetJsonRecord;
   }
 
@@ -80,6 +82,8 @@ public class AvroFileAnalyzer extends FileAnalyzer {
       list.add(iter.next().toString().replaceAll("[\\n\\r\\p{C}]", "").replaceAll("\"", "\\\""));
       count++;
     }
+    // for debug
+    System.out.println("avro arraylist is: " + list.toString());
     SampleDataRecord sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
 
     return sampleDataRecord;
