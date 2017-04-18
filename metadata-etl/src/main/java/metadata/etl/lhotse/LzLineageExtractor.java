@@ -111,8 +111,16 @@ public class LzLineageExtractor {
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
             List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, lzRecord, defaultDatabaseId);
-            lineageCombiner.addAll(lineageRecords);
-            jobLineage.addAll(lineageCombiner.getCombinedLineage());
+            try {
+                logger.info("start lineage combiner.");
+                lineageCombiner.addAll(lineageRecords);
+                logger.info("get combined lineage.");
+                jobLineage.addAll(lineageCombiner.getCombinedLineage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.info(e.getMessage());
+                return lineageRecords;
+            }
         }
         return jobLineage;
     }
