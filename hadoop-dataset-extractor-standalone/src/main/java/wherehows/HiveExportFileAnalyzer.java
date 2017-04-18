@@ -17,9 +17,11 @@ import java.util.List;
  * Created by thomas young on 4/17/17.
  */
 public class HiveExportFileAnalyzer extends FileAnalyzer {
+    private String delemiter;
     public HiveExportFileAnalyzer(FileSystem fs) {
         super(fs);
         STORAGE_TYPE = "plain";
+        delemiter = ",";
     }
 
     @Override
@@ -28,23 +30,27 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         String filePath = targetFilePath.toUri().getPath();
         System.out.println("[getSchema] HiveExportFile path : " + filePath);
         // give it a try.
-        if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
+        if (!filePath.contains("000000_0")) return null;
+        // if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
 
-        /*InputStream inputStream = fs.open(targetFilePath);
+        InputStream inputStream = fs.open(targetFilePath);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String str;
         int columnNum = 0;
         while((str = bufferedReader.readLine()) != null) {
-            columnNum = str.split("\t").length;
-            System.out.println("the first column string is: " + str);
+            columnNum = str.split(delemiter).length;
+            System.out.println(String.format("the first column string is: %s", str));
+            break;
         }
         // debug.
         System.out.println("the number of column is: " + columnNum);
 
         inputStream.close();
-        bufferedReader.close();*/
+        bufferedReader.close();
+        // if the number of column is zero, file format unmatched.
+        if (columnNum == 1) return null;
 
-        String codec = "file.codec";
+        String codec = "plain.codec";
         String schemaString = "{\"fields\": [{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"age\", \"type\": \"int\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.thomas\", \"type\": \"record\"}";
         String storage = STORAGE_TYPE;
         String abstractPath = targetFilePath.toUri().getPath();
@@ -64,7 +70,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         String filePath = targetFilePath.toUri().getPath();
         System.out.println("[get sample data] HiveExportFile path : " + filePath);
         // give it a try.
-        if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
+        if (!filePath.contains("000000_0")) return null;
 
         /*InputStream inputStream = fs.open(targetFilePath);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));

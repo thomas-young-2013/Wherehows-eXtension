@@ -35,6 +35,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             logger.info("the dest path is: {}", destPath);
             logger.info("the sql is: {}", sql);
             logger.info("the flow exce id is: {}", flowExecId);
+            logger.info("the database name is: {}", databaseName);
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
@@ -52,7 +53,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String flowPath = "/lhotse/hive2hdfs/" + flowExecId;
             String operation = null;
             long num = 0L;
-
+            logger.info("start to create the source record: {}", isrcTableNames.toString());
             // source lineage record.
             for (String sourcePath : isrcTableNames) {
                 LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
@@ -62,9 +63,11 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
                 lineageRecord.setAbstractObjectName("/" + databaseName + "/" + sourcePath);
                 lineageRecord.setFullObjectName("/" + databaseName + "/" + sourcePath);
+                logger.info("the source record is: {}", lineageRecord.toString());
                 lineageRecords.add(lineageRecord);
             }
 
+            logger.info("start to create the target record!");
             // target lineage record.
             LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
             // set lineage record details.
@@ -73,7 +76,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                     num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
             lineageRecord.setAbstractObjectName(destPath);
             lineageRecord.setFullObjectName(destPath);
-
+            logger.info("the target record is: {}", lineageRecord.toString());
             lineageRecords.add(lineageRecord);
         } catch (Exception e) {
             e.printStackTrace();
