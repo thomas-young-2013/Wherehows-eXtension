@@ -45,7 +45,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         bufferedReader.close();*/
 
         String codec = "file.codec";
-        String schemaString = "{\"fields\": [{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"age\", \"type\": \"int\"}], \"name\": \"Result\", \"namespace\": \"com.tencent\", \"type\": \"record\", \"uri\": \"hdfs:///project/T405/out/000000_0\"}";
+        String schemaString = "{\"fields\": [{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"age\", \"type\": \"int\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.thomas\", \"type\": \"record\"";
         String storage = STORAGE_TYPE;
         String abstractPath = targetFilePath.toUri().getPath();
 
