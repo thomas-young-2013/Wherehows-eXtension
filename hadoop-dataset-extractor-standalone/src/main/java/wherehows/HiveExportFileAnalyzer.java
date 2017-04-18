@@ -26,7 +26,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
     public DatasetJsonRecord getSchema(Path targetFilePath)
             throws IOException {
         String filePath = targetFilePath.toUri().getPath();
-        System.out.println("hive2hdfs file path : " + filePath);
+        System.out.println("[getSchema] HiveExportFile path : " + filePath);
         // give it a try.
         if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
 
@@ -49,6 +49,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         String storage = STORAGE_TYPE;
         String abstractPath = targetFilePath.toUri().getPath();
 
+        System.out.println("current file is: " + filePath);
         FileStatus fstat = fs.getFileStatus(targetFilePath);
         DatasetJsonRecord datasetJsonRecord =
                 new DatasetJsonRecord(schemaString, abstractPath, fstat.getModificationTime(), fstat.getOwner(), fstat.getGroup(),
@@ -61,7 +62,7 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
             throws IOException {
 
         String filePath = targetFilePath.toUri().getPath();
-        System.out.println("hive2hdfs file path : " + filePath);
+        System.out.println("[get sample data] HiveExportFile path : " + filePath);
         // give it a try.
         if (!filePath.equalsIgnoreCase("/project/T405/out/000000_0")) return null;
 
