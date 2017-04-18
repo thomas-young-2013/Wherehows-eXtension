@@ -1,27 +1,5 @@
 # This project cloned from LinkedIn WhereHows
-
-# WhereHows [![Build Status](https://travis-ci.org/linkedin/WhereHows.svg?branch=master)](https://travis-ci.org/linkedin/WhereHows)
-
-WhereHows is a data discovery and lineage tool built at LinkedIn. It integrates with all the major data processing systems and collects both catalog and operational metadata from them.
-
-Within the central metadata repository, WhereHows curates, associates, and surfaces the metadata information through two interfaces:
-* a web application that enables data & linage discovery, and community collaboration
-* an API endpoint that empowers automation of data processes/applications
-
-WhereHows serves as the single platform that:
-* links data objects with people and processes
-* enables crowdsourcing for data knowledge
-* provides data governance and provenance based on ownership and lineage
-
-## Documentation
-
-The detailed information can be found in the [Wiki][wiki]
-
-
-## Examples in VM
-
-There is a pre-built vmware image (about 11GB) to quickly demonstrate the functionality of WhereHows. Check out the [VM Guide][VM]
-
+[original project link](https://github.com/linkedin/WhereHows/)
 
 ## Getting Started
 
