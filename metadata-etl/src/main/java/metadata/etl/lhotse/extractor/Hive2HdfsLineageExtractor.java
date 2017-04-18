@@ -29,6 +29,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String destPath = xmlParser.getExtProperty("extProperties/entry/destFilePath");
             String sql = xmlParser.getExtProperty("extProperties/entry/filterSQL");
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            String databaseName = xmlParser.getExtProperty("extProperties/entry/databaseName");
 
             logger.info("extract props from log file finished.");
             logger.info("the dest path is: {}", destPath);
@@ -48,7 +49,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
 
-            String flowPath = "/hive2hdfs/" + taskName + "/" + flowExecId;
+            String flowPath = "/lhotse/hive2hdfs/" + flowExecId;
             String operation = null;
             long num = 0L;
 
@@ -59,9 +60,8 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                 lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hive");
                 lineageRecord.setOperationInfo("source", operation, num, num,
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-                lineageRecord.setAbstractObjectName(flowPath+"/hive");
-                lineageRecord.setFullObjectName("tmp/hdfs");
-                lineageRecord.setSrlNo(1);
+                lineageRecord.setAbstractObjectName("/" + databaseName + "/" + sourcePath);
+                lineageRecord.setFullObjectName("/" + databaseName + "/" + sourcePath);
                 lineageRecords.add(lineageRecord);
             }
 
@@ -71,9 +71,8 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             lineageRecord.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
             lineageRecord.setOperationInfo("target", operation, num, num,
                     num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-            lineageRecord.setAbstractObjectName(flowPath+"/hdfs");
-            lineageRecord.setFullObjectName("tmp/hdfs");
-            lineageRecord.setSrlNo(2);
+            lineageRecord.setAbstractObjectName(destPath);
+            lineageRecord.setFullObjectName(destPath);
 
             lineageRecords.add(lineageRecord);
         } catch (Exception e) {

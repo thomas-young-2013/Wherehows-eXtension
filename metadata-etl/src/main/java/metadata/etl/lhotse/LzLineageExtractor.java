@@ -20,6 +20,7 @@ import metadata.etl.utils.SshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
+import wherehows.common.LineageCombiner;
 import wherehows.common.schemas.LineageRecord;
 
 import java.io.File;
@@ -106,10 +107,12 @@ public class LzLineageExtractor {
             default:
                 throw new Exception("Not Supported Task Type!");
         }
+        LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
             List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, lzRecord, defaultDatabaseId);
-            jobLineage.addAll(lineageRecords);
+            lineageCombiner.addAll(lineageRecords);
+            jobLineage.addAll(lineageCombiner.getCombinedLineage());
         }
         return jobLineage;
     }
