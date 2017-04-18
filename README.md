@@ -1,4 +1,4 @@
-# This project iss cloned from LinkedIn WhereHows
+# This project was cloned from LinkedIn WhereHows
 [original project link](https://github.com/linkedin/WhereHows/)
 
 ## Getting Started
