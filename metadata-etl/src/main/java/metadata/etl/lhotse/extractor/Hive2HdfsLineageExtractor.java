@@ -63,6 +63,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
                 lineageRecord.setAbstractObjectName("/" + databaseName + "/" + sourcePath);
                 lineageRecord.setFullObjectName("/" + databaseName + "/" + sourcePath);
+                lineageRecord.setSrlNo(2);
                 logger.info("the source record is: {}", lineageRecord.toString());
                 lineageRecords.add(lineageRecord);
             }
@@ -76,6 +77,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                     num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
             lineageRecord.setAbstractObjectName(destPath);
             lineageRecord.setFullObjectName(destPath);
+            lineageRecord.setSrlNo(3);
             logger.info("the target record is: {}", lineageRecord.toString());
             lineageRecords.add(lineageRecord);
         } catch (Exception e) {

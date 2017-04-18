@@ -92,6 +92,7 @@ public class LzLineageExtractorMaster {
         Connection conn = DriverManager.getConnection(connUrl);
         DatabaseWriter databaseWriter = new DatabaseWriter(connUrl, "stg_job_execution_data_lineage");
 
+        PathAnalyzer.initialize(conn);
         int timeout = 30; // default 30 minutes for one job
         if (prop.containsKey(Constant.LZ_LINEAGE_ACTOR_TIMEOUT_KEY))
             timeout = Integer.valueOf(prop.getProperty(Constant.LZ_LINEAGE_ACTOR_TIMEOUT_KEY));
