@@ -6,7 +6,7 @@ import wherehows.common.schemas.LineageRecord;
 import java.util.List;
 
 /**
- * Created by hadoop on 3/31/17.
+ * Created by thomas young on 3/31/17.
  */
 public interface BaseLineageExtractor {
     public List<LineageRecord> getLineageRecord(String logLocation, LzTaskExecRecord lzTaskExecRecord, int defaultDatabaseId);

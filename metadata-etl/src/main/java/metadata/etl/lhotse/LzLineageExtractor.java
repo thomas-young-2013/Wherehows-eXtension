@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by thomas on 3/28/17.
+ * Created by thomas young on 3/28/17.
  */
 public class LzLineageExtractor {
 

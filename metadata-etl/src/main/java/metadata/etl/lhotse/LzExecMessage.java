@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.util.Properties;
 
 /**
- * Created by hadoop on 3/30/17.
+ * Created by thomas young on 3/30/17.
  */
 public class LzExecMessage {
     public LzTaskExecRecord lzTaskExecRecord;

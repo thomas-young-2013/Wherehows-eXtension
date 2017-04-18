@@ -1,7 +1,7 @@
 package metadata.etl.utils.hiveparser;
 
 /**
- * Created by hadoop on 4/6/17.
+ * Created by thomas young on 4/6/17.
  */
 public class HiveSqlType {
     public static final String DROPTB = "DROPTB";

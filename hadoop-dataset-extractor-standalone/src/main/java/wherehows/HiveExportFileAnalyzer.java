@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hadoop on 4/17/17.
+ * Created by thomas young on 4/17/17.
  */
 public class HiveExportFileAnalyzer extends FileAnalyzer {
     public HiveExportFileAnalyzer(FileSystem fs) {

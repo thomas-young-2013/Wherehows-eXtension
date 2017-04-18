@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Created by hadoop on 3/28/17.
+ * Created by thomas young on 3/28/17.
  */
 public class LzLineageMetaDataEtl extends EtlJob {
     public Integer timeFrame = null;

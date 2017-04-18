@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Created by hadoop on 3/30/17.
+ * Created by thomas young on 3/30/17.
  */
 public class LzLineageExtractorActor extends UntypedActor {
     private static final Logger logger = LoggerFactory.getLogger(LzLineageExtractorActor.class);;

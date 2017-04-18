@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Created by hadoop on 3/31/17.
+ * Created by thomas young on 3/31/17.
  */
 public class XmlParser {
     private Logger logger = LoggerFactory.getLogger(XmlParser.class);

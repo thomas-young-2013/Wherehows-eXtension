@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by hadoop on 4/12/17.
+ * Created by thomas young on 4/12/17.
  */
 public class SshUtils {
     public static String exec(String host, String user, String keyLocation, String command) {

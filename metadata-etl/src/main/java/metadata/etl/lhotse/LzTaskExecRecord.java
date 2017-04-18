@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hadoop on 3/30/17.
+ * Created by thomas young on 3/30/17.
  */
 public class LzTaskExecRecord extends AbstractRecord {
     public Integer appId;

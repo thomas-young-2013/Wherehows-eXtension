@@ -13,7 +13,6 @@
  */
 package metadata.etl.lhotse;
 
-import metadata.etl.lineage.AzJobChecker;
 import metadata.etl.utils.DateFormater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by hadoop on 3/30/17.
+ * Created by thomas young on 3/30/17.
  */
 public class LzJobChecker {
     final int DEFAULT_LOOK_BACK_TIME_MINUTES = 10;

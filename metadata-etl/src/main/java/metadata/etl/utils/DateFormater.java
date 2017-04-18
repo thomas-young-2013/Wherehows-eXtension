@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by hadoop on 4/12/17.
+ * Created by thomas young on 4/12/17.
  */
 public class DateFormater {
     public static String transform(long timestamp) {
