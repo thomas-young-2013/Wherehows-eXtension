@@ -71,8 +71,9 @@ public class HiveExportFileAnalyzer extends FileAnalyzer {
         String str;
         int count = 0;*/
         List<Object> list = new ArrayList<Object>();
-        list.add("thomas\t22");
-        list.add("yuan\t22");
+        // the format of each element is json.
+        list.add("{\"name\": \"thomas\", \"age\": 22}");
+        list.add("{\"name\": \"yuan\", \"age\": 22}");
         /*while((str = bufferedReader.readLine()) != null && count < 10) {
             list.add(str);
             count++;
