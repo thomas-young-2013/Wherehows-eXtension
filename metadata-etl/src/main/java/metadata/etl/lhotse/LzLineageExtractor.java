@@ -110,7 +110,7 @@ public class LzLineageExtractor {
         LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, lzRecord, defaultDatabaseId);
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message, defaultDatabaseId);
             try {
                 logger.info("start lineage combiner.");
                 lineageCombiner.addAll(lineageRecords);
