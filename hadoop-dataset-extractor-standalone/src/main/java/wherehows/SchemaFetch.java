@@ -368,7 +368,8 @@ public class SchemaFetch {
     final int size = folders.size();
     int numOfThread = Integer.valueOf(this.conf.get(Constant.HDFS_NUM_OF_THREAD_KEY, "1"));
     Thread[] threads = new Thread[numOfThread];
-    final int granularity = (size / numOfThread == 0) ? 1 : size / numOfThread;
+    // final int granularity = (size / numOfThread == 0) ? 1 : size / numOfThread;
+    final int granularity = size / numOfThread + ((size % numOfThread == 0) ? 0 : 1);
     for (int i = 0; i < numOfThread; i++) {
       final int finalI = i;
       final FileSystem finalFs = fs;
