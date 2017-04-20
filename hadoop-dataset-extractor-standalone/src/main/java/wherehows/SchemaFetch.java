@@ -311,7 +311,11 @@ public class SchemaFetch {
       return;
     }
     // get schema and sample data
-    DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
+    // original:
+    // DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
+    // tencent: thomasyngli modified here.
+    DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), fstat.getPath().toUri().getPath());
+
     if (datasetSchemaRecord != null) {
       // for debug.
       System.out.println(datasetSchemaRecord.toCsvString());
@@ -320,7 +324,11 @@ public class SchemaFetch {
       logger.error("* Cannot resolve the schema of " + fullPath);
     }
 
-    SampleDataRecord sampleDataRecord = fileAnalyzerFactory.getSampleData(fstat.getPath(), path.toUri().getPath());
+    // original:
+    // SampleDataRecord sampleDataRecord = fileAnalyzerFactory.getSampleData(fstat.getPath(), path.toUri().getPath());
+    // tencent: thomasyngli modified here.
+    SampleDataRecord sampleDataRecord =
+            fileAnalyzerFactory.getSampleData(fstat.getPath(), fstat.getPath().toUri().getPath());
     if (sampleDataRecord != null) {
       sampleFileWriter.append(sampleDataRecord);
     } else {
