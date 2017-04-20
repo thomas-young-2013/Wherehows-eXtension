@@ -313,6 +313,7 @@ public class SchemaFetch {
     // get schema and sample data
     DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
     if (datasetSchemaRecord != null) {
+      System.out.println(datasetSchemaRecord.toCsvString());
       schemaFileWriter.append(datasetSchemaRecord);
     } else {
       logger.error("* Cannot resolve the schema of " + fullPath);
