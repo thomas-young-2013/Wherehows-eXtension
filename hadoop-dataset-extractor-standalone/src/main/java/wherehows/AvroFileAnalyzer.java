@@ -55,6 +55,9 @@ public class AvroFileAnalyzer extends FileAnalyzer {
     String storage = STORAGE_TYPE;
     String abstractPath = targetFilePath.toUri().getPath();
 
+    System.out.println("the schema string is: " + schemaString);
+    System.out.println("the abstract path is: " + abstractPath);
+
     FileStatus fstat = fs.getFileStatus(targetFilePath);
     DatasetJsonRecord datasetJsonRecord =
       new DatasetJsonRecord(schemaString, abstractPath, fstat.getModificationTime(), fstat.getOwner(), fstat.getGroup(),
