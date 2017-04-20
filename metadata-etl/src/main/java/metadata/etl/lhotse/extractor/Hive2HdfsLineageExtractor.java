@@ -37,14 +37,18 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String databaseName = xmlParser.getExtProperty("extProperties/entry/databaseName");
 
             // get the hdfs file name.
-            String [] cmds = {"ls", destPath};
+            String [] cmds = {"hdfs", "dfs", "-ls", destPath};
             ArrayList<String> results = ProcessUtils.exec(cmds);
+            // for debug
+            logger.info("the process utils result: {}", results);
             if (results == null || results.size() == 0) {
                 logger.error("process utils: no result get");
                 return null;
             } else {
                 if (!destPath.endsWith("/")) destPath += "/";
-                destPath += results.get(0);
+                String raw = results.get(results.size()-1);
+                String []tmps = raw.split(" ");
+                destPath = tmps[tmps.length - 1];
                 if (results.size() > 1) logger.info("process utils: result > 1");
             }
 
