@@ -35,7 +35,7 @@ public class FileAnalyzerFactory {
     allFileAnalyzer.add(new AvroFileAnalyzer(fs));
     allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
 
-    // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
+    allFileAnalyzer.add(new OrcFileAnalyzer(fs));
     // linkedin specific
     // allFileAnalyzer.add(new BinaryJsonFileAnalyzer(fs));
   }
