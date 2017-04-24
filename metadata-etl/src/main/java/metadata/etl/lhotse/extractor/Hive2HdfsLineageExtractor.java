@@ -49,7 +49,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
                 String raw = results.get(results.size()-1);
                 String []tmps = raw.split(" ");
                 destPath = tmps[tmps.length - 1];
-                if (results.size() > 1) logger.info("process utils: result > 1");
+                // if (results.size() > 1) logger.info("process utils: result > 1");
             }
 
             logger.info("extract props from log file finished.");
@@ -57,6 +57,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             logger.info("the sql is: {}", sql);
             logger.info("the flow exce id is: {}", flowExecId);
             logger.info("the database name is: {}", databaseName);
+            logger.info("the job name is: {}", lzTaskExecRecord.taskName);
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();
