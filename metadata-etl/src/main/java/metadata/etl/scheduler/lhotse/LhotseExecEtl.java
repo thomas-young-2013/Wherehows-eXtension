@@ -21,7 +21,7 @@ public class LhotseExecEtl extends EtlJob {
     public void extract()
             throws Exception {
         logger.info("In LhotseExecEtl java launch extract jython scripts");
-        InputStream inputStream = classLoader.getResourceAsStream("jython/AzkabanExtract.py");
+        InputStream inputStream = classLoader.getResourceAsStream("jython/LhotseExtract.py");
         interpreter.execfile(inputStream);
         inputStream.close();
     }
@@ -30,7 +30,7 @@ public class LhotseExecEtl extends EtlJob {
     public void transform()
             throws Exception {
         logger.info("In LhotseExecEtl java launch transform jython scripts");
-        InputStream inputStream = classLoader.getResourceAsStream("jython/AzkabanTransform.py");
+        InputStream inputStream = classLoader.getResourceAsStream("jython/LhotseTransform.py");
         interpreter.execfile(inputStream);
         inputStream.close();
     }
@@ -39,7 +39,7 @@ public class LhotseExecEtl extends EtlJob {
     public void load()
             throws Exception {
         logger.info("In LhotseExecEtl java launch load jython scripts");
-        InputStream inputStream = classLoader.getResourceAsStream("jython/AzkabanLoad.py");
+        InputStream inputStream = classLoader.getResourceAsStream("jython/LhotseLoad.py");
         interpreter.execfile(inputStream);
         inputStream.close();
         logger.info("In LhotseExecEtl java load jython scripts finished");
