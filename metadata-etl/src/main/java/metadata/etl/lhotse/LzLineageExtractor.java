@@ -15,8 +15,8 @@ package metadata.etl.lhotse;
 
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
-import metadata.etl.utils.FileOperator;
-import metadata.etl.utils.SshUtils;
+import wherehows.common.utils.FileOperator;
+import wherehows.common.utils.SshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;

@@ -1,4 +1,4 @@
-package metadata.etl.utils;
+package wherehows.common.utils;
 
 import java.io.File;
 import java.util.Arrays;

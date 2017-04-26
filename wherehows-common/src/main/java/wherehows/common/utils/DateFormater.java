@@ -1,4 +1,4 @@
-package metadata.etl.utils;
+package wherehows.common.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
