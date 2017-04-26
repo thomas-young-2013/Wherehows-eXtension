@@ -1,4 +1,4 @@
-package wherehows.common.utils;
+package metadata.etl.utils;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
