@@ -1,6 +1,7 @@
 # author: thomas young 26/4/2017
 
 from wherehows.common.schemas import LhotseFlowRecord
+from wherehows.common.schemas import LhotseJobRecord
 from wherehows.common.writers import FileWriter
 from wherehows.common import Constant
 from wherehows.common.utils import DateFormater
@@ -51,9 +52,9 @@ class LhotseExtract:
 
     def collect_flow_jobs(self, flow_file, job_file, dag_file):
         self.logger.info("collect flow&jobs")
-        query = "SELECT distinct * FROM workflow_info WHERE status = NULL"
-        self.az_cursor.execute(query)
-        rows = DbUtil.dict_cursor(self.az_cursor)
+        query = "SELECT distinct * FROM workflow_info WHERE status is NULL"
+        self.lz_cursor.execute(query)
+        rows = DbUtil.dict_cursor(self.lz_cursor)
         flow_writer = FileWriter(flow_file)
         job_writer = FileWriter(job_file)
         dag_writer = FileWriter(dag_file)
@@ -74,6 +75,22 @@ class LhotseExtract:
                                             'Y',
                                             self.wh_exec_id)
             flow_writer.append(flow_record)
+
+            # get relative task of this workflow.
+            task_query = "SELECT * FROM task_info WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
+            self.lz_cursor.execute(task_query)
+            task_rows = DbUtil.dict_cursor(self.lz_cursor)
+            for task in task_rows:
+                job_record = LhotseJobRecord(self.app_id,
+                                              flow_path,
+                                              0,
+                                              task['task_name'],
+                                              flow_path + '/' + task['task_name'],
+                                              task['task_type_name'],
+                                              'Y',
+                                              self.wh_exec_id)
+                job_writer.append(job_record)
+
 
             row_count += 1
 
