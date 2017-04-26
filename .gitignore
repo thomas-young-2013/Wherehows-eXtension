@@ -27,6 +27,6 @@ metadata-etl/src/main/resources/application.properties
 **/target
 
 ## ignore the core conf
-/web/conf/*.conf
-/backend-service/application.env
-/backend-service/conf/*.conf
+# /web/conf/*.conf
+# /backend-service/application.env
+# /backend-service/conf/*.conf
