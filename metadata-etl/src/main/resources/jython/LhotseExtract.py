@@ -2,6 +2,9 @@
 
 from wherehows.common.schemas import LhotseFlowRecord
 from wherehows.common.schemas import LhotseJobRecord
+from wherehows.common.schemas import LhotseFlowDagRecord
+from wherehows.common.schemas import LhotseFlowOwnerRecord
+
 from wherehows.common.writers import FileWriter
 from wherehows.common import Constant
 from wherehows.common.utils import DateFormater
@@ -91,6 +94,27 @@ class LhotseExtract:
                                               self.wh_exec_id)
                 job_writer.append(job_record)
 
+            # task bridge
+            # bridge's status need to be considered in the next stage
+            task_brige_query = "SELECT * FROM task_bridge WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
+            self.lz_cursor.execute(task_query)
+            task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
+            for bridge in task_bridge_rows:
+                origin_task_query = "SELECT * FROM task_info WHERE task_id = {task_id}".format(task_id=bridge['origin_id'])
+                self.lz_cursor.execute(origin_task_query)
+                origin_tasks = DbUtil.dict_cursor(self.lz_cursor)
+
+                target_task_query = "SELECT * FROM task_info WHERE task_id = {task_id}".format(task_id=bridge['target_id'])
+                self.lz_cursor.execute(target_task_query)
+                target_tasks = DbUtil.dict_cursor(self.lz_cursor)
+
+                dag_edge = LhotseFlowDagRecord(self.app_id,
+                                                flow_path,
+                                                0,
+                                                flow_path + '/' + origin_tasks[0]['task_name'],
+                                                flow_path + '/' + target_tasks[0]['task_name'],
+                                                self.wh_exec_id)
+                dag_writer.append(dag_edge)
 
             row_count += 1
 
@@ -102,6 +126,38 @@ class LhotseExtract:
         flow_writer.close()
         job_writer.close()
         dag_writer.close()
+
+    def collect_flow_execs(self, flow_exec_file, job_exec_file, look_back_period):
+        self.logger.info( "collect flow&job executions")
+        flow_exec_writer = FileWriter(flow_exec_file)
+        job_exec_writer = FileWriter(job_exec_file)
+        flow_exec_writer.close()
+        job_exec_writer.close()
+
+    def collect_flow_schedules(self, schedule_file):
+        # load flow scheduling info from table triggers
+        self.logger.info("collect flow schedule")
+        schedule_writer = FileWriter(schedule_file)
+        schedule_writer.close()
+
+    def collect_flow_owners(self, owner_file):
+        # load user info from table project_permissions
+        self.logger.info("collect owner&permissions")
+        user_writer = FileWriter(owner_file)
+
+        query = "SELECT project_name, workflow_name, owner FROM workflow_info WHERE status is NULL"
+        self.lz_cursor.execute(query)
+        rows = DbUtil.dict_cursor(self.lz_cursor)
+
+        for row in rows:
+            record = LhotseFlowOwnerRecord(self.app_id,
+                                            row['project_name'] + ':' + row["workflow_name"],
+                                            row["owner"],
+                                            'ADMIN',
+                                            'LDAP',
+                                            self.wh_exec_id)
+            user_writer.append(record)
+        user_writer.close()
 
 if __name__ == "__main__":
     props = sys.argv[1]
