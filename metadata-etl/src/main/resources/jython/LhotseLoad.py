@@ -9,17 +9,16 @@ class LhotseLoad(SchedulerLoad):
 
     def load_flows(self):
         # set flows that not in staging table to inactive
-        # cmd = """
-        #   UPDATE flow f
-        #   LEFT JOIN stg_flow s
-        #   ON f.app_id = s.app_id AND f.flow_id = s.flow_id
-        #   SET f.is_active = 'N'
-        #   WHERE s.flow_id IS NULL AND f.app_id = {app_id}
-        #   """.format(app_id=self.app_id)
-        # self.wh_cursor.execute(cmd)
-        # self.wh_con.commit()
-        # SchedulerLoad.load_flows(self)
-        pass
+        cmd = """
+          UPDATE flow f
+          LEFT JOIN stg_flow s
+          ON f.app_id = s.app_id AND f.flow_id = s.flow_id
+          SET f.is_active = 'N'
+          WHERE s.flow_id IS NULL AND f.app_id = {app_id}
+          """.format(app_id=self.app_id)
+        self.wh_cursor.execute(cmd)
+        self.wh_con.commit()
+        SchedulerLoad.load_flows(self)
 
 if __name__ == "__main__":
     props = sys.argv[1]

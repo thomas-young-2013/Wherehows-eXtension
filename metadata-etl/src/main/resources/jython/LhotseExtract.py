@@ -47,8 +47,10 @@ class LhotseExtract:
     def run(self):
         self.logger.info("Begin Lhotse Extract")
         try:
-            # to do list
             self.collect_flow_jobs(self.metadata_folder + "/flow.csv", self.metadata_folder + "/job.csv", self.metadata_folder + "/dag.csv")
+            self.collect_flow_owners(self.metadata_folder + "/owner.csv")
+            self.collect_flow_schedules(self.metadata_folder + "/schedule.csv")
+            self.collect_flow_execs(self.metadata_folder + "/flow_exec.csv", self.metadata_folder + "/job_exec.csv", self.lookback_period)
         finally:
             self.lz_cursor.close()
             self.lz_con.close()
