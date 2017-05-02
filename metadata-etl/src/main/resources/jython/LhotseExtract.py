@@ -55,7 +55,7 @@ class LhotseExtract:
 
     def collect_flow_jobs(self, flow_file, job_file, dag_file):
         self.logger.info("collect flow&jobs")
-        query = "SELECT distinct * FROM workflow_info WHERE status is NULL"
+        query = "SELECT * FROM workflow_info WHERE status is NULL"
         self.lz_cursor.execute(query)
         rows = DbUtil.dict_cursor(self.lz_cursor)
         flow_writer = FileWriter(flow_file)
@@ -64,6 +64,7 @@ class LhotseExtract:
         row_count = 0
 
         for row in rows:
+            self.logger.info("collect flow %d!" % row_count)
             flow_path = row['project_name'] + ":" + row['workflow_name']
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
