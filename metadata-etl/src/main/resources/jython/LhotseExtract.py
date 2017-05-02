@@ -57,7 +57,8 @@ class LhotseExtract:
         self.logger.info("collect flow&jobs")
         query = "SELECT * FROM workflow_info WHERE status is NULL"
         self.lz_cursor.execute(query)
-        rows = DbUtil.dict_cursor(self.lz_cursor)
+        ## rows = DbUtil.dict_cursor(self.lz_cursor)
+        rows = DbUtil.copy_dict_cursor(self.lz_cursor)
         flow_writer = FileWriter(flow_file)
         job_writer = FileWriter(job_file)
         dag_writer = FileWriter(dag_file)
