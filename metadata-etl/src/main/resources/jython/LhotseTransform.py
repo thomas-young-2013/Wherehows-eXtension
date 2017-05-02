@@ -1,6 +1,5 @@
-# -*-coding:utf-8 -*-
 ## author: thomas young 26/4/2017
-
+# -*-coding:utf-8 -*-
 from jython.SchedulerTransform import SchedulerTransform
 from wherehows.common.enums import SchedulerType
 import sys

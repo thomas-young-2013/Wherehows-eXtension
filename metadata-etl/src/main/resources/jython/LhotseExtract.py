@@ -1,5 +1,5 @@
-# -*-coding:utf-8 -*-
 ## author: thomas young 26/4/2017
+# -*-coding:utf-8 -*-
 from wherehows.common.schemas import LhotseFlowRecord
 from wherehows.common.schemas import LhotseJobRecord
 from wherehows.common.schemas import LhotseFlowDagRecord
@@ -63,7 +63,6 @@ class LhotseExtract:
             self.logger.info("collect flow %d!" % row_count)
             flow_path = row['project_name'] + ":" + row['workflow_name']
             print (flow_path)
-            print (flow_path.decode('utf-8'))
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
                                             row['project_name'],

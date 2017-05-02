@@ -1,6 +1,5 @@
-# -*-coding:utf-8 -*-
 ## author: thomas young 26/4/2017
-
+# -*-coding:utf-8 -*-
 from jython.SchedulerLoad import SchedulerLoad
 import sys
 
