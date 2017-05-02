@@ -1,5 +1,5 @@
-# author: thomas young 26/4/2017
-
+#encoding=utf-8
+## author: thomas young 26/4/2017
 from wherehows.common.schemas import LhotseFlowRecord
 from wherehows.common.schemas import LhotseJobRecord
 from wherehows.common.schemas import LhotseFlowDagRecord
@@ -7,12 +7,10 @@ from wherehows.common.schemas import LhotseFlowOwnerRecord
 
 from wherehows.common.writers import FileWriter
 from wherehows.common import Constant
-from wherehows.common.utils import DateFormater
 from wherehows.common.enums import SchedulerType
 from com.ziclix.python.sql import zxJDBC
 from org.slf4j import LoggerFactory
 import os, sys, json, gzip
-import StringIO
 import datetime, time
 import DbUtil
 

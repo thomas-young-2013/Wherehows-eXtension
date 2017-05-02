@@ -1,10 +1,8 @@
-# author: thomas young 26/4/2017
+#encoding=utf-8
+## author: thomas young 26/4/2017
 
 from jython.SchedulerLoad import SchedulerLoad
 import sys
-## set the encodings
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 class LhotseLoad(SchedulerLoad):
     def __init__(self, args):
@@ -24,6 +22,10 @@ class LhotseLoad(SchedulerLoad):
         SchedulerLoad.load_flows(self)
 
 if __name__ == "__main__":
+    ## set the encodings
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     props = sys.argv[1]
     lz = LhotseLoad(props)
     lz.run()
