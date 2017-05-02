@@ -26,7 +26,8 @@ class LhotseExtract:
         self.lz_con = zxJDBC.connect(args[Constant.LZ_DB_URL_KEY],
                                      args[Constant.LZ_DB_USERNAME_KEY],
                                      args[Constant.LZ_DB_PASSWORD_KEY],
-                                     args[Constant.LZ_DB_DRIVER_KEY])
+                                     args[Constant.LZ_DB_DRIVER_KEY],
+                                     charset='utf8')
         self.lz_cursor = self.lz_con.cursor()
         self.lookback_period = args[Constant.LZ_EXEC_ETL_LOOKBACK_MINS_KEY]
         self.app_folder = args[Constant.WH_APP_FOLDER_KEY]
