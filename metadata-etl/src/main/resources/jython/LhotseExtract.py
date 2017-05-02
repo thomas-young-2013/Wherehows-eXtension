@@ -16,10 +16,6 @@ import StringIO
 import datetime, time
 import DbUtil
 
-## set the encodings
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 class LhotseExtract:
 
     def __init__(self, args):
@@ -77,7 +73,7 @@ class LhotseExtract:
                                             'Y',
                                             self.wh_exec_id)
             ## for debug
-            ## self.logger.info("the flow record is: {fr}".format(fr=flow_record.toCsvString()))
+            self.logger.info("the flow record is: %s" % flow_record.toCsvString())
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
@@ -164,6 +160,10 @@ class LhotseExtract:
         user_writer.close()
 
 if __name__ == "__main__":
+    ## set the encodings
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     props = sys.argv[1]
     lz = LhotseExtract(props)
     lz.run()
