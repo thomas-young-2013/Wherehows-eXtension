@@ -61,14 +61,12 @@ class LhotseExtract:
 
         for row in rows:
             flow_path = row['project_name'] + ":" + row['workflow_name']
-            ## for debug
-            self.logger.info(row['modify_time'].tostring())
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
                                             row['project_name'],
                                             flow_path,
                                             0,
-                                            row['modify_time'],
+                                            int(time.mktime(row['modify_time'].timetuple())),
                                             0,
                                             'Y',
                                             self.wh_exec_id)
