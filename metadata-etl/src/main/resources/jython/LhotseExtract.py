@@ -71,11 +71,13 @@ class LhotseExtract:
                                             'Y',
                                             self.wh_exec_id)
             ## for debug
-            self.logger.info("the flow record is: {fr}".format(fr=flow_record))
+            self.logger.info("the flow record is: {fr}".format(fr=flow_record.toCsvString()))
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
             task_query = "SELECT * FROM task_info WHERE workflow_id = {0}".format(row['workflow_id'])
+            self.logger.info(task_query)
+            print(task_query)
             self.lz_cursor.execute(task_query)
             task_rows = DbUtil.dict_cursor(self.lz_cursor)
             ## for debug
@@ -93,8 +95,8 @@ class LhotseExtract:
 
             # task bridge
             # bridge's status need to be considered in the next stage
-            task_brige_query = "SELECT * FROM task_bridge WHERE workflow_id = {0}".format(row['workflow_id'])
-            self.lz_cursor.execute(task_query)
+            task_bridge_query = "SELECT * FROM task_bridge WHERE workflow_id = {0}".format(row['workflow_id'])
+            self.lz_cursor.execute(task_bridge_query)
             task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
             ## for debug
             self.logger.info("the task bridges are: {tbr}".format(tbr=task_bridge_rows))
