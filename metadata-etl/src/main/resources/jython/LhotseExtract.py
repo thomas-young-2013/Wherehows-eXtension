@@ -79,13 +79,11 @@ class LhotseExtract:
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
-            task_query = "SELECT * FROM task_info WHERE workflow_id = {0}".format(row['workflow_id'])
-            self.logger.info(task_query)
-            print(task_query)
-            self.lz_cursor.execute(task_query)
-            task_rows = DbUtil.dict_cursor(self.lz_cursor)
-            ## for debug
-            self.logger.info("the task rows are: {0}".format(task_rows))
+            task_query = "SELECT * FROM task_info WHERE workflow_id = \"{0}\"".format(row['workflow_id'])
+            new_lz_cursor = self.lz_cursor
+            new_lz_cursor.execute(task_query)
+            task_rows = DbUtil.dict_cursor(new_lz_cursor)
+
             for task in task_rows:
                 job_record = LhotseJobRecord(self.app_id,
                                               flow_path,
@@ -96,20 +94,20 @@ class LhotseExtract:
                                               'Y',
                                               self.wh_exec_id)
                 job_writer.append(job_record)
+            new_lz_cursor.close()
 
             # task bridge
             # bridge's status need to be considered in the next stage
-            task_bridge_query = "SELECT * FROM task_bridge WHERE workflow_id = {0}".format(row['workflow_id'])
+            task_bridge_query = "SELECT * FROM task_bridge WHERE workflow_id = \"{0}\"".format(row['workflow_id'])
             self.lz_cursor.execute(task_bridge_query)
             task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
-            ## for debug
-            self.logger.info("the task bridges are: {tbr}".format(tbr=task_bridge_rows))
+
             for bridge in task_bridge_rows:
-                origin_task_query = "SELECT * FROM task_info WHERE task_id = {0}".format(bridge['origin_id'])
+                origin_task_query = "SELECT * FROM task_info WHERE task_id = \"{0}\"".format(bridge['origin_id'])
                 self.lz_cursor.execute(origin_task_query)
                 origin_tasks = DbUtil.dict_cursor(self.lz_cursor)
 
-                target_task_query = "SELECT * FROM task_info WHERE task_id = {0}".format(bridge['target_id'])
+                target_task_query = "SELECT * FROM task_info WHERE task_id = \"{0}\"".format(bridge['target_id'])
                 self.lz_cursor.execute(target_task_query)
                 target_tasks = DbUtil.dict_cursor(self.lz_cursor)
 
