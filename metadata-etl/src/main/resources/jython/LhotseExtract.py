@@ -55,7 +55,7 @@ class LhotseExtract:
         self.lz_cursor.execute(query)
         rows = DbUtil.dict_cursor(self.lz_cursor)
         ## for debug
-        self.logger.info("the flow jobs are: {r}".format(r=rows))
+        self.logger.info("the flow jobs are: {r}".format(r=len(rows)))
         flow_writer = FileWriter(flow_file)
         job_writer = FileWriter(job_file)
         dag_writer = FileWriter(dag_file)
@@ -63,13 +63,14 @@ class LhotseExtract:
 
         for row in rows:
             flow_path = row['project_name'] + ":" + row['workflow_name']
-
+            ## for debug
+            self.logger.info(type(row['modify_time']))
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
                                             row['project_name'],
                                             flow_path,
                                             0,
-                                            DateFormater.getInt(row['modify_time']),
+                                            row['modify_time'],
                                             0,
                                             'Y',
                                             self.wh_exec_id)
