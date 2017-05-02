@@ -19,12 +19,6 @@ import DbUtil
 
 class LhotseExtract:
 
-    _period_unit_table = {'d': 'DAY',
-                          'M': 'MONTH',
-                          'h': 'HOUR',
-                          'm': 'MINUTE',
-                          'w': 'WEEK'}
-
     def __init__(self, args):
         self.logger = LoggerFactory.getLogger('jython script : ' + self.__class__.__name__)
         self.app_id = int(args[Constant.APP_ID_KEY])
@@ -60,6 +54,8 @@ class LhotseExtract:
         query = "SELECT distinct * FROM workflow_info WHERE status is NULL"
         self.lz_cursor.execute(query)
         rows = DbUtil.dict_cursor(self.lz_cursor)
+        ## for debug
+        self.logger.info("the flow jobs are: {r}".format(r=rows))
         flow_writer = FileWriter(flow_file)
         job_writer = FileWriter(job_file)
         dag_writer = FileWriter(dag_file)
@@ -79,12 +75,16 @@ class LhotseExtract:
                                             row["version"],
                                             'Y',
                                             self.wh_exec_id)
+            ## for debug
+            self.logger.info("the flow record is: {fr}".format(fr=flow_record))
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
             task_query = "SELECT * FROM task_info WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
             self.lz_cursor.execute(task_query)
             task_rows = DbUtil.dict_cursor(self.lz_cursor)
+            ## for debug
+            self.logger.info("the task rows are: {tr}".format(tr=task_rows))
             for task in task_rows:
                 job_record = LhotseJobRecord(self.app_id,
                                               flow_path,
@@ -101,6 +101,8 @@ class LhotseExtract:
             task_brige_query = "SELECT * FROM task_bridge WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
             self.lz_cursor.execute(task_query)
             task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
+            ## for debug
+            self.logger.info("the task bridges are: {tbr}".format(tbr=task_bridge_rows))
             for bridge in task_bridge_rows:
                 origin_task_query = "SELECT * FROM task_info WHERE task_id = {task_id}".format(task_id=bridge['origin_id'])
                 self.lz_cursor.execute(origin_task_query)
