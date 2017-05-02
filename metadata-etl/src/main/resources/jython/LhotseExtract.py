@@ -94,7 +94,6 @@ class LhotseExtract:
                                               'Y',
                                               self.wh_exec_id)
                 job_writer.append(job_record)
-            new_lz_cursor.close()
 
             # task bridge
             # bridge's status need to be considered in the next stage
