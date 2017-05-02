@@ -62,8 +62,6 @@ class LhotseExtract:
         row_count = 0
 
         for row in rows:
-            row['version'] = 0 if (row["version"] is None) else row["version"]
-
             flow_path = row['project_name'] + ":" + row['workflow_name']
 
             flow_record = LhotseFlowRecord(self.app_id,
@@ -72,7 +70,7 @@ class LhotseExtract:
                                             flow_path,
                                             0,
                                             DateFormater.getInt(row['modify_time']),
-                                            row["version"],
+                                            0,
                                             'Y',
                                             self.wh_exec_id)
             ## for debug
