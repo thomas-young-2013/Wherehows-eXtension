@@ -75,11 +75,11 @@ class LhotseExtract:
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
-            task_query = "SELECT * FROM task_info WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
+            task_query = "SELECT * FROM task_info WHERE workflow_id = {0}".format(row['workflow_id'])
             self.lz_cursor.execute(task_query)
             task_rows = DbUtil.dict_cursor(self.lz_cursor)
             ## for debug
-            self.logger.info("the task rows are: {tr}".format(tr=task_rows))
+            self.logger.info("the task rows are: {0}".format(task_rows))
             for task in task_rows:
                 job_record = LhotseJobRecord(self.app_id,
                                               flow_path,
@@ -93,17 +93,17 @@ class LhotseExtract:
 
             # task bridge
             # bridge's status need to be considered in the next stage
-            task_brige_query = "SELECT * FROM task_bridge WHERE workflow_id = {workflow_id}".format(workflow_id=row['workflow_id'])
+            task_brige_query = "SELECT * FROM task_bridge WHERE workflow_id = {0}".format(row['workflow_id'])
             self.lz_cursor.execute(task_query)
             task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
             ## for debug
             self.logger.info("the task bridges are: {tbr}".format(tbr=task_bridge_rows))
             for bridge in task_bridge_rows:
-                origin_task_query = "SELECT * FROM task_info WHERE task_id = {task_id}".format(task_id=bridge['origin_id'])
+                origin_task_query = "SELECT * FROM task_info WHERE task_id = {0}".format(bridge['origin_id'])
                 self.lz_cursor.execute(origin_task_query)
                 origin_tasks = DbUtil.dict_cursor(self.lz_cursor)
 
-                target_task_query = "SELECT * FROM task_info WHERE task_id = {task_id}".format(task_id=bridge['target_id'])
+                target_task_query = "SELECT * FROM task_info WHERE task_id = {0}".format(bridge['target_id'])
                 self.lz_cursor.execute(target_task_query)
                 target_tasks = DbUtil.dict_cursor(self.lz_cursor)
 
