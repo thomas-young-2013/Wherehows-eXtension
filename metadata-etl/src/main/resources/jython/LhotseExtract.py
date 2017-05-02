@@ -62,7 +62,7 @@ class LhotseExtract:
         for row in rows:
             flow_path = row['project_name'] + ":" + row['workflow_name']
             ## for debug
-            self.logger.info(type(row['modify_time']))
+            self.logger.info(row['modify_time'].tostring())
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
                                             row['project_name'],
