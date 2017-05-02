@@ -104,19 +104,19 @@ class LhotseExtract:
             task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
 
             for bridge in task_bridge_rows:
-                origin_task_query = "SELECT * FROM task_info WHERE task_id = \"{0}\"".format(bridge['origin_id'])
+                origin_task_query = "SELECT task_name FROM task_info WHERE task_id = \"{0}\"".format(bridge['origin_id'])
                 self.lz_cursor.execute(origin_task_query)
-                origin_tasks = DbUtil.dict_cursor(self.lz_cursor)
+                origin_tasks = self.lz_cursor.fetchone()
 
-                target_task_query = "SELECT * FROM task_info WHERE task_id = \"{0}\"".format(bridge['target_id'])
+                target_task_query = "SELECT task_name FROM task_info WHERE task_id = \"{0}\"".format(bridge['target_id'])
                 self.lz_cursor.execute(target_task_query)
-                target_tasks = DbUtil.dict_cursor(self.lz_cursor)
+                target_tasks = self.lz_cursor.fetchone()
 
                 dag_edge = LhotseFlowDagRecord(self.app_id,
                                                 flow_path,
                                                 0,
-                                                flow_path + '/' + origin_tasks[0]['task_name'],
-                                                flow_path + '/' + target_tasks[0]['task_name'],
+                                                flow_path + '/' + origin_tasks[0],
+                                                flow_path + '/' + target_tasks[0],
                                                 self.wh_exec_id)
                 dag_writer.append(dag_edge)
 
