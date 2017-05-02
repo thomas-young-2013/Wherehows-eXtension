@@ -16,13 +16,13 @@ import StringIO
 import datetime, time
 import DbUtil
 
+## set the encodings
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class LhotseExtract:
 
     def __init__(self, args):
-        ## set the charset
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
 
         self.logger = LoggerFactory.getLogger('jython script : ' + self.__class__.__name__)
         self.app_id = int(args[Constant.APP_ID_KEY])
@@ -75,7 +75,7 @@ class LhotseExtract:
                                             'Y',
                                             self.wh_exec_id)
             ## for debug
-            self.logger.info("the flow record is: {fr}".format(fr=flow_record.toCsvString()))
+            ## self.logger.info("the flow record is: {fr}".format(fr=flow_record.toCsvString()))
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.
