@@ -1,4 +1,4 @@
-#encoding=utf-8
+# -*-coding:utf-8 -*-
 ## author: thomas young 26/4/2017
 
 from jython.SchedulerLoad import SchedulerLoad
