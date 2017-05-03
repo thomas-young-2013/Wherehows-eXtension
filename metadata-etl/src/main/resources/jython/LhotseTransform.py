@@ -3,6 +3,8 @@
 from jython.SchedulerTransform import SchedulerTransform
 from wherehows.common.enums import SchedulerType
 import sys
+from org.python.core import codecs
+codecs.setDefaultEncoding('utf-8')
 
 class LhotseTransform(SchedulerTransform):
     SchedulerTransform._tables["flows"]["columns"] = "app_id, flow_name, flow_group, flow_path, flow_level, source_modified_time, source_version, is_active, wh_etl_exec_id"

@@ -2,6 +2,8 @@
 # -*-coding:utf-8 -*-
 from jython.SchedulerLoad import SchedulerLoad
 import sys
+from org.python.core import codecs
+codecs.setDefaultEncoding('utf-8')
 
 class LhotseLoad(SchedulerLoad):
     def __init__(self, args):

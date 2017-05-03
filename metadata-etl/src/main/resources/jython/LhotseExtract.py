@@ -13,6 +13,8 @@ from org.slf4j import LoggerFactory
 import os, sys, json, gzip
 import datetime, time
 import DbUtil
+from org.python.core import codecs
+codecs.setDefaultEncoding('utf-8')
 
 class LhotseExtract:
 
