@@ -67,9 +67,9 @@ class LhotseExtract:
             print (flow_path.encode('utf-8'))
             print (sys.defaultencoding)
             flow_record = LhotseFlowRecord(self.app_id,
-                                            row['workflow_name'],
-                                            row['project_name'],
-                                            flow_path,
+                                            row['workflow_name'].encode('utf-8'),
+                                            row['project_name'].encode('utf-8'),
+                                            flow_path.encode('utf-8'),
                                             0,
                                             int(time.mktime(row['modify_time'].timetuple())),
                                             0,
