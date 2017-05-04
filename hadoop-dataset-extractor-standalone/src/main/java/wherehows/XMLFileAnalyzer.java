@@ -39,21 +39,21 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     @Override
     public DatasetJsonRecord getSchema(Path path) throws IOException {
         if (!fs.exists(path))
-            LOG.error("XML File Path: %s is not exist in HDFS", path.toUri().getPath());
+            LOG.error("XML File Path: "+path.toUri().getPath()+" is not exist in HDFS");
         else {
             try {
                 LOG.info("start parse xml ,path is %s"+path.toUri().getPath());
                 startParseXML(path);
                 FileStatus status = fs.getFileStatus(path);
                 String schemaString = getXMLSchema();
-                LOG.info("xml file schemaString is %s",schemaString);
+                LOG.info("xml file schemaString is "+schemaString);
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
                 String codec = "xml.format";
                 return new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
             } catch (Exception e) {
-                LOG.error("path : %s,XML File format is wrong ", path.toUri().getPath());
+                LOG.error("path : "+path.toUri().getPath()+" XML File format is wrong ");
             }
 
         }
@@ -67,7 +67,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
         else {
             List<Object> displays = new ArrayList<Object>();
             try {
-                LOG.info("start parse xml ,path is %s"+path.toUri().getPath());
+                LOG.info("start parse xml ,path is "+path.toUri().getPath());
                 startParseXML(path);
                 for (String key : keyToValues.keySet()) {
                     displays.add("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}");
