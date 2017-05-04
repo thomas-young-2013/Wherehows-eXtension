@@ -61,12 +61,16 @@ class LhotseExtract:
         dag_writer = FileWriter(dag_file)
         row_count = 0
 
+        print rows
+
         for row in rows:
             self.logger.info("collect flow %d!" % row_count)
-            flow_path = row['project_name'] + ":" + row['workflow_name']
-            print (flow_path.encode('utf-8'))
-            print (sys.defaultencoding)
+            flow_path = row['project_name'] + u':' + row['workflow_name']
             print (isinstance(flow_path, unicode))
+            print (isinstance(row['workflow_name'], unicode))
+
+            print (flow_path.encode('utf-8'))
+            print (row['workflow_name'].encode('utf-8'))
             flow_record = LhotseFlowRecord(self.app_id,
                                             row['workflow_name'],
                                             row['project_name'],
