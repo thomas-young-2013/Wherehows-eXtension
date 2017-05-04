@@ -21,7 +21,7 @@ dependencies {
   extraLibs externalDependency.avro_mapred
   extraLibs externalDependency.hive_exec
   extraLibs externalDependency.pig
-
+  compile files("extralibs/dom4j-1.6.jar")
   compile project(":wherehows-common")
   compile externalDependency.hadoop_common
   provided externalDependency.hadoop_client
@@ -32,8 +32,8 @@ dependencies {
   compile externalDependency.http_client
   compile externalDependency.http_core
   compile externalDependency.logback
-  compile externalDependency.dom4j
-  runtime externalDependency.dom4j
+
+
   testCompile externalDependency.testng
   testCompile externalDependency.hadoop_client
 }
