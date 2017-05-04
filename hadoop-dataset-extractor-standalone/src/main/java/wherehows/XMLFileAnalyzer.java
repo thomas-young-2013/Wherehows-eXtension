@@ -53,7 +53,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 return new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
             } catch (Exception e) {
-                LOG.error("path : "+path.toUri().getPath()+" XML File format is wrong ");
+               LOG.error("path : "+path.toUri().getPath()+" XML File format is wrong ");
             }
 
         }
@@ -72,6 +72,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 for (String key : keyToValues.keySet()) {
                     displays.add("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}");
                 }
+                System.out.println("sample data is "+displays.toString());
             } catch (Exception e) {
                 LOG.error("path : %s,XML File format is wrong ", path.toUri().getPath());
             }
@@ -108,13 +109,13 @@ public class XMLFileAnalyzer extends FileAnalyzer {
         String nodeName = getNodename(node, parent);
         if (!node.getTextTrim().equals(""))
             keyToValues.put(nodeName, node.getTextTrim());
-        //递归遍历当前节点所有的子节点
-        List<Element> listElement = node.elements();//所有一级子节点的list
-        for (Element e : listElement) {//遍历所有一级子节点
+
+        List<Element> listElement = node.elements();
+        for (Element e : listElement) {
             if (!parent.equals(""))
-                getChildNodes(e, parent + "." + node.getName());//递归
+                getChildNodes(e, parent + "." + node.getName());
             else
-                getChildNodes(e, node.getName());//递归
+                getChildNodes(e, node.getName());
         }
     }
 

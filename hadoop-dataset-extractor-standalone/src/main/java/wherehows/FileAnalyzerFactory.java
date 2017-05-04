@@ -29,13 +29,13 @@ import java.util.List;
  */
 public class FileAnalyzerFactory {
     List<FileAnalyzer> allFileAnalyzer;
-    FileSystem fs;
+
 
     public FileAnalyzerFactory(FileSystem fs) {
         allFileAnalyzer = new ArrayList<FileAnalyzer>();
         allFileAnalyzer.add(new AvroFileAnalyzer(fs));
         allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
-        this.fs = fs;
+
         allFileAnalyzer.add(new XMLFileAnalyzer(fs));
         // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
         // linkedin specific
