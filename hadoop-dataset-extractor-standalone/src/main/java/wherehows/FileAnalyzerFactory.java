@@ -51,8 +51,8 @@ public class FileAnalyzerFactory {
                 sampleData = fileAnalyzer.getSampleData(path);
                 sampleData.setAbstractPath(abstractPath);
             } catch (Exception ignored) {
-                //i//gnored.printStackTrace();
-                //System.out.println("[get sample data] Debug: " + ignored);
+                ignored.printStackTrace();
+                System.out.println("[get sample data] Debug: " + ignored);
             }
             if (sampleData != null) {
                 break;
@@ -71,8 +71,8 @@ public class FileAnalyzerFactory {
                 schema = fileAnalyzer.getSchema(path);
                 schema.setAbstractPath(abstractPath);
             } catch (Exception ignored) {
-             /*   ignored.printStackTrace();
-                System.out.println("[get schema] Debug: " + ignored);*/
+                ignored.printStackTrace();
+                System.out.println("[get schema] Debug: " + ignored);
             }
             if (schema != null) {
                 break;

@@ -1,16 +1,13 @@
 package wherehows;
 
-import org.apache.hadoop.fs.FSInputStream;
+
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
+
 import org.dom4j.io.SAXReader;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.schemas.DatasetJsonRecord;
