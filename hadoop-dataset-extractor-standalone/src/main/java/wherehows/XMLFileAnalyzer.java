@@ -32,6 +32,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
 
     public XMLFileAnalyzer(FileSystem fs) {
         super(fs);
+        LOG.info("Start init XMLFileAnalyzer");
         STORAGE_TYPE = "xml";
     }
 
@@ -41,9 +42,11 @@ public class XMLFileAnalyzer extends FileAnalyzer {
             LOG.error("XML File Path: %s is not exist in HDFS", path.toUri().getPath());
         else {
             try {
+                LOG.info("start parse xml ,path is %s"+path.toUri().getPath());
                 startParseXML(path);
                 FileStatus status = fs.getFileStatus(path);
                 String schemaString = getXMLSchema();
+                LOG.info("xml file schemaString is %s",schemaString);
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
                 String codec = "xml.format";
@@ -64,6 +67,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
         else {
             List<Object> displays = new ArrayList<Object>();
             try {
+                LOG.info("start parse xml ,path is %s"+path.toUri().getPath());
                 startParseXML(path);
                 for (String key : keyToValues.keySet()) {
                     displays.add("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}");
@@ -71,7 +75,9 @@ public class XMLFileAnalyzer extends FileAnalyzer {
             } catch (Exception e) {
                 LOG.error("path : %s,XML File format is wrong ", path.toUri().getPath());
             }
+
             SampleDataRecord sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
+            LOG.info("sampledatarecord get success ");
             return sampleDataRecord;
         }
         return null;

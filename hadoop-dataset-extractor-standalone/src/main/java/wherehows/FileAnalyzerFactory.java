@@ -34,6 +34,7 @@ public class FileAnalyzerFactory {
     allFileAnalyzer = new ArrayList<FileAnalyzer>();
     //allFileAnalyzer.add(new AvroFileAnalyzer(fs));
    // allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
+
     allFileAnalyzer.add(new XMLFileAnalyzer(fs));
     // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
     // linkedin specific
