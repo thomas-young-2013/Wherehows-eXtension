@@ -32,8 +32,8 @@ public class FileAnalyzerFactory {
 
   public FileAnalyzerFactory(FileSystem fs) {
     allFileAnalyzer = new ArrayList<FileAnalyzer>();
-    //allFileAnalyzer.add(new AvroFileAnalyzer(fs));
-   // allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
+    allFileAnalyzer.add(new AvroFileAnalyzer(fs));
+    allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
 
     allFileAnalyzer.add(new XMLFileAnalyzer(fs));
     // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
