@@ -13,8 +13,6 @@ from org.slf4j import LoggerFactory
 import os, sys, json, gzip
 import datetime, time
 import DbUtil
-from org.python.core import codecs
-codecs.setDefaultEncoding('utf-8')
 
 class LhotseExtract:
 
@@ -26,8 +24,7 @@ class LhotseExtract:
         self.lz_con = zxJDBC.connect(args[Constant.LZ_DB_URL_KEY],
                                      args[Constant.LZ_DB_USERNAME_KEY],
                                      args[Constant.LZ_DB_PASSWORD_KEY],
-                                     args[Constant.LZ_DB_DRIVER_KEY],
-                                     charset='utf8')
+                                     args[Constant.LZ_DB_DRIVER_KEY])
         self.lz_cursor = self.lz_con.cursor()
         self.lookback_period = args[Constant.LZ_EXEC_ETL_LOOKBACK_MINS_KEY]
         self.app_folder = args[Constant.WH_APP_FOLDER_KEY]
