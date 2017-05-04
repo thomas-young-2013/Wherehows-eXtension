@@ -33,6 +33,7 @@ dependencies {
   compile externalDependency.http_core
   compile externalDependency.logback
   compile externalDependency.dom4j
+  runtime externalDependency.dom4j
   testCompile externalDependency.testng
   testCompile externalDependency.hadoop_client
 }
