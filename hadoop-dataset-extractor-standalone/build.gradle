@@ -21,6 +21,7 @@ dependencies {
   extraLibs externalDependency.avro_mapred
   extraLibs externalDependency.hive_exec
   extraLibs externalDependency.pig
+  extraLibs files("extralibs/dom4j-1.6.jar")
   compile  files("extralibs/dom4j-1.6.jar")
 
   compile project(":wherehows-common")
