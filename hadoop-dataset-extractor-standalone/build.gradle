@@ -22,6 +22,7 @@ dependencies {
   extraLibs externalDependency.hive_exec
   extraLibs externalDependency.pig
 
+
   compile project(":wherehows-common")
   compile externalDependency.hadoop_common
   provided externalDependency.hadoop_client
@@ -32,7 +33,7 @@ dependencies {
   compile externalDependency.http_client
   compile externalDependency.http_core
   compile externalDependency.logback
-
+  compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
 
   testCompile externalDependency.testng
   testCompile externalDependency.hadoop_client
