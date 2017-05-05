@@ -69,6 +69,15 @@ public class FileAnalyzerFactory {
         if(rightPath.endsWith(".xml" )&& !rightPath.startsWith(".xml")){
             analyzer = new XMLFileAnalyzer(fs);
         }
+        if(rightPath.endsWith(".avro") && !rightPath.startsWith(".avro")){
+            analyzer = new AvroFileAnalyzer(fs);
+        }
+        if(rightPath.endsWith(".orc") && !rightPath.startsWith(".orc")){
+            analyzer = new OrcFileAnalyzer(fs);
+        }
+        if(analyzer == null){
+            LOG.info("can not get path : "+path.toUri().getPath()+" fileanalyzer");
+        }
         return analyzer;
     }
 }

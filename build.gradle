@@ -125,7 +125,7 @@ subprojects {
                             "kafka_clients"       : "org.apache.kafka:kafka-clients:0.10.0.1",
                             "confluent_common_cfg": "io.confluent:common-config:3.0.1",
                             "jdom"                : "org.jdom:jdom:2.0.2",
-                            "dom4j" : "dom4j:dom4j:1.5.1"
+                            "dom4j" : "dom4j:dom4j:1.6"
 
 
   ]
