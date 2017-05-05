@@ -21,6 +21,7 @@ import wherehows.common.schemas.DatasetJsonRecord;
 import wherehows.common.schemas.DatasetSchemaRecord;
 import wherehows.common.schemas.SampleDataRecord;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.List;
 public class FileAnalyzerFactory {
     private static Logger LOG = LoggerFactory.getLogger(FileAnalyzerFactory.class);
     FileSystem fs;
+    List<FileAnalyzer> allAnalyzers = new ArrayList<FileAnalyzer>();
 
     public FileAnalyzerFactory(FileSystem fs) {
         this.fs = fs;
@@ -41,12 +43,19 @@ public class FileAnalyzerFactory {
     // iterate through all possibilities
     public SampleDataRecord getSampleData(Path path, String abstractPath) throws IOException {
         SampleDataRecord sampleData = null;
+
         FileAnalyzer fileAnalyzer = getRightFileAnalyzer(path);
         LOG.info("class name  is " + fileAnalyzer.getClass().getName());
         LOG.info("file path is "+path.toUri().getPath());
         LOG.info("start get "+path.toUri().getPath()+" SampleDataRecord");
-        sampleData = fileAnalyzer.getSampleData(path);
-        sampleData.setAbstractPath(abstractPath);
+        try{
+            sampleData = fileAnalyzer.getSampleData(path);
+            sampleData.setAbstractPath(abstractPath);
+
+        }catch (Exception e){
+            LOG.info(e.getMessage());
+        }
+
         return sampleData;
     }
 
@@ -57,13 +66,18 @@ public class FileAnalyzerFactory {
         LOG.info("try file analyzer: " + fileAnalyzer.STORAGE_TYPE);
         LOG.info("file path is "+path.toUri().getPath());
         LOG.info("start get "+path.toUri().getPath()+" DataSetJsonRecord");
-        schema = fileAnalyzer.getSchema(path);
-        schema.setAbstractPath(abstractPath);
+        try{
+            schema = fileAnalyzer.getSchema(path);
+            schema.setAbstractPath(abstractPath);
+        }catch (Exception e){
+            LOG.info(e.getMessage());
+        }
+
         return schema;
     }
 
 
-    private FileAnalyzer getRightFileAnalyzer(Path path){
+    private FileAnalyzer getRightFileAnalyzer(Path path) throws NullPointerException{
         FileAnalyzer analyzer = null;
         String rightPath = path.toUri().getPath();
         if(rightPath.endsWith(".xml" )&& !rightPath.startsWith(".xml")){
@@ -75,9 +89,7 @@ public class FileAnalyzerFactory {
         if(rightPath.endsWith(".orc") && !rightPath.startsWith(".orc")){
             analyzer = new OrcFileAnalyzer(fs);
         }
-        if(analyzer == null){
-            LOG.info("can not get path : "+path.toUri().getPath()+" fileanalyzer");
-        }
+
         return analyzer;
     }
 }
