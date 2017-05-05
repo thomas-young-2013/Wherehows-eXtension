@@ -33,7 +33,7 @@ import java.util.List;
 public class FileAnalyzerFactory {
     private static Logger LOG = LoggerFactory.getLogger(FileAnalyzerFactory.class);
     FileSystem fs;
-    List<FileAnalyzer> allAnalyzers = new ArrayList<FileAnalyzer>();
+
 
     public FileAnalyzerFactory(FileSystem fs) {
         this.fs = fs;
@@ -53,7 +53,7 @@ public class FileAnalyzerFactory {
             sampleData.setAbstractPath(abstractPath);
 
         }catch (Exception e){
-            LOG.info(e.getMessage());
+            return null;
         }
 
         return sampleData;
@@ -70,7 +70,7 @@ public class FileAnalyzerFactory {
             schema = fileAnalyzer.getSchema(path);
             schema.setAbstractPath(abstractPath);
         }catch (Exception e){
-            LOG.info(e.getMessage());
+            return null;
         }
 
         return schema;
