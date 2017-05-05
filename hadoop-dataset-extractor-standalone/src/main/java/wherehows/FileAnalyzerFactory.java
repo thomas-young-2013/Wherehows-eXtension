@@ -31,32 +31,27 @@ import java.util.List;
  * Created by zsun on 8/18/15.
  */
 public class FileAnalyzerFactory {
-    List<FileAnalyzer> allFileAnalyzer;
+    private static Logger LOG = LoggerFactory.getLogger(FileAnalyzerFactory.class);
+
+    FileSystem fs;
 
     public FileAnalyzerFactory(FileSystem fs) {
-        allFileAnalyzer = new ArrayList<FileAnalyzer>();
-        allFileAnalyzer.add(new AvroFileAnalyzer(fs));
-        allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
-        allFileAnalyzer.add(new XMLFileAnalyzer(fs));
+        this.fs = fs;
+        LOG.info("FileAnalyzerFactory init success !");
 
-        // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
-        // linkedin specific
-        // allFileAnalyzer.add(new BinaryJsonFileAnalyzer(fs));
     }
 
     // iterate through all possibilities
     public SampleDataRecord getSampleData(Path path, String abstractPath) {
         SampleDataRecord sampleData = null;
-        for (FileAnalyzer fileAnalyzer : allFileAnalyzer) {
+        FileAnalyzer analyzer = getRightFileAnalyzer(path);
+        if (analyzer != null) {
             try {
-                sampleData = fileAnalyzer.getSampleData(path);
+                sampleData = analyzer.getSampleData(path);
                 sampleData.setAbstractPath(abstractPath);
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-                System.out.println("[get sample data] Debug: " + ignored);
-            }
-            if (sampleData != null) {
-                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
         return sampleData;
@@ -65,37 +60,34 @@ public class FileAnalyzerFactory {
     public DatasetJsonRecord getSchema(Path path, String abstractPath)
             throws IOException {
         DatasetJsonRecord schema = null;
-        for (FileAnalyzer fileAnalyzer : allFileAnalyzer) {
-            System.out.println("try file analyzer: " + fileAnalyzer.STORAGE_TYPE);
+        FileAnalyzer analyzer = getRightFileAnalyzer(path);
+        if (analyzer != null) {
             try {
-                schema = fileAnalyzer.getSchema(path);
+                schema = analyzer.getSchema(path);
                 schema.setAbstractPath(abstractPath);
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-                System.out.println("[get schema] Debug: " + ignored);
-            }
-            if (schema != null) {
-                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
         return schema;
     }
 
-    /*private FileAnalyzer getRightFileAnalyzer(Path path) throws NullPointerException{
+    private FileAnalyzer getRightFileAnalyzer(Path path) throws NullPointerException {
         FileAnalyzer analyzer = null;
         String rightPath = path.toUri().getPath();
-        if(rightPath.endsWith(".xml" )&& !rightPath.startsWith(".xml")){
+        if (rightPath.endsWith(".xml") && !rightPath.startsWith(".xml")) {
             analyzer = new XMLFileAnalyzer(fs);
         }
-        if(rightPath.endsWith(".avro") && !rightPath.startsWith(".avro")){
+        if (rightPath.endsWith(".avro") && !rightPath.startsWith(".avro")) {
             analyzer = new AvroFileAnalyzer(fs);
         }
-        if(rightPath.endsWith(".orc") && !rightPath.startsWith(".orc")){
+        if (rightPath.endsWith(".orc") && !rightPath.startsWith(".orc")) {
             analyzer = new OrcFileAnalyzer(fs);
         }
 
         return analyzer;
-    }*/
+    }
 }
 
 
