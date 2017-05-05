@@ -53,7 +53,7 @@ public class FileAnalyzerTest {
     assert sampleData != null;
   }*/
 
-  @Test
+/*  @Test
   public void testXML()
           throws IOException, URISyntaxException {
 
@@ -65,7 +65,7 @@ public class FileAnalyzerTest {
     assert schema != null;
     SampleDataRecord sampleData = fileAnalyzerFactory.getSampleData(pt, "lei.xml");
     assert sampleData != null;
-  }
+  }*/
  /* @Test(enabled = false)
   public void testOrc()
     throws IOException, URISyntaxException {
