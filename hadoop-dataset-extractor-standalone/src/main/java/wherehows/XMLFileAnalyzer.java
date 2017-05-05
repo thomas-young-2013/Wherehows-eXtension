@@ -110,7 +110,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
         List<Element> listElement = node.elements();
         for (Element e : listElement) {
             if (!parent.equals(""))
-                getChildNodes(e, parent + "." + node.getName());
+                getChildNodes(e, parent + "_" + node.getName());
             else
                 getChildNodes(e, node.getName());
         }
@@ -119,7 +119,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     private String getNodename(Element node, String parent) {
         String nodeName = "";
         if (!parent.equals(""))
-            nodeName = parent + "." + node.getName();
+            nodeName = parent + "_" + node.getName();
         else
             nodeName = node.getName();
         return nodeName;
