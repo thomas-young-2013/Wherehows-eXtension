@@ -31,53 +31,57 @@ import java.util.List;
  * Created by zsun on 8/18/15.
  */
 public class FileAnalyzerFactory {
-    private static Logger LOG = LoggerFactory.getLogger(FileAnalyzerFactory.class);
-    FileSystem fs;
-
+    List<FileAnalyzer> allFileAnalyzer;
 
     public FileAnalyzerFactory(FileSystem fs) {
-        this.fs = fs;
-        LOG.info("FileAnalyzerFactory init success ");
+        allFileAnalyzer = new ArrayList<FileAnalyzer>();
+        allFileAnalyzer.add(new AvroFileAnalyzer(fs));
+        allFileAnalyzer.add(new HiveExportFileAnalyzer(fs));
+        allFileAnalyzer.add(new XMLFileAnalyzer(fs));
+
+        // allFileAnalyzer.add(new OrcFileAnalyzer(fs));
+        // linkedin specific
+        // allFileAnalyzer.add(new BinaryJsonFileAnalyzer(fs));
     }
 
     // iterate through all possibilities
-    public SampleDataRecord getSampleData(Path path, String abstractPath) throws IOException {
+    public SampleDataRecord getSampleData(Path path, String abstractPath) {
         SampleDataRecord sampleData = null;
-
-        FileAnalyzer fileAnalyzer = getRightFileAnalyzer(path);
-        LOG.info("class name  is " + fileAnalyzer.getClass().getName());
-        LOG.info("file path is "+path.toUri().getPath());
-        LOG.info("start get "+path.toUri().getPath()+" SampleDataRecord");
-        try{
-            sampleData = fileAnalyzer.getSampleData(path);
-            sampleData.setAbstractPath(abstractPath);
-
-        }catch (Exception e){
-            return null;
+        for (FileAnalyzer fileAnalyzer : allFileAnalyzer) {
+            try {
+                sampleData = fileAnalyzer.getSampleData(path);
+                sampleData.setAbstractPath(abstractPath);
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+                System.out.println("[get sample data] Debug: " + ignored);
+            }
+            if (sampleData != null) {
+                break;
+            }
         }
-
         return sampleData;
     }
 
     public DatasetJsonRecord getSchema(Path path, String abstractPath)
             throws IOException {
         DatasetJsonRecord schema = null;
-        FileAnalyzer fileAnalyzer = getRightFileAnalyzer(path);
-        LOG.info("try file analyzer: " + fileAnalyzer.STORAGE_TYPE);
-        LOG.info("file path is "+path.toUri().getPath());
-        LOG.info("start get "+path.toUri().getPath()+" DataSetJsonRecord");
-        try{
-            schema = fileAnalyzer.getSchema(path);
-            schema.setAbstractPath(abstractPath);
-        }catch (Exception e){
-            return null;
+        for (FileAnalyzer fileAnalyzer : allFileAnalyzer) {
+            System.out.println("try file analyzer: " + fileAnalyzer.STORAGE_TYPE);
+            try {
+                schema = fileAnalyzer.getSchema(path);
+                schema.setAbstractPath(abstractPath);
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+                System.out.println("[get schema] Debug: " + ignored);
+            }
+            if (schema != null) {
+                break;
+            }
         }
-
         return schema;
     }
 
-
-    private FileAnalyzer getRightFileAnalyzer(Path path) throws NullPointerException{
+    /*private FileAnalyzer getRightFileAnalyzer(Path path) throws NullPointerException{
         FileAnalyzer analyzer = null;
         String rightPath = path.toUri().getPath();
         if(rightPath.endsWith(".xml" )&& !rightPath.startsWith(".xml")){
@@ -91,5 +95,8 @@ public class FileAnalyzerFactory {
         }
 
         return analyzer;
-    }
+    }*/
 }
+
+
+
