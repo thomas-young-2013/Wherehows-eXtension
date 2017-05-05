@@ -39,7 +39,7 @@ public class FileAnalyzerTest {
     fs = FileSystem.get(new Configuration()); // set up local file system
   }
 
-  @Test
+ /* @Test
   public void testAvro()
     throws IOException, URISyntaxException {
 
@@ -51,9 +51,8 @@ public class FileAnalyzerTest {
     assert schema != null;
     SampleDataRecord sampleData = fileAnalyzerFactory.getSampleData(pt, "test_sample.avro");
     assert sampleData != null;
-  }
+  }*/
 
-/*
   @Test
   public void testXML()
           throws IOException, URISyntaxException {
@@ -66,8 +65,8 @@ public class FileAnalyzerTest {
     assert schema != null;
     SampleDataRecord sampleData = fileAnalyzerFactory.getSampleData(pt, "lei.xml");
     assert sampleData != null;
-  }*/
-  @Test(enabled = false)
+  }
+ /* @Test(enabled = false)
   public void testOrc()
     throws IOException, URISyntaxException {
     URL url = ClassLoader.getSystemResource("test_sample.orc");
@@ -78,5 +77,5 @@ public class FileAnalyzerTest {
 
     SampleDataRecord sampleData = fileAnalyzerFactory.getSampleData(pt, "test_sample.orc");
     assert sampleData != null;
-  }
+  }*/
 }
