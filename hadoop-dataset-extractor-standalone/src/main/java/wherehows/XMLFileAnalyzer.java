@@ -43,7 +43,8 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 LOG.info("start parse xml ,path is %s" + path.toUri().getPath());
                 startParseXML(path);
                 FileStatus status = fs.getFileStatus(path);
-                String schemaString = getXMLSchema();
+                // replace "\" to  "\\"
+                String schemaString = getXMLSchema().replace("\\","\\"+"\\");
                 LOG.info("xml file schemaString is " + schemaString);
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
@@ -109,7 +110,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
         List<Element> listElement = node.elements();
         for (Element e : listElement) {
             if (!parent.equals(""))
-                getChildNodes(e, parent + "_" + node.getName());
+                getChildNodes(e, parent + "." + node.getName());
             else
                 getChildNodes(e, node.getName());
         }
@@ -118,7 +119,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     private String getNodename(Element node, String parent) {
         String nodeName = "";
         if (!parent.equals(""))
-            nodeName = parent + "_" + node.getName();
+            nodeName = parent + "." + node.getName();
         else
             nodeName = node.getName();
         return nodeName;
