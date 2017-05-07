@@ -70,12 +70,13 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 LOG.info("start parse xml ,path is " + path.toUri().getPath());
                 startParseXML(path);
                 for (String key : keyToValues.keySet()) {
-                    displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replace("\\","\\"+"\\"));
+                    displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replaceAll("\"", "\\\""));
                 }
                 sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
+                LOG.info("xml sampledata is "+sampleDataRecord.toCsvString());
                 LOG.info("sampledatarecord get success ");
             } catch (Exception e) {
-                LOG.error("path : %s,XML File format is wrong ", path.toUri().getPath());
+                LOG.error("path : "+path.toUri().getPath()+" ,XML File format is wrong ");
             }
         }
         return sampleDataRecord;
