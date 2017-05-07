@@ -70,7 +70,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 LOG.info("start parse xml ,path is " + path.toUri().getPath());
                 startParseXML(path);
                 for (String key : keyToValues.keySet()) {
-                    displays.add("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}");
+                    displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replace("\\","\\"+"\\"));
                 }
                 sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
                 LOG.info("sampledatarecord get success ");
