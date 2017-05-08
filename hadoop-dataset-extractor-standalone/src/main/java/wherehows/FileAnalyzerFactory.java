@@ -44,7 +44,6 @@ public class FileAnalyzerFactory {
         allFileAnalyzer.add(new SequenceFileAnalyzer(fs));
         allFileAnalyzer.add(new CSVFileAnalyzer(fs));
         allFileAnalyzer.add(new JSONFileAnalyzer(fs));
-        LOG.info("FileAnalyzerFactory init success !");
     }
 
     // iterate through all possibilities
@@ -58,7 +57,6 @@ public class FileAnalyzerFactory {
             }
         }
         return sampleData;
-
     }
 
     public DatasetJsonRecord getSchema(Path path, String abstractPath)

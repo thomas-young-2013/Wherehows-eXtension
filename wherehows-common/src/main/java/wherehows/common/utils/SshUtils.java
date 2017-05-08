@@ -1,4 +1,4 @@
-package metadata.etl.utils;
+package wherehows.common.utils;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;

@@ -1,6 +1,8 @@
 package metadata.etl.lhotse.extractor;
 
+import metadata.etl.lhotse.LzExecMessage;
 import metadata.etl.lhotse.LzTaskExecRecord;
+import wherehows.common.utils.ProcessUtils;
 import metadata.etl.utils.XmlParser;
 import metadata.etl.utils.hiveparser.HiveSqlAnalyzer;
 import metadata.etl.utils.hiveparser.HiveSqlType;
@@ -19,8 +21,9 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
     private static final Logger logger = LoggerFactory.getLogger(Hive2HdfsLineageExtractor.class);
 
     @Override
-    public List<LineageRecord> getLineageRecord(String logLocation, LzTaskExecRecord lzTaskExecRecord,
+    public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
                                                 int defaultDatabaseId) {
+        LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
         try {
             logger.info("start to parse the log: {}", logLocation);
@@ -31,11 +34,28 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
             String databaseName = xmlParser.getExtProperty("extProperties/entry/databaseName");
 
+            // get the hdfs file name.
+            String [] cmds = {"hdfs", "dfs", "-ls", destPath};
+            ArrayList<String> results = ProcessUtils.exec(cmds);
+            // for debug
+            logger.info("the process utils result: {}", results);
+            if (results == null || results.size() == 0) {
+                logger.error("process utils: no result get");
+                return null;
+            } else {
+                if (!destPath.endsWith("/")) destPath += "/";
+                String raw = results.get(results.size()-1);
+                String []tmps = raw.split(" ");
+                destPath = tmps[tmps.length - 1];
+                // if (results.size() > 1) logger.info("process utils: result > 1");
+            }
+
             logger.info("extract props from log file finished.");
             logger.info("the dest path is: {}", destPath);
             logger.info("the sql is: {}", sql);
             logger.info("the flow exce id is: {}", flowExecId);
             logger.info("the database name is: {}", databaseName);
+            logger.info("the job name is: {}", lzTaskExecRecord.taskName);
 
             // parse the hive table from sql
             List<String> isrcTableNames = new ArrayList<String>();

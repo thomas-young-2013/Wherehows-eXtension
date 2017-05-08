@@ -13,7 +13,7 @@
  */
 package metadata.etl.lhotse;
 
-import metadata.etl.utils.DateFormater;
+import wherehows.common.utils.DateFormater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;

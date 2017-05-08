@@ -15,8 +15,8 @@ package metadata.etl.lhotse;
 
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
-import metadata.etl.utils.FileOperator;
-import metadata.etl.utils.SshUtils;
+import wherehows.common.utils.FileOperator;
+import wherehows.common.utils.SshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
@@ -110,7 +110,7 @@ public class LzLineageExtractor {
         LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, lzRecord, defaultDatabaseId);
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message, defaultDatabaseId);
             try {
                 logger.info("start lineage combiner.");
                 lineageCombiner.addAll(lineageRecords);

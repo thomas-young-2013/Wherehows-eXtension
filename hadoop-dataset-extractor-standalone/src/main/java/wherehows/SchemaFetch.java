@@ -311,14 +311,24 @@ public class SchemaFetch {
       return;
     }
     // get schema and sample data
-    DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
+    // original:
+    // DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
+    // tencent: thomasyngli modified here.
+    DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), fstat.getPath().toUri().getPath());
+
     if (datasetSchemaRecord != null) {
+      // for debug.
+      System.out.println(datasetSchemaRecord.toCsvString());
       schemaFileWriter.append(datasetSchemaRecord);
     } else {
       logger.error("* Cannot resolve the schema of " + fullPath);
     }
 
-    SampleDataRecord sampleDataRecord = fileAnalyzerFactory.getSampleData(fstat.getPath(), path.toUri().getPath());
+    // original:
+    // SampleDataRecord sampleDataRecord = fileAnalyzerFactory.getSampleData(fstat.getPath(), path.toUri().getPath());
+    // tencent: thomasyngli modified here.
+    SampleDataRecord sampleDataRecord =
+            fileAnalyzerFactory.getSampleData(fstat.getPath(), fstat.getPath().toUri().getPath());
     if (sampleDataRecord != null) {
       sampleFileWriter.append(sampleDataRecord);
     } else {
@@ -358,7 +368,8 @@ public class SchemaFetch {
     final int size = folders.size();
     int numOfThread = Integer.valueOf(this.conf.get(Constant.HDFS_NUM_OF_THREAD_KEY, "1"));
     Thread[] threads = new Thread[numOfThread];
-    final int granularity = (size / numOfThread == 0) ? 1 : size / numOfThread;
+    // final int granularity = (size / numOfThread == 0) ? 1 : size / numOfThread;
+    final int granularity = size / numOfThread + ((size % numOfThread == 0) ? 0 : 1);
     for (int i = 0; i < numOfThread; i++) {
       final int finalI = i;
       final FileSystem finalFs = fs;

@@ -1,3 +1,4 @@
+# -*-coding:utf-8 -*-
 #
 # Copyright 2015 LinkedIn Corp. All rights reserved.
 #
@@ -17,7 +18,8 @@ from wherehows.common import Constant
 from com.ziclix.python.sql import zxJDBC
 import sys
 from org.slf4j import LoggerFactory
-
+from org.python.core import codecs
+codecs.setDefaultEncoding('utf-8')
 
 class SchedulerTransform:
 
@@ -83,6 +85,7 @@ class SchedulerTransform:
 
   def run(self):
     try:
+      print (sys.defaultencoding)
       self.read_flow_file_to_stg()
       self.read_job_file_to_stg()
       self.read_dag_file_to_stg()
