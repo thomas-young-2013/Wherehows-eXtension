@@ -40,7 +40,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
             LOG.error("XML File Path: " + path.toUri().getPath() + " is not exist in HDFS");
         else {
             try {
-                LOG.info("start parse xml ,path is %s" + path.toUri().getPath());
+                LOG.info("start parse xml ,path is {}" , path.toUri().getPath());
                 startParseXML(path);
                 FileStatus status = fs.getFileStatus(path);
                 // replace "\" to  "\\"

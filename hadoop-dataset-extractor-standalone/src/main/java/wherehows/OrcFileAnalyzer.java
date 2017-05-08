@@ -56,7 +56,7 @@ public class OrcFileAnalyzer extends FileAnalyzer {
                     new DatasetJsonRecord(schemaString, abstractPath, fstat.getModificationTime(), fstat.getOwner(), fstat.getGroup(),
                             fstat.getPermission().toString(), codec, storage, "");
         } catch (Exception e) {
-            LOG.info(e.getMessage() + " in orcFileAnalyzer get ");
+            LOG.info(e.getMessage() + " in orcFileAnalyzer get schema ");
         }
 
         return datasetJsonRecord;
@@ -79,7 +79,7 @@ public class OrcFileAnalyzer extends FileAnalyzer {
             }
             sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
         } catch (Exception e) {
-            LOG.info(e.getMessage() + "in orcfileanalyzer get sampledata");
+            LOG.info(e.getMessage() + " while  orcfileanalyzer get sampledata");
 
         }
         return sampleDataRecord;

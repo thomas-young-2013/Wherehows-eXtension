@@ -35,6 +35,7 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
             LOG.error("sequencefileanalyzer file : " + path.toUri().getPath() + " is not exist on hdfs");
         else {
             try {
+                LOG.info("sequencefileanalyzer start parse schema for  file path : {}", path.toUri().getPath());
                 SequenceFile.Reader reader = new SequenceFile.Reader(fs.getConf(), SequenceFile.Reader.file(path));
                 String keyName = "Key";
                 String keyType = getWritableType(reader.getKeyClassName());
@@ -44,9 +45,12 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
                 String codec = "sequence.codec";
-                String schemaString = "{\"fields\": [{\"name\": \"" + keyName + "\", \"type\": \""+keyType+"\"}, {\"name\": \"" + valueName + "\", \"type\": \""+valueType+"\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.lake\", \"type\": \"record\"}";
+                String schemaString = "{\"fields\": [{\"name\": \"" + keyName + "\", \"type\": \"" + keyType + "\"}, {\"name\": \"" + valueName + "\", \"type\": \"" + valueType + "\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.lake\", \"type\": \"record\"}";
+
                 record = new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
+                LOG.info("sequencefileanalyzer parse path :{},schema is {}", path.toUri().getPath(), record.toCsvString());
+
             } catch (Exception e) {
                 LOG.error(e.getMessage());
             }
@@ -62,6 +66,7 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
             LOG.error("sequence file : " + path.toUri().getPath() + " is not exist on hdfs");
         else {
             try {
+                LOG.info("sequencefileanalyzer start parse sampledata for  file path : {}", path.toUri().getPath());
                 SequenceFile.Reader reader = new SequenceFile.Reader(fs.getConf(), SequenceFile.Reader.file(path));
                 List<Object> sampleValues = new ArrayList<Object>();
                 Writable key = (Writable) ReflectionUtils.newInstance(reader.getKeyClass(), fs.getConf());
@@ -74,6 +79,7 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
                     count++;
                 }
                 dataRecord = new SampleDataRecord(path.toUri().getPath(), sampleValues);
+                LOG.info("sequence file path : {}, sample data is {}", path.toUri().getPath(), sampleValues);
             } catch (Exception e) {
                 LOG.info(e.getMessage());
             }
@@ -83,7 +89,7 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
     }
 
 
-    private String getWritableType(String name){
-        return name.substring(name.lastIndexOf(".")+1);
+    private String getWritableType(String name) {
+        return name.substring(name.lastIndexOf(".") + 1);
     }
 }
