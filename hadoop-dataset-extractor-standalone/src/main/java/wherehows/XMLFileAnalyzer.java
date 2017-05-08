@@ -72,7 +72,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 startParseXML(path);
                 int count = 0;
                 for (String key : keyToValues.keySet()) {
-                    displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replaceAll("\"", "\\\""));
+                    displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replace("\\", "\\\\"));
                     if(count > 20)
                         break;
                     count ++;
