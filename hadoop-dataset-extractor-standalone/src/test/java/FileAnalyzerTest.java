@@ -53,6 +53,20 @@ public class FileAnalyzerTest {
     assert sampleData != null;
   }
 
+  @Test
+  public void testXML()
+          throws IOException, URISyntaxException {
+
+    URL url = ClassLoader.getSystemResource("lei.xml");
+    Path pt = new Path(url.toURI());
+    FileAnalyzerFactory fileAnalyzerFactory = new FileAnalyzerFactory(fs);
+    DatasetJsonRecord schema = fileAnalyzerFactory.getSchema(pt, "lei.xml");
+
+    assert schema != null;
+    SampleDataRecord sampleData = fileAnalyzerFactory.getSampleData(pt, "lei.xml");
+    assert sampleData != null;
+  }
+
   @Test(enabled = false)
   public void testOrc()
     throws IOException, URISyntaxException {
