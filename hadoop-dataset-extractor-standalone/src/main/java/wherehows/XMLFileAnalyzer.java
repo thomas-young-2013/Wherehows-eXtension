@@ -37,22 +37,22 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     public DatasetJsonRecord getSchema(Path path) throws IOException {
         DatasetJsonRecord record = null;
         if (!fs.exists(path))
-            LOG.error("XML File Path: " + path.toUri().getPath() + " is not exist in HDFS");
+            LOG.error(" File Path: " + path.toUri().getPath() + " is not exist in HDFS");
         else {
             try {
-                LOG.info("start parse xml ,path is {}" , path.toUri().getPath());
+                LOG.info("xmlfileanalyzer start parse xml schema, path is {}" , path.toUri().getPath());
                 startParseXML(path);
                 FileStatus status = fs.getFileStatus(path);
                 // replace "\" to  "\\"
                 String schemaString = getXMLSchema().replace("\\","\\"+"\\");
-                LOG.info("xml file schemaString is " + schemaString);
+                LOG.info("xml file schemaString is {} " , schemaString);
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
                 String codec = "xml.codec";
                 record = new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
             } catch (Exception e) {
-                LOG.error("path : " + path.toUri().getPath() + " XML File format is wrong ");
+                LOG.error("path : {}" + " is not XML File format  ",path.toUri().getPath());
             }
 
         }
@@ -63,20 +63,20 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     public SampleDataRecord getSampleData(Path path) throws IOException {
         SampleDataRecord sampleDataRecord = null;
         if (!fs.exists(path))
-            LOG.error("XML File Path is not exist in HDFS");
+            LOG.error(" File Path : {} is not exist in HDFS",path.toUri().getPath());
         else {
             List<Object> displays = new ArrayList<Object>();
             try {
-                LOG.info("start parse xml ,path is " + path.toUri().getPath());
+                LOG.info("xmlfileanalyzer start parse xml sampledata ,path is {} " , path.toUri().getPath());
                 startParseXML(path);
                 for (String key : keyToValues.keySet()) {
                     displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replaceAll("\"", "\\\""));
                 }
                 sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
-                LOG.info("xml sampledata is "+sampleDataRecord.toCsvString());
-                LOG.info("sampledatarecord get success ");
+                LOG.info("xml sampledata is {}",sampleDataRecord.toCsvString());
+
             } catch (Exception e) {
-                LOG.error("path : "+path.toUri().getPath()+" ,XML File format is wrong ");
+                LOG.error("path : {} is not xml format file" ,path.toUri().getPath());
             }
         }
         return sampleDataRecord;
