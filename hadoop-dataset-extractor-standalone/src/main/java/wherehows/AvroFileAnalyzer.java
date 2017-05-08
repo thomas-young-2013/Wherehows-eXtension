@@ -97,7 +97,7 @@ public class AvroFileAnalyzer extends FileAnalyzer {
 
             return sampleDataRecord;
         } catch (Exception e) {
-            LOG.info("AvroAnalyzer get sampleDataRecord failure, and exception is " + e.getMessage());
+            LOG.info("AvroAnalyzer get sampleDataRecord failure and exception is " + e.getMessage());
             return null;
         }
 

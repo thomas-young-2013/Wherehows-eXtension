@@ -36,13 +36,15 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
         else {
             try {
                 SequenceFile.Reader reader = new SequenceFile.Reader(fs.getConf(), SequenceFile.Reader.file(path));
-                String keyName = reader.getKeyClassName();
-                String valueName = reader.getValueClassName();
+                String keyName = "Key";
+                String keyType = getWritableType(reader.getKeyClassName());
+                String valueName = "Value";
+                String valueType = getWritableType(reader.getValueClassName());
                 FileStatus status = fs.getFileStatus(path);
                 String storage = STORAGE_TYPE;
                 String abstractPath = path.toUri().getPath();
                 String codec = "sequence.codec";
-                String schemaString = "{\"fields\": [{\"name\": \"" + keyName + "\", \"type\": \"string\"}, {\"name\": \"" + valueName + "\", \"type\": \"string\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.lake\", \"type\": \"record\"}";
+                String schemaString = "{\"fields\": [{\"name\": \"" + keyName + "\", \"type\": \""+keyType+"\"}, {\"name\": \"" + valueName + "\", \"type\": \""+valueType+"\"}], \"name\": \"Result\", \"namespace\": \"com.tencent.lake\", \"type\": \"record\"}";
                 record = new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
             } catch (Exception e) {
@@ -65,8 +67,8 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
                 Writable key = (Writable) ReflectionUtils.newInstance(reader.getKeyClass(), fs.getConf());
                 Writable value = (Writable) ReflectionUtils.newInstance(reader.getValueClass(), fs.getConf());
                 int count = 0;
-                String keyName = reader.getKeyClassName();
-                String valueName = reader.getValueClassName();
+                String keyName = "Key";
+                String valueName = "Value";
                 while (reader.next(key, value) && count < 12) {
                     sampleValues.add("{\"" + keyName + "\": \"" + key + "\", \"" + valueName + "\": \"" + value + "\"}");
                     count++;
@@ -78,5 +80,10 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
         }
         return dataRecord;
 
+    }
+
+
+    private String getWritableType(String name){
+        return name.substring(name.lastIndexOf(".")+1);
     }
 }

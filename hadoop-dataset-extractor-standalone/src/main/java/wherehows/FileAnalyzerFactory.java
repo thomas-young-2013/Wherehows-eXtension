@@ -42,6 +42,7 @@ public class FileAnalyzerFactory {
         allFileAnalyzer.add(new AvroFileAnalyzer(fs));
         allFileAnalyzer.add(new OrcFileAnalyzer(fs));
         allFileAnalyzer.add(new XMLFileAnalyzer(fs));
+        allFileAnalyzer.add(new SequenceFileAnalyzer(fs));
     }
 
     // iterate through all possibilities
