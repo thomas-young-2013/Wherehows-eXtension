@@ -38,17 +38,18 @@ public class FileAnalyzerFactory {
 
     public FileAnalyzerFactory(FileSystem fs) {
         this.fs = fs;
-        LOG.info("FileAnalyzerFactory init success !");
         allFileAnalyzer.add(new AvroFileAnalyzer(fs));
         allFileAnalyzer.add(new OrcFileAnalyzer(fs));
         allFileAnalyzer.add(new XMLFileAnalyzer(fs));
         allFileAnalyzer.add(new SequenceFileAnalyzer(fs));
+        allFileAnalyzer.add(new CSVFileAnalyzer(fs));
+        allFileAnalyzer.add(new JSONFileAnalyzer(fs));
+        LOG.info("FileAnalyzerFactory init success !");
     }
 
     // iterate through all possibilities
     public SampleDataRecord getSampleData(Path path, String abstractPath) throws IOException {
         SampleDataRecord sampleData = null;
-
         for (FileAnalyzer analyzer : allFileAnalyzer) {
             sampleData = analyzer.getSampleData(path);
             if (sampleData != null) {
@@ -63,7 +64,6 @@ public class FileAnalyzerFactory {
     public DatasetJsonRecord getSchema(Path path, String abstractPath)
             throws IOException {
         DatasetJsonRecord schema = null;
-
         for (FileAnalyzer analyzer : allFileAnalyzer) {
             schema = analyzer.getSchema(path);
             if (schema != null) {

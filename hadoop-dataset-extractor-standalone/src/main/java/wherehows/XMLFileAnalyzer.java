@@ -52,7 +52,8 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 record = new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
             } catch (Exception e) {
-                LOG.error("path : {}" + " is not XML File format  ",path.toUri().getPath());
+                LOG.error("path : {} content " + " is not XML File format content  ",path.toUri().getPath());
+                LOG.info(e.getStackTrace().toString());
             }
 
         }
@@ -63,7 +64,7 @@ public class XMLFileAnalyzer extends FileAnalyzer {
     public SampleDataRecord getSampleData(Path path) throws IOException {
         SampleDataRecord sampleDataRecord = null;
         if (!fs.exists(path))
-            LOG.error(" File Path : {} is not exist in HDFS",path.toUri().getPath());
+            LOG.error(" File Path: " + path.toUri().getPath() + " is not exist in HDFS");
         else {
             List<Object> displays = new ArrayList<Object>();
             try {
@@ -74,9 +75,9 @@ public class XMLFileAnalyzer extends FileAnalyzer {
                 }
                 sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
                 LOG.info("xml sampledata is {}",sampleDataRecord.toCsvString());
-
             } catch (Exception e) {
-                LOG.error("path : {} is not xml format file" ,path.toUri().getPath());
+                LOG.error("path : {} content " + " is not XML File format content  ",path.toUri().getPath());
+                LOG.info(e.getStackTrace().toString());
             }
         }
         return sampleDataRecord;

@@ -52,7 +52,8 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
                 LOG.info("sequencefileanalyzer parse path :{},schema is {}", path.toUri().getPath(), record.toCsvString());
 
             } catch (Exception e) {
-                LOG.error(e.getMessage());
+                LOG.error("path : {} content " + " is not Sequence File format content  ",path.toUri().getPath());
+                LOG.info(e.getStackTrace().toString());
             }
 
         }
@@ -81,7 +82,8 @@ public class SequenceFileAnalyzer extends FileAnalyzer {
                 dataRecord = new SampleDataRecord(path.toUri().getPath(), sampleValues);
                 LOG.info("sequence file path : {}, sample data is {}", path.toUri().getPath(), sampleValues);
             } catch (Exception e) {
-                LOG.info(e.getMessage());
+                LOG.error("path : {} content " + " is not Sequence File format content  ",path.toUri().getPath());
+                LOG.info(e.getStackTrace().toString());
             }
         }
         return dataRecord;

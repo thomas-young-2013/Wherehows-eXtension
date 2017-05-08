@@ -106,6 +106,7 @@ public class JSONFileAnalyzer extends FileAnalyzer {
                     new DatasetJsonRecord(schemaString, abstractPath, fstat.getModificationTime(), fstat.getOwner(), fstat.getGroup(),
                             fstat.getPermission().toString(), codec, storage, "");
         } catch (Exception e) {
+            LOG.error("path : {} content " + " is not JSON File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
         }
 
@@ -139,8 +140,11 @@ public class JSONFileAnalyzer extends FileAnalyzer {
             list.add(this.getJsonObject(targetFilePath).toString());
             System.out.println("The sample data is " + list.toString());
             sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
-        } catch (JSONException e) {
+
+        } catch (Exception e) {
+            LOG.error("path : {} content " + " is not JSON File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
+
         }
         return sampleDataRecord;
     }

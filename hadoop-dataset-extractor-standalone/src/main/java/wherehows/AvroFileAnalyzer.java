@@ -77,6 +77,7 @@ public class AvroFileAnalyzer extends FileAnalyzer {
     @Override
     public SampleDataRecord getSampleData(Path targetFilePath)
             throws IOException {
+        SampleDataRecord sampleDataRecord = null;
         try {
             SeekableInput sin = new FsInput(targetFilePath, fs.getConf());
             DataFileReader<GenericRecord> reader =
@@ -93,13 +94,13 @@ public class AvroFileAnalyzer extends FileAnalyzer {
             }
             // for debug
             System.out.println("avro arraylist is: " + list.toString());
-            SampleDataRecord sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
+            sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
 
             return sampleDataRecord;
         } catch (Exception e) {
             LOG.info("AvroAnalyzer get sampleDataRecord failure and exception is " + e.getMessage());
-            return null;
-        }
 
+        }
+        return sampleDataRecord;
     }
 }

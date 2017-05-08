@@ -67,6 +67,7 @@ public class CSVFileAnalyzer extends FileAnalyzer {
                             fstat.getPermission().toString(), codec, storage, "");
             LOG.info("csv schma get success , it is {}", datasetJsonRecord.toCsvString());
         } catch (Exception e) {
+            LOG.error("path : {} content " + " is not CSV File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
         }
 
@@ -94,6 +95,7 @@ public class CSVFileAnalyzer extends FileAnalyzer {
             System.out.println("The sample data is " + list.toString());
             sampleDataRecord = new SampleDataRecord(targetFilePath.toUri().getPath(), list);
         } catch (Exception e) {
+            LOG.error("path : {} content " + " is not CSV File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
         }
 
