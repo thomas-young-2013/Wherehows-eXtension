@@ -70,11 +70,15 @@ public class XMLFileAnalyzer extends FileAnalyzer {
             try {
                 LOG.info("xmlfileanalyzer start parse xml sampledata ,path is {} " , path.toUri().getPath());
                 startParseXML(path);
+                int count = 0;
                 for (String key : keyToValues.keySet()) {
                     displays.add(("{\"" + key + "\":" + "\"" + keyToValues.get(key) + "\"}").replaceAll("\"", "\\\""));
+                    if(count > 20)
+                        break;
+                    count ++;
                 }
                 sampleDataRecord = new SampleDataRecord(path.toUri().getPath(), displays);
-                LOG.info("xml sampledata is {}",sampleDataRecord.toCsvString());
+               // LOG.info("xml sampledata is {}",sampleDataRecord.toCsvString());
             } catch (Exception e) {
                 LOG.error("path : {} content " + " is not XML File format content  ",path.toUri().getPath());
                 LOG.info(e.getStackTrace().toString());
