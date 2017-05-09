@@ -2,7 +2,7 @@ package metadata.etl.lhotse.extractor;
 
 import metadata.etl.lhotse.LzExecMessage;
 import metadata.etl.lhotse.LzTaskExecRecord;
-import metadata.etl.utils.XmlParser;
+import wherehows.common.utils.XmlParser;
 import metadata.etl.utils.hiveparser.HiveSqlAnalyzer;
 import metadata.etl.utils.hiveparser.HiveSqlType;
 import org.slf4j.Logger;

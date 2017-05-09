@@ -7,6 +7,7 @@ configurations {
 dependencies {
 
   extraLibs externalDependency.commons_net
+  extraLibs externalDependency.jdom
 
   compile externalDependency.slf4j_api
   compile externalDependency.slf4j_log4j
@@ -21,6 +22,7 @@ dependencies {
   compile externalDependency.jackson_core
   compile externalDependency.jackson_databind
   compile externalDependency.commons_net
+  compile externalDependency.jdom
 
   testCompile externalDependency.testng
 }
