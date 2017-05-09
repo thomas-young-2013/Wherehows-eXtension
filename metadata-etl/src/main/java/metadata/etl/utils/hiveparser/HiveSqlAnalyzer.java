@@ -537,10 +537,10 @@ public class HiveSqlAnalyzer {
         String alterTableName = "ALTER TABLE db.name RENAME TO db.new_name";
         String alterTableProperties = "ALTER TABLE table_name SET SERDEPROPERTIES ('field.delim' = ',')";
         // have relation end
-
+        String sqls = "use wherehows";
         List<String> isrcTableNames = new ArrayList<String>();
         List<String> idesTableNames = new ArrayList<String>();
-        String opType = HiveSqlAnalyzer.analyzeSql(sql22, isrcTableNames, idesTableNames);
+        String opType = HiveSqlAnalyzer.analyzeSql(sqls, isrcTableNames, idesTableNames);
         System.out.println(opType.equals(HiveSqlType.DROPDB));
         System.out.println(opType);
         System.out.println(isrcTableNames);

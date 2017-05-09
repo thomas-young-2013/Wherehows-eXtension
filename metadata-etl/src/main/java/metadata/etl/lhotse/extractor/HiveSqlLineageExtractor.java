@@ -7,14 +7,15 @@ import metadata.etl.utils.hiveparser.HiveSqlAnalyzer;
 import metadata.etl.utils.hiveparser.HiveSqlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wherehows.common.Constant;
 import wherehows.common.schemas.LineageRecord;
-import wherehows.common.utils.ProcessUtils;
+import wherehows.common.utils.FtpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hadoop on 5/8/17.
+ * Created by thomas young on 5/8/17.
  */
 public class HiveSqlLineageExtractor implements BaseLineageExtractor {
 
@@ -31,8 +32,27 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
             // get info from logs
             String sqlFilePath = xmlParser.getExtProperty("extProperties/entry/sql.file.name");
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            // split the file path
+            int last_index = sqlFilePath.lastIndexOf("/");
+            String sqlPath = sqlFilePath.substring(0, last_index);
+            String sqlFileName = sqlFilePath.substring(last_index);
+
+            String ftpHost = message.prop.getProperty(Constant.FTP_HOST_KEY);
+            int port = Integer.parseInt(message.prop.getProperty(Constant.FTP_PORT));
+            String userName = message.prop.getProperty(Constant.FTP_USERNAME_KEY);
+            String password = message.prop.getProperty(Constant.FTP_PASSWORD_KEY);
 
             // read sql statements from sql file on ftp
+            List<String> sqls = FtpUtils.getFileContent(ftpHost, port, userName, password,
+                    sqlPath, sqlFileName);
+
+            for (String sql: sqls) {
+                List<String> isrcTableNames = new ArrayList<String>();
+                List<String> idesTableNames = new ArrayList<String>();
+                String opType = HiveSqlAnalyzer.analyzeSql(sql, isrcTableNames, idesTableNames);
+                if (opType.equals(HiveSqlType.QUERY)) {
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

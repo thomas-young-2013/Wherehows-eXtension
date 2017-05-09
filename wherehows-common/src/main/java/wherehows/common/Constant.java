@@ -67,6 +67,12 @@ public class Constant {
   public static final String LZ_DB_PASSWORD_KEY = "lz.db.password";
   public static final String LZ_DB_DRIVER_KEY = "lz.db.driver";
 
+  /** The property_name field in wh_etl_job_property table, ftp connection info in the cluster*/
+  public static final String FTP_HOST_KEY = "ftp.host";
+  public static final String FTP_PORT = "ftp.port";
+  public static final String FTP_USERNAME_KEY = "ftp.username";
+  public static final String FTP_PASSWORD_KEY = "ftp.password";
+
   /** The property_name field in wh_etl_job_property table. The time period backtrace for execution data ETL */
   public static final String LZ_EXEC_ETL_LOOKBACK_MINS_KEY = "lz.exec_etl.lookback_period.in.minutes";
 
