@@ -15,6 +15,7 @@ package metadata.etl.lhotse;
 
 import metadata.etl.lhotse.extractor.BaseLineageExtractor;
 import metadata.etl.lhotse.extractor.Hive2HdfsLineageExtractor;
+import metadata.etl.lhotse.extractor.HiveSqlLineageExtractor;
 import wherehows.common.utils.FileOperator;
 import wherehows.common.utils.SshUtils;
 import org.slf4j.Logger;
@@ -103,6 +104,9 @@ public class LzLineageExtractor {
         switch (lzRecord.taskType) {
             case 72:
                 lineageExtractor = new Hive2HdfsLineageExtractor();
+                break;
+            case 70:
+                lineageExtractor = new HiveSqlLineageExtractor();
                 break;
             default:
                 throw new Exception("Not Supported Task Type!");
