@@ -43,7 +43,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             String destPath = filter(pathInfo.get(1));
 
             if (!destPath.endsWith("/")) destPath += "/";
-            destPath += "part-r-00000";
+            destPath += "part-00000";
 
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
