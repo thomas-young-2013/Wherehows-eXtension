@@ -34,7 +34,7 @@ public class MRCommandLineageExtractor implements BaseLineageExtractor {
 
             String sourcePath = getSourcePath(params, outputDir);
             if (outputDir.endsWith("/")) outputDir = outputDir.substring(0, outputDir.length()-1);
-            String destPath = outputDir + "part-r-00000";
+            String destPath = outputDir + "/part-r-00000";
 
             // validation here
             if (sourcePath == null) return lineageRecords;
