@@ -5,6 +5,7 @@ import metadata.etl.lhotse.LzTaskExecRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.schemas.LineageRecord;
+import wherehows.common.utils.RegexUtils;
 import wherehows.common.utils.XmlParser;
 
 import java.util.ArrayList;
@@ -87,17 +88,10 @@ public class MRCommandLineageExtractor implements BaseLineageExtractor {
         }
         String [] args = parameterSegment.split("\\s+");
         for (String path: args) {
-            if (isPath(path) && !path.equals(destDir)) {
+            if (RegexUtils.isPath(path) && !path.equals(destDir)) {
                 return path;
             }
         }
         return null;
-    }
-
-    private static boolean isPath(String str) {
-        Pattern typePattern = Pattern.compile("(/\\w+)+");
-        Matcher typeMatcher = typePattern.matcher(str);
-        if (typeMatcher.find()) return true;
-        return false;
     }
 }
