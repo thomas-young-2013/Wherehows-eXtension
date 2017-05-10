@@ -34,7 +34,7 @@ public class MRCommandLineageExtractor implements BaseLineageExtractor {
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
 
             String sourcePath = getSourcePath(params, outputDir);
-            if (outputDir.endsWith("/")) outputDir = outputDir.substring(0, outputDir.length()-1);
+            if (!outputDir.endsWith("/")) outputDir += "/";
             String destPath = outputDir + "/part-r-00000";
 
             // validation here
