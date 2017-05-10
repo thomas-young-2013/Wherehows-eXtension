@@ -40,6 +40,11 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
             String sqlPath = sqlFilePath.substring(0, last_index);
             String sqlFileName = sqlFilePath.substring(last_index);
 
+            logger.info("the sql filepath is: {}", sqlFilePath);
+            logger.info("flow exec id is: {}", flowExecId);
+            logger.info("the sql file path is: {}", sqlPath);
+            logger.info("the sql file name is: {}", sqlFileName);
+
             String ftpHost = message.prop.getProperty(Constant.FTP_HOST_KEY);
             int port = Integer.parseInt(message.prop.getProperty(Constant.FTP_PORT));
             String userName = message.prop.getProperty(Constant.FTP_USERNAME_KEY);
@@ -70,9 +75,12 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
             String databaseName = "default";
 
             for (String sql: sqls) {
+                logger.info("start to parse sql: {}", sql);
                 List<String> isrcTableNames = new ArrayList<String>();
                 List<String> idesTableNames = new ArrayList<String>();
                 String opType = HiveSqlAnalyzer.analyzeSql(sql, isrcTableNames, idesTableNames);
+                logger.info("src tables : {}", isrcTableNames);
+                logger.info("des tables : {}", idesTableNames);
 
                 if (opType.equals(HiveSqlType.SWITCHDB)) {
                     databaseName = idesTableNames.get(0);
@@ -110,7 +118,7 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
                         lineageRecord.setAbstractObjectName(sourcePath);
                         lineageRecord.setFullObjectName(sourcePath);
                     }
-                    logger.info("the source record is: {}", lineageRecord.toString());
+                    logger.info("add source record is: {}", lineageRecord.toDatabaseValue());
                     lineageRecords.add(lineageRecord);
                 }
 
@@ -125,7 +133,7 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
                     String path = String.format("/%s/%s", dbName == null?databaseName:dbName, destPath);
                     lineageRecord.setAbstractObjectName(path);
                     lineageRecord.setFullObjectName(path);
-                    logger.info("the target record is: {}", lineageRecord.toString());
+                    logger.info("add target record is: {}", lineageRecord.toDatabaseValue());
                     lineageRecords.add(lineageRecord);
                 }
             }
