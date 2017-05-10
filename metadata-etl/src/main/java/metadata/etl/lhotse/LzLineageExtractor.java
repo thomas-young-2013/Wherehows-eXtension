@@ -112,6 +112,9 @@ public class LzLineageExtractor {
             case 92:
                 lineageExtractor = new MRCommandLineageExtractor();
                 break;
+            case 39:
+                lineageExtractor = new SparkSubmitLineageExtractor();
+                break;
             default:
                 throw new Exception("Not Supported Task Type!");
         }
