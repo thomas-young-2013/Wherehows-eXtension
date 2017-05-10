@@ -37,8 +37,8 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
             long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
             // split the file path
             int last_index = sqlFilePath.lastIndexOf("/");
-            String sqlPath = sqlFilePath.substring(0, last_index);
-            String sqlFileName = sqlFilePath.substring(last_index);
+            String sqlPath = sqlFilePath.substring(0, last_index + 1);
+            String sqlFileName = sqlFilePath.substring(last_index + 1);
 
             logger.info("the sql filepath is: {}", sqlFilePath);
             logger.info("flow exec id is: {}", flowExecId);
