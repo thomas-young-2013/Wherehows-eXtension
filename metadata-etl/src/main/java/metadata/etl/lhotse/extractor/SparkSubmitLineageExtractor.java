@@ -39,8 +39,9 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             ArrayList<String> pathInfo = new ArrayList<>();
             findPaths(shellArgs, pathInfo);
             if (pathInfo.size() < 2) return lineageRecords;
-            String sourcePath = pathInfo.get(0);
-            String destPath = pathInfo.get(1);
+            String sourcePath = filter(pathInfo.get(0));
+            String destPath = filter(pathInfo.get(1));
+
             if (!destPath.endsWith("/")) destPath += "/";
             destPath += "part-r-00000";
 
@@ -92,5 +93,13 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
         for (String path: paths) {
             if (isPath(path)) res.add(path);
         }
+    }
+
+    private String filter(String path) {
+        String res = path.trim();
+        if (res.startsWith("hdfs://hdfsCluster")) {
+            return res.substring(18);
+        }
+        return res;
     }
 }
