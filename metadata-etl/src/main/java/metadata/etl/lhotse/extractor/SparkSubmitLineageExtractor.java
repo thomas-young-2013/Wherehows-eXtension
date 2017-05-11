@@ -48,8 +48,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
 
-            String flowPath = String.format("%s:%s/%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName,
-                    lzTaskExecRecord.taskName);
+            String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             String operation = "spark submit";
             long num = 0L;
 
