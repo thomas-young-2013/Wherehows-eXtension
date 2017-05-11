@@ -84,7 +84,8 @@ public class LzJobChecker {
         final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, task_run.end_time, ref.task_name " +
                 "from lb_task_run as task_run, lb_task as ref where task_run.start_time > \"%s\" " +
                 "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
-        final String cmd1 = "select workflow_name, project_name from task_info where real_task_id = \"%s\"";
+        final String cmd1 = "select wi.workflow_name, ti.project_name from task_info as ti, workflow_info wi " +
+                "where ti.real_task_id = \"%s\" and ti.workflow_id = wi.workflow_id";
 
         logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
         final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
