@@ -71,7 +71,7 @@ public class Hive2HdfsLineageExtractor implements BaseLineageExtractor {
             String taskName = lzTaskExecRecord.taskName;
 
             String flowPath = "/lhotse/hive2hdfs/" + flowExecId;
-            String operation = null;
+            String operation = "hive2hdfs";
             long num = 0L;
             logger.info("start to create the source record: {}", isrcTableNames.toString());
             // source lineage record.
