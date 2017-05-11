@@ -167,7 +167,7 @@ class LhotseExtract:
                 job_exec_record = LhotseJobExecRecord(self.app_id,
                                                        flow_path,
                                                        0,
-                                                       long(task['real_task_id']),
+                                                       1,
                                                        task['task_name'],
                                                        flow_path + "/" + task['task_name'],
                                                        long(task['real_task_id']),
