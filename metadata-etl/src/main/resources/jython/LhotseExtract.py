@@ -4,6 +4,8 @@ from wherehows.common.schemas import LhotseFlowRecord
 from wherehows.common.schemas import LhotseJobRecord
 from wherehows.common.schemas import LhotseFlowDagRecord
 from wherehows.common.schemas import LhotseFlowOwnerRecord
+from wherehows.common.schemas import LhotseFlowExecRecord
+from wherehows.common.schemas import LhotseJobExecRecord
 
 from wherehows.common.writers import FileWriter
 from wherehows.common import Constant
@@ -62,7 +64,7 @@ class LhotseExtract:
 
         for row in rows:
             self.logger.info("collect flow %d!" % row_count)
-            flow_path = row['project_name'] + u':' + row['workflow_name']
+            flow_path = row['project_name'] + ":" + row['workflow_name']
             print (isinstance(flow_path, unicode))
             print (isinstance(row['workflow_name'], unicode))
 
@@ -136,6 +138,55 @@ class LhotseExtract:
         self.logger.info( "collect flow&job executions")
         flow_exec_writer = FileWriter(flow_exec_file)
         job_exec_writer = FileWriter(job_exec_file)
+
+        cmd = "SELECT * FROM workflow_info WHERE status is NULL"
+        self.lz_cursor.execute(cmd)
+        rows = DbUtil.dict_cursor(self.lz_cursor)
+        row_count = 0
+        for row in rows:
+            flow_path = row['project_name'] + ":" + row['workflow_name']
+            flow_exec_record = LhotseFlowExecRecord(self.app_id,
+                                                     row["workflow_name"],
+                                                     flow_path,
+                                                     0,
+                                                     1,
+                                                     "SUCCEEDED",
+                                                     1,
+                                                     row['owner'],
+                                                     long(time.mktime(row['create_time'].timetuple())),
+                                                     long(time.mktime(row['modify_time'].timetuple())),
+                                                     self.wh_exec_id)
+            flow_exec_writer.append(flow_exec_record)
+
+            job_exec_records = []
+            task_query = "SELECT * FROM task_info WHERE workflow_id = \"{0}\"".format(row['workflow_id'])
+            new_lz_cursor = self.lz_cursor
+            new_lz_cursor.execute(task_query)
+            task_rows = DbUtil.dict_cursor(new_lz_cursor)
+            for task in task_rows:
+                job_exec_record = LhotseJobExecRecord(self.app_id,
+                                                       flow_path,
+                                                       0,
+                                                       long(task['real_task_id']),
+                                                       task['task_name'],
+                                                       flow_path + "/" + task['task_name'],
+                                                       long(task['real_task_id']),
+                                                       'SUCCEEDED',
+                                                       1,
+                                                       int(time.mktime(row['data_start_time'].timetuple())),
+                                                       int(time.mktime(row['end_time'].timetuple())),
+                                                       self.wh_exec_id)
+                job_exec_records.append(job_exec_record)
+
+            LhotseJobExecRecord.sortAndSet(job_exec_records)
+            for r in job_exec_records:
+                job_exec_writer.append(r)
+
+            row_count += 1
+            if row_count % 10000 == 0:
+                flow_exec_writer.flush()
+                job_exec_writer.flush()
+
         flow_exec_writer.close()
         job_exec_writer.close()
 
