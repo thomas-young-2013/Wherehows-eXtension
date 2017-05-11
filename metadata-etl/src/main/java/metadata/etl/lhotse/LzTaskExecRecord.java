@@ -28,6 +28,8 @@ public class LzTaskExecRecord extends AbstractRecord {
     public String taskName;
     public Integer taskStartTime;
     public Integer taskEndTime;
+    public String projectName;
+    public String workflowName;
 
     @Override
     public List<Object> fillAllFields() {
@@ -38,6 +40,8 @@ public class LzTaskExecRecord extends AbstractRecord {
         allFields.add(taskName);
         allFields.add(taskStartTime);
         allFields.add(taskEndTime);
+        allFields.add(projectName);
+        allFields.add(workflowName);
         return allFields;
     }
 

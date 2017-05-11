@@ -61,11 +61,17 @@ public class Constant {
 
 
   // Lhotse Lineage
-  /** The property_name field in wh_etl_job_property table. Azkaban database connection info */
+  /** The property_name field in wh_etl_job_property table. Lhotse database connection info */
   public static final String LZ_DB_URL_KEY = "lz.db.jdbc.url";
   public static final String LZ_DB_USERNAME_KEY = "lz.db.username";
   public static final String LZ_DB_PASSWORD_KEY = "lz.db.password";
   public static final String LZ_DB_DRIVER_KEY = "lz.db.driver";
+
+  /** tbds database connection info*/
+  public static final String TBDS_DB_URL_KEY = "tbds.db.jdbc.url";
+  public static final String TBDS_DB_USERNAME_KEY = "tbds.db.username";
+  public static final String TBDS_DB_PASSWORD_KEY = "tbds.db.password";
+  public static final String TBDS_DB_DRIVER_KEY = "tbds.db.driver";
 
   /** The property_name field in wh_etl_job_property table, ftp connection info in the cluster*/
   public static final String FTP_HOST_KEY = "ftp.host";

@@ -31,6 +31,7 @@ public class LzJobChecker {
     final int DEFAULT_LOOK_BACK_TIME_MINUTES = 10;
     int appId;
     Connection conn = null;
+    Connection conn1 = null;
     private static final Logger logger = LoggerFactory.getLogger(LzJobChecker.class);
 
     public LzJobChecker(Properties prop) throws SQLException {
@@ -38,8 +39,14 @@ public class LzJobChecker {
         String host = prop.getProperty(Constant.LZ_DB_URL_KEY);
         String userName = prop.getProperty(Constant.LZ_DB_USERNAME_KEY);
         String passWord = prop.getProperty(Constant.LZ_DB_PASSWORD_KEY);
-        // set up connections
+        // set up connections for lhotse database.
         conn = DriverManager.getConnection(host + "?" + "user=" + userName + "&password=" + passWord);
+
+        // set up connections for tbds database.
+        String tbdsUrl = prop.getProperty(Constant.TBDS_DB_URL_KEY);
+        String tbdsUserName = prop.getProperty(Constant.TBDS_DB_USERNAME_KEY);
+        String tbdsPassWord = prop.getProperty(Constant.TBDS_DB_PASSWORD_KEY);
+        conn1 = DriverManager.getConnection(tbdsUrl + "?" + "user=" + tbdsUserName + "&password=" + tbdsPassWord);
     }
 
     /**
@@ -73,9 +80,12 @@ public class LzJobChecker {
 
         List<LzTaskExecRecord> results = new ArrayList<>();
         Statement stmt = conn.createStatement();
+        Statement stmt1 = conn1.createStatement();
         final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, task_run.end_time, ref.task_name " +
                 "from lb_task_run as task_run, lb_task as ref where task_run.start_time > \"%s\" " +
                 "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
+        final String cmd1 = "select workflow_name, project_name from task_info where real_task_id = \"%s\"";
+
         logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
         final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
 
@@ -97,6 +107,18 @@ public class LzJobChecker {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("read lhotse record from database: error found!");
+        }
+
+        // query workflow and project name from tbds database.
+        for (LzTaskExecRecord lzTaskExecRecord: results) {
+            String sql = String.format(cmd1, lzTaskExecRecord.taskId);
+            final ResultSet resultSet = stmt1.executeQuery(sql);
+            while (resultSet.next()) {
+                String workflowName = resultSet.getString("workflow_name");
+                String projectName = resultSet.getString("project_name");
+                lzTaskExecRecord.projectName = projectName;
+                lzTaskExecRecord.workflowName = workflowName;
+            }
         }
         return results;
     }
