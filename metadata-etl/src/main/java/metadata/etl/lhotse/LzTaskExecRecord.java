@@ -56,4 +56,19 @@ public class LzTaskExecRecord extends AbstractRecord {
         this.taskStartTime = taskStartTime;
         this.taskEndTime = taskEndTime;
     }
+
+    @Override
+    public String toString() {
+        return "LzTaskExecRecord{" +
+                "appId=" + appId +
+                ", taskId='" + taskId + '\'' +
+                ", taskType=" + taskType +
+                ", taskName='" + taskName + '\'' +
+                ", taskStartTime=" + taskStartTime +
+                ", taskEndTime=" + taskEndTime +
+                ", projectName='" + projectName + '\'' +
+                ", workflowName='" + workflowName + '\'' +
+                ", flowId=" + flowId +
+                '}';
+    }
 }

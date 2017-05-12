@@ -173,8 +173,8 @@ class LhotseExtract:
                                                        long(task['real_task_id']),
                                                        'SUCCEEDED',
                                                        1,
-                                                       int(time.mktime(row['data_start_time'].timetuple())),
-                                                       int(time.mktime(row['end_time'].timetuple())),
+                                                       int(time.mktime(task['data_start_time'].timetuple())),
+                                                       int(time.mktime(task['end_time'].timetuple())),
                                                        self.wh_exec_id)
                 job_exec_records.append(job_exec_record)
 
