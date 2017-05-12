@@ -164,12 +164,6 @@ class LhotseExtract:
             new_lz_cursor.execute(task_query)
             task_rows = DbUtil.dict_cursor(new_lz_cursor)
             for task in task_rows:
-                start_time = task['data_start_time']
-                if (start_time == null):
-                    start_time = task['modify_time']
-                if (start_time == null):
-                    start_time = task['create_time']
-
                 job_exec_record = LhotseJobExecRecord(self.app_id,
                                                        flow_path,
                                                        0,
@@ -179,8 +173,8 @@ class LhotseExtract:
                                                        long(task['real_task_id']),
                                                        'SUCCEEDED',
                                                        1,
-                                                       int(time.mktime(start_time.timetuple())),
-                                                       int(time.mktime(task['end_time'].timetuple())),
+                                                       int(time.mktime(task['create_time'].timetuple())),
+                                                       int(time.mktime(task['modify_time'].timetuple())),
                                                        self.wh_exec_id)
                 job_exec_records.append(job_exec_record)
 
