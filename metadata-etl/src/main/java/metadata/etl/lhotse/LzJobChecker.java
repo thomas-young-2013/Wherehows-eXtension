@@ -135,11 +135,13 @@ public class LzJobChecker {
         // query workflow_id from wherehows database.
         for (LzTaskExecRecord lzTaskExecRecord: results) {
             String flowPath = lzTaskExecRecord.projectName + ":" + lzTaskExecRecord.workflowName;
+            logger.info("the sql is: {}", String.format(cmd2, flowPath));
             final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath));
             while (resultSet.next()) {
                 Integer flowId = resultSet.getInt("flow_id");
                 lzTaskExecRecord.flowId = flowId;
             }
+            logger.info("the lztaskexecrecord is: {}", lzTaskExecRecord.toString());
         }
 
         return results;
@@ -148,5 +150,7 @@ public class LzJobChecker {
     public void close()
             throws SQLException {
         conn.close();
+        conn1.close();
+        conn2.close();
     }
 }
