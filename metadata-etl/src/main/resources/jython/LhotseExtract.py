@@ -178,7 +178,7 @@ class LhotseExtract:
                                                        self.wh_exec_id)
                 job_exec_records.append(job_exec_record)
 
-            LhotseJobExecRecord.sortAndSet(job_exec_records)
+            ## LhotseJobExecRecord.sortAndSet(job_exec_records)
             for r in job_exec_records:
                 job_exec_writer.append(r)
 

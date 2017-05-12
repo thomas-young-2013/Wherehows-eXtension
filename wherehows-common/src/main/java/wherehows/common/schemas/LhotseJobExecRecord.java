@@ -111,18 +111,4 @@ public class LhotseJobExecRecord extends AbstractRecord {
     public String toString() {
         return "appId:" + this.appId + "\tflowPath:" + this.flowPath + "\tflowExecId:" + this.flowExecId + "\tjobname:" + this.jobName;
     }
-
-    public static void sortAndSet(List<LhotseJobExecRecord> records) {
-        Collections.sort(records, new Comparator<LhotseJobExecRecord>() {
-            @Override
-            public int compare(LhotseJobExecRecord o1, LhotseJobExecRecord o2) {
-                return o1.getJobName().compareTo(o2.getJobName());
-            }
-        });
-
-        for (int seq = 0; seq < records.size(); seq++) {
-            LhotseJobExecRecord record = records.get(seq);
-            record.setJobExecId(record.getFlowExecId() * 1000L + seq);
-        }
-    }
 }
