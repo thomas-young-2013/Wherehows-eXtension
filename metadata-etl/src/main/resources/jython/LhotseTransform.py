@@ -17,10 +17,10 @@ class LhotseTransform(SchedulerTransform):
     SchedulerTransform._tables["job_execs"]["columns"] = "app_id, flow_path, source_version, flow_exec_id, job_name, job_path, job_exec_id, job_exec_status, attempt_id, start_time, end_time, wh_etl_exec_id"
 
     update_flow_id_templates = """
-                              UPDATE {table} SET flow_exec_id = flow_id WHERE stg.app_id = {app_id}
+                              UPDATE {table} SET flow_exec_id = flow_id WHERE app_id = {app_id}
                               """
     update_job_id_templates =  """
-                              UPDATE {table} SET flow_exec_id = flow_id WHERE stg.app_id = {app_id}
+                              UPDATE {table} SET flow_exec_id = flow_id WHERE app_id = {app_id}
                               """
     def __init__(self, args):
         SchedulerTransform.__init__(self, args, SchedulerType.LHOTSE)
