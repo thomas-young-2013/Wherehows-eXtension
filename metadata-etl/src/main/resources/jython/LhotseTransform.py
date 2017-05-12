@@ -1,5 +1,8 @@
 ## author: thomas young 26/4/2017
 # -*-coding:utf-8 -*-
+from wherehows.common import Constant
+from com.ziclix.python.sql import zxJDBC
+from org.slf4j import LoggerFactory
 from jython.SchedulerTransform import SchedulerTransform
 from wherehows.common.enums import SchedulerType
 import sys
@@ -21,17 +24,26 @@ class LhotseTransform(SchedulerTransform):
                               """
     def __init__(self, args):
         SchedulerTransform.__init__(self, args, SchedulerType.LHOTSE)
+        self.wh_con_1 = zxJDBC.connect(args[Constant.WH_DB_URL_KEY],
+                                     args[Constant.WH_DB_USERNAME_KEY],
+                                     args[Constant.WH_DB_PASSWORD_KEY],
+                                     args[Constant.WH_DB_DRIVER_KEY])
+        self.wh_cursor_1 = self.wh_con_1.cursor()
 
     def update_exec_id(self):
-        query = self.update_flow_id_templates.format(table="stg_flow_execution", app_id=self.app_id)
-        self.logger.debug(query)
-        self.wh_cursor.execute(query)
-        self.wh_con.commit()
+        try:
+            query = self.update_flow_id_templates.format(table="stg_flow_execution", app_id=self.app_id)
+            self.logger.debug(query)
+            self.wh_cursor_1.execute(query)
+            self.wh_con_1.commit()
 
-        query = self.update_job_id_templates.format(table="stg_job_execution", app_id=self.app_id)
-        self.logger.debug(query)
-        self.wh_cursor.execute(query)
-        self.wh_con.commit()
+            query = self.update_job_id_templates.format(table="stg_job_execution", app_id=self.app_id)
+            self.logger.debug(query)
+            self.wh_cursor_1.execute(query)
+            self.wh_con_1.commit()
+        finally:
+            self.wh_cursor_1.close()
+            self.wh_con_1.close()
 
 if __name__ == "__main__":
     ## set the encodings
