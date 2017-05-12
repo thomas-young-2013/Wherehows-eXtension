@@ -32,6 +32,7 @@ public class LzJobChecker {
     int appId;
     Connection conn = null;
     Connection conn1 = null;
+    Connection conn2 = null;
     private static final Logger logger = LoggerFactory.getLogger(LzJobChecker.class);
 
     public LzJobChecker(Properties prop) throws SQLException {
@@ -47,6 +48,13 @@ public class LzJobChecker {
         String tbdsUserName = prop.getProperty(Constant.TBDS_DB_USERNAME_KEY);
         String tbdsPassWord = prop.getProperty(Constant.TBDS_DB_PASSWORD_KEY);
         conn1 = DriverManager.getConnection(tbdsUrl + "?" + "user=" + tbdsUserName + "&password=" + tbdsPassWord);
+
+        // set up connections for wh database
+        String wherehowsUrl = prop.getProperty(Constant.WH_DB_URL_KEY);
+        String wherehowsUserName = prop.getProperty(Constant.WH_DB_USERNAME_KEY);
+        String wherehowsPassWord = prop.getProperty(Constant.WH_DB_PASSWORD_KEY);
+        String connUrl = wherehowsUrl + "?" + "user=" + wherehowsUserName + "&password=" + wherehowsPassWord;
+        conn2 = DriverManager.getConnection(connUrl);
     }
 
     /**
@@ -81,11 +89,13 @@ public class LzJobChecker {
         List<LzTaskExecRecord> results = new ArrayList<>();
         Statement stmt = conn.createStatement();
         Statement stmt1 = conn1.createStatement();
+        Statement stmt2 = conn2.createStatement();
         final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, task_run.end_time, ref.task_name " +
                 "from lb_task_run as task_run, lb_task as ref where task_run.start_time > \"%s\" " +
                 "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
         final String cmd1 = "select wi.workflow_name, ti.project_name from task_info as ti, workflow_info wi " +
                 "where ti.real_task_id = \"%s\" and ti.workflow_id = wi.workflow_id";
+        final String cmd2 = "select flow_id from flow where flow_path = \"%s\" and app_id = %d";
 
         logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
         final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
@@ -121,6 +131,17 @@ public class LzJobChecker {
                 lzTaskExecRecord.workflowName = workflowName;
             }
         }
+
+        // query workflow_id from wherehows database.
+        for (LzTaskExecRecord lzTaskExecRecord: results) {
+            String flowPath = lzTaskExecRecord.projectName + ":" + lzTaskExecRecord.workflowName;
+            final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath, appId));
+            while (resultSet.next()) {
+                Integer flowId = resultSet.getInt("flow_id");
+                lzTaskExecRecord.flowId = flowId;
+            }
+        }
+
         return results;
     }
 

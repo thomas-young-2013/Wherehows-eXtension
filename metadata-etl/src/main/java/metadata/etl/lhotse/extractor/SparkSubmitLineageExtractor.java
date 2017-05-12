@@ -34,7 +34,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             XmlParser xmlParser = new XmlParser(logLocation);
             // get info from logs
             String shellArgs = xmlParser.getExtProperty("extProperties/entry/shell.args");
-            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            long flowExecId = lzTaskExecRecord.flowId;
 
             ArrayList<String> pathInfo = new ArrayList<>();
             findPaths(shellArgs, pathInfo);
