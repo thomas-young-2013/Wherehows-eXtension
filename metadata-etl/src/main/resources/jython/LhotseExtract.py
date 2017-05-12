@@ -141,7 +141,8 @@ class LhotseExtract:
 
         cmd = "SELECT * FROM workflow_info WHERE status is NULL"
         self.lz_cursor.execute(cmd)
-        rows = DbUtil.dict_cursor(self.lz_cursor)
+        # rows = DbUtil.dict_cursor(self.lz_cursor)
+        rows = DbUtil.copy_dict_cursor(self.lz_cursor)
         row_count = 0
         for row in rows:
             flow_path = row['project_name'] + ":" + row['workflow_name']

@@ -95,7 +95,7 @@ public class LzJobChecker {
                 "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
         final String cmd1 = "select wi.workflow_name, ti.project_name from task_info as ti, workflow_info wi " +
                 "where ti.real_task_id = \"%s\" and ti.workflow_id = wi.workflow_id";
-        final String cmd2 = "select flow_id from flow where flow_path = \"%s\" and app_id = %d";
+        final String cmd2 = "select flow_id from flow where flow_path = \"%s\"";
 
         logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
         final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
@@ -135,7 +135,7 @@ public class LzJobChecker {
         // query workflow_id from wherehows database.
         for (LzTaskExecRecord lzTaskExecRecord: results) {
             String flowPath = lzTaskExecRecord.projectName + ":" + lzTaskExecRecord.workflowName;
-            final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath, appId));
+            final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath));
             while (resultSet.next()) {
                 Integer flowId = resultSet.getInt("flow_id");
                 lzTaskExecRecord.flowId = flowId;
