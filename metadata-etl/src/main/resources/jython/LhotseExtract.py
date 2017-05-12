@@ -165,6 +165,8 @@ class LhotseExtract:
             new_lz_cursor.execute(task_query)
             task_rows = DbUtil.dict_cursor(new_lz_cursor)
             for task in task_rows:
+                if task['real_task_id'] is None:
+                    continue
                 job_exec_record = LhotseJobExecRecord(self.app_id,
                                                        flow_path,
                                                        0,
