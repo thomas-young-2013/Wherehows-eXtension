@@ -139,6 +139,7 @@ public class LzJobChecker {
             final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath));
             while (resultSet.next()) {
                 Integer flowId = resultSet.getInt("flow_id");
+                logger.info("the flow id is: {}", flowId);
                 lzTaskExecRecord.flowId = flowId;
             }
             logger.info("the lztaskexecrecord is: {}", lzTaskExecRecord.toString());
