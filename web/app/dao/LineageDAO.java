@@ -39,13 +39,27 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 	private final static String GET_FLOW_NAME = "SELECT flow_name FROM " +
 			"flow WHERE app_id = ? and flow_id = ?";
 
-	private final static String GET_JOB = "SELECT ca.app_id, ca.app_code as cluster, " +
+	/*private final static String GET_JOB = "SELECT ca.app_id, ca.app_code as cluster, " +
 			"jedl.job_name, fj.job_path, fj.job_type, jedl.flow_path, jedl.storage_type, jedl.source_target_type, " +
 			"jedl.operation, jedl.source_srl_no, jedl.srl_no, " +
 			"max(jedl.job_exec_id) as job_exec_id FROM job_execution_data_lineage jedl " +
 			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
 			"LEFT JOIN job_execution je on jedl.app_id = je.app_id " +
 			"and jedl.flow_exec_id = je.flow_exec_id and jedl.job_exec_id = je.job_exec_id " +
+			"LEFT JOIN flow_job fj on je.app_id = fj.app_id and je.flow_id = fj.flow_id and je.job_id = fj.job_id " +
+			"WHERE abstracted_object_name in ( :names ) and " +
+			"jedl.flow_path not REGEXP '^(rent-metrics:|tracking-investigation:)' and " +
+			"FROM_UNIXTIME(job_finished_unixtime) >  CURRENT_DATE - INTERVAL (:days) DAY " +
+			"GROUP BY ca.app_id, cluster, jedl.job_name, jedl.flow_path, jedl.source_target_type, " +
+			"jedl.storage_type, jedl.operation " +
+			"ORDER BY jedl.source_target_type DESC, jedl.job_finished_unixtime";*/
+
+	private final static String GET_JOB = "SELECT ca.app_id, ca.app_code as cluster, " +
+			"jedl.job_name, fj.job_path, fj.job_type, jedl.flow_path, jedl.storage_type, jedl.source_target_type, " +
+			"jedl.operation, jedl.source_srl_no, jedl.srl_no, " +
+			"max(jedl.job_exec_id) as job_exec_id FROM job_execution_data_lineage jedl " +
+			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
+			"LEFT JOIN job_execution je on jedl.flow_exec_id = je.flow_exec_id and jedl.job_exec_id = je.job_exec_id " +
 			"LEFT JOIN flow_job fj on je.app_id = fj.app_id and je.flow_id = fj.flow_id and je.job_id = fj.job_id " +
 			"WHERE abstracted_object_name in ( :names ) and " +
 			"jedl.flow_path not REGEXP '^(rent-metrics:|tracking-investigation:)' and " +
