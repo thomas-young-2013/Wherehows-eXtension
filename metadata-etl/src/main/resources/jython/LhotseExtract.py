@@ -104,7 +104,8 @@ class LhotseExtract:
             # bridge's status need to be considered in the next stage
             task_bridge_query = "SELECT * FROM task_bridge WHERE workflow_id = \"{0}\"".format(row['workflow_id'])
             self.lz_cursor.execute(task_bridge_query)
-            task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
+            # task_bridge_rows = DbUtil.dict_cursor(self.lz_cursor)
+            task_bridge_rows = DbUtil.copy_dict_cursor(self.lz_cursor)
 
             for bridge in task_bridge_rows:
                 origin_task_query = "SELECT task_name FROM task_info WHERE task_id = \"{0}\"".format(bridge['origin_id'])
