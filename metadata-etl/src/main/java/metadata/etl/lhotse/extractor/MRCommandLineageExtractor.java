@@ -25,13 +25,15 @@ public class MRCommandLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId) {
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
+
         try {
             logger.info("start to parse the log: {}", logLocation);
             XmlParser xmlParser = new XmlParser(logLocation);
             // get info from logs
             String params = xmlParser.getExtProperty("extProperties/entry/task.main.param");
             String outputDir = xmlParser.getExtProperty("extProperties/entry/mapred.output.dir");
-            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            long flowExecId = lzTaskExecRecord.flowId;
 
             String sourcePath = getSourcePath(params, outputDir);
             if (!outputDir.endsWith("/")) outputDir += "/";
@@ -44,7 +46,7 @@ public class MRCommandLineageExtractor implements BaseLineageExtractor {
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
 
-            String flowPath = "/lhotse/mr/" + flowExecId;
+            String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             String operation = "MR command";
             long num = 0L;
 

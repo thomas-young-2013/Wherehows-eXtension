@@ -23,11 +23,13 @@ public class Hdfs2HiveLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId) {
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
+
         try {
             logger.info("start to parse the log: {}", logLocation);
             XmlParser xmlParser = new XmlParser(logLocation);
             // get info from logs
-            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            long flowExecId = lzTaskExecRecord.flowId;
             String sourcePath = xmlParser.getExtProperty("extProperties/entry/sourceFilePath");
             String databaseName = xmlParser.getExtProperty("extProperties/entry/databaseName");
             String tableName=xmlParser.getExtProperty("extProperties/entry/tableName");
@@ -39,7 +41,7 @@ public class Hdfs2HiveLineageExtractor implements BaseLineageExtractor {
 
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
-            String flowPath = "/lhotse/hdfs2hive/" + flowExecId;
+            String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             String operation = "hdfs2hive";
 
             // source lineage record.

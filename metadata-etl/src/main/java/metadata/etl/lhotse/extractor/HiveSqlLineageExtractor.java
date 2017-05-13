@@ -28,13 +28,14 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId) {
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
 
         try {
             logger.info("start to parse the log: {}", logLocation);
             XmlParser xmlParser = new XmlParser(logLocation);
             // get info from logs
             String sqlFilePath = xmlParser.getExtProperty("extProperties/entry/sql.file.name");
-            long flowExecId = Long.parseLong(xmlParser.getExtProperty("curRunDate"));
+            long flowExecId = lzTaskExecRecord.flowId;
             // split the file path
             int last_index = sqlFilePath.lastIndexOf("/");
             String sqlPath = sqlFilePath.substring(0, last_index + 1);
@@ -67,7 +68,7 @@ public class HiveSqlLineageExtractor implements BaseLineageExtractor {
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
             // it need to consider...
-            String flowPath = "/lhotse/hivesql/" + flowExecId;
+            String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             // important
             String operation = "hive sql script";
             // need to think about.

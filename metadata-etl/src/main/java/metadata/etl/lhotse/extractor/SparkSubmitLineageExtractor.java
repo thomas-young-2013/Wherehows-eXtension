@@ -27,15 +27,10 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
     @Override
     public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
                                                 int defaultDatabaseId) {
-        LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
-        if (lzTaskExecRecord != null && lzTaskExecRecord.flowId != null) {
-            logger.info(lzTaskExecRecord.toString());
-        } else {
-            logger.info("lzTaskExecRecord is null");
-            return null;
-        }
-
         List<LineageRecord> lineageRecords = new ArrayList<>();
+        LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
+
         try {
             logger.info("start to parse the log: {}", logLocation);
             XmlParser xmlParser = new XmlParser(logLocation);
