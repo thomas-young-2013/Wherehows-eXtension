@@ -188,7 +188,8 @@ public class HdfsMetadataEtl extends EtlJob {
       
       // String hdfsSchemaFile = remoteSchemaFile.split("/")[1];
       // String sampleDataFile = remoteSampleDataFile.split("/")[1];
-      String wherehowsExecFolder = remoteJarFile.split("/")[0];
+      // String wherehowsExecFolder = remoteJarFile.split("/")[0];
+      String wherehowsExecFolder = remoteJarFile.substring(0, remoteJarFile.lastIndexOf("/"));
       String cluster = prop.getProperty(Constant.HDFS_CLUSTER_KEY);
       String whiteList = prop.getProperty(Constant.HDFS_WHITE_LIST_KEY);
       String numOfThread = prop.getProperty(Constant.HDFS_NUM_OF_THREAD_KEY, String.valueOf(1));
