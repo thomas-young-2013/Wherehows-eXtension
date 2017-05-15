@@ -160,7 +160,7 @@ public class HdfsMetadataEtl extends EtlJob {
         "PreferredAuthentications",
         "publickey,gssapi-with-mic,keyboard-interactive,password");
       jsch.addIdentity(this.prop.getProperty(Constant.HDFS_PRIVATE_KEY_LOCATION_KEY));
-      java.util.Properties config = new java.util.Properties();
+      Properties config = new Properties();
       config.put("StrictHostKeyChecking", "no");
       session.setConfig(config);
       session.connect();
@@ -188,7 +188,8 @@ public class HdfsMetadataEtl extends EtlJob {
       
       // String hdfsSchemaFile = remoteSchemaFile.split("/")[1];
       // String sampleDataFile = remoteSampleDataFile.split("/")[1];
-      String wherehowsExecFolder = remoteJarFile.split("/")[0];
+      // String wherehowsExecFolder = remoteJarFile.split("/")[0];
+      String wherehowsExecFolder = remoteJarFile.substring(0, remoteJarFile.lastIndexOf("/"));
       String cluster = prop.getProperty(Constant.HDFS_CLUSTER_KEY);
       String whiteList = prop.getProperty(Constant.HDFS_WHITE_LIST_KEY);
       String numOfThread = prop.getProperty(Constant.HDFS_NUM_OF_THREAD_KEY, String.valueOf(1));

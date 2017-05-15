@@ -15,7 +15,6 @@ package metadata.etl.models;
 
 import java.util.Properties;
 import metadata.etl.EtlJob;
-import metadata.etl.dataset.hdfs.HdfsMetadataEtl;
 import metadata.etl.dataset.hive.HiveMetadataEtl;
 import metadata.etl.dataset.oracle.OracleMetadataEtl;
 import metadata.etl.dataset.teradata.TeradataMetadataEtl;
@@ -29,7 +28,6 @@ import metadata.etl.ldap.LdapEtl;
 import metadata.etl.scheduler.azkaban.AzkabanExecEtl;
 import metadata.etl.scheduler.lhotse.LhotseExecEtl;
 import metadata.etl.scheduler.oozie.OozieExecEtl;
-import metadata.etl.models.EtlJobName;
 import metadata.etl.git.CodeSearchMetadataEtl;
 
 
