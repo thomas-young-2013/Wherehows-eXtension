@@ -36,7 +36,7 @@ public class RCFileAnalyzer extends FileAnalyzer {
     public DatasetJsonRecord getSchema(Path path) throws IOException {
         DatasetJsonRecord record = null;
         if (!fs.exists(path))
-            LOG.error("file : " + path.toUri().getPath() + " is not exist on hdfs");
+            LOG.error("file path : {} not in hdfs", path);
         else {
             try {
                 RCFile.Reader reader = new RCFile.Reader(fs, path, fs.getConf());
@@ -50,7 +50,7 @@ public class RCFileAnalyzer extends FileAnalyzer {
                 String codec = "rc.codec";
                 record = new DatasetJsonRecord(schemaString, abstractPath, status.getModificationTime(), status.getOwner(), status.getGroup(),
                         status.getPermission().toString(), codec, storage, "");
-                LOG.info("rc file : {} schema is {}",path.toUri().getPath(),schemaString);
+                LOG.info("rc file : {} schema is {}", path.toUri().getPath(), schemaString);
             } catch (Exception e) {
                 LOG.error("path : {} content " + " is not RC File format content  ", path.toUri().getPath());
                 LOG.info(e.getStackTrace().toString());
@@ -109,7 +109,7 @@ public class RCFileAnalyzer extends FileAnalyzer {
                 builder.append("\"col" + i + "\":" + "\"" + Bytes.toString(brw.getData(), brw.getStart(),
                         brw.getLength()) + "\",");
             }
-            brw = cols.get(cols.size()-1);
+            brw = cols.get(cols.size() - 1);
             builder.append("\"col" + (cols.size() - 1) + "\":" + "\"" + Bytes.toString(brw.getData(), brw.getStart(),
                     brw.getLength()) + "\"}");
             sampleData.add(builder.toString());

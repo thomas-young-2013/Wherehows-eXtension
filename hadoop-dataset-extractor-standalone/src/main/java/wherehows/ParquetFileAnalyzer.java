@@ -39,7 +39,7 @@ public class ParquetFileAnalyzer extends FileAnalyzer {
             LOG.error("file path : {} not in hdfs", path);
         else {
             try {
-                ParquetMetadata readFooter = ParquetFileReader.readFooter(fs.getConf(), path,ParquetMetadataConverter.NO_FILTER);
+                ParquetMetadata readFooter = ParquetFileReader.readFooter(fs.getConf(), path, ParquetMetadataConverter.NO_FILTER);
                 Map<String, String> schema = readFooter.getFileMetaData().getKeyValueMetaData();
                 String allFields = schema.get("org.apache.spark.sql.parquet.row.metadata");
                 FileStatus status = fs.getFileStatus(path);
@@ -51,7 +51,7 @@ public class ParquetFileAnalyzer extends FileAnalyzer {
                 LOG.info("parquetfileanalyzer parse path :{},schema is {}", path.toUri().getPath(), record.toCsvString());
 
             } catch (Exception e) {
-                LOG.error("path : {} content " + " is not Sequence File format content  ", path.toUri().getPath());
+                LOG.error("path : {} content " + " is not Parquet File format content  ", path.toUri().getPath());
                 LOG.info(e.getStackTrace().toString());
             }
         }
@@ -79,12 +79,12 @@ public class ParquetFileAnalyzer extends FileAnalyzer {
                 while (count < 10 && recordData != null) {
                     int last = columnInfos.size() - 1;
                     StringBuilder builder = new StringBuilder();
-                     builder.append("{");
+                    builder.append("{");
                     for (int j = 0; j < columnInfos.size(); j++) {
                         if (j < columnInfos.size() - 1) {
                             String columnName = columnInfos.get(j).getName();
                             String value = recordData.getValueToString(j, 0);
-                            builder.append("\""+columnName + "\":\"" + value + "\",");
+                            builder.append("\"" + columnName + "\":\"" + value + "\",");
                         }
                     }
                     String columnName = columnInfos.get(last).getName();
@@ -96,6 +96,8 @@ public class ParquetFileAnalyzer extends FileAnalyzer {
                 record = new SampleDataRecord(path.toUri().getPath(), sampleDatas);
                 LOG.info("parquet get data success");
             } catch (Exception e) {
+                LOG.error("path : {} content " + " is not Parquet File format content  ", path.toUri().getPath());
+                LOG.info(e.getStackTrace().toString());
             }
         }
         return record;
