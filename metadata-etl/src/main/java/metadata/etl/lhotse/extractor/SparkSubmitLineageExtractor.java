@@ -5,6 +5,7 @@ import metadata.etl.lhotse.LzTaskExecRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.schemas.LineageRecord;
+import wherehows.common.utils.ProcessUtils;
 import wherehows.common.utils.XmlParser;
 
 import java.util.ArrayList;
@@ -41,11 +42,26 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             ArrayList<String> pathInfo = new ArrayList<>();
             findPaths(shellArgs, pathInfo);
             if (pathInfo.size() < 2) return lineageRecords;
-            String sourcePath = filter(pathInfo.get(0));
-            String destPath = filter(pathInfo.get(1));
-
-            if (!destPath.endsWith("/")) destPath += "/";
-            destPath += "part-00000";
+            String destTmpPath = pathInfo.remove(pathInfo.size()-1);
+            List<String> sourcePaths = new ArrayList<>();
+            List<String> destPaths = new ArrayList<>();
+            // get all input files.
+            for (String path: pathInfo) {
+                try {
+                    if (isHdfsFile(path)) sourcePaths.add(path);
+                    else sourcePaths.addAll(getSubFiles(path));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            // get all output files.
+            try {
+                if (isHdfsFile(destTmpPath)) destPaths.add(destTmpPath);
+                else destPaths.addAll(getSubFiles(destTmpPath));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return lineageRecords;
+            }
 
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
@@ -55,26 +71,30 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
             long num = 0L;
 
             logger.info("start to create the source record!");
-            LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
-            // set lineage record details.
-            lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hdfs");
-            lineageRecord.setOperationInfo("source", operation, num, num,
-                    num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-            lineageRecord.setAbstractObjectName(sourcePath);
-            lineageRecord.setFullObjectName(sourcePath);
-            logger.info("the source record is: {}", lineageRecord.toDatabaseValue());
-            lineageRecords.add(lineageRecord);
+            for (String sourcePath: sourcePaths) {
+                LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+                // set lineage record details.
+                lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hdfs");
+                lineageRecord.setOperationInfo("source", operation, num, num,
+                        num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
+                lineageRecord.setAbstractObjectName(sourcePath);
+                lineageRecord.setFullObjectName(sourcePath);
+                logger.info("the source record is: {}", lineageRecord.toDatabaseValue());
+                lineageRecords.add(lineageRecord);
+            }
 
             logger.info("start to create the target record!");
-            LineageRecord lineageRecord2 = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
-            // set lineage record details.
-            lineageRecord2.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
-            lineageRecord2.setOperationInfo("target", operation, num, num,
-                    num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-            lineageRecord2.setAbstractObjectName(destPath);
-            lineageRecord2.setFullObjectName(destPath);
-            logger.info("the target record is: {}", lineageRecord2.toDatabaseValue());
-            lineageRecords.add(lineageRecord2);
+            for (String destPath: destPaths) {
+                LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+                // set lineage record details.
+                lineageRecord.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
+                lineageRecord.setOperationInfo("target", operation, num, num,
+                        num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
+                lineageRecord.setAbstractObjectName(destPath);
+                lineageRecord.setFullObjectName(destPath);
+                logger.info("the target record is: {}", lineageRecord.toDatabaseValue());
+                lineageRecords.add(lineageRecord);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +103,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
         return lineageRecords;
     }
 
-    private void findPaths(String args, ArrayList<String> res) {
+    private static void findPaths(String args, ArrayList<String> res) {
         Pattern typePattern = Pattern.compile("(--\\w+\\s+.*\\s+)*.*\\.jar\\s+(.*)");
         Matcher typeMatcher = typePattern.matcher(args);
         String parameterSegment = null;
@@ -93,15 +113,44 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
 
         String [] paths = parameterSegment.split("\\s+");
         for (String path: paths) {
-            if (isPath(path)) res.add(path);
+            if (path.matches("^(hdfs://hdfsCluster)?(/([a-z]|[A-Z]|[0-9]|-|\\.|\\*)+)+(/)?")) {
+                if (path.startsWith("hdfs://hdfsCluster")) res.add(path.substring(18));
+                else res.add(path);
+            }
         }
     }
 
-    private String filter(String path) {
-        String res = path.trim();
-        if (res.startsWith("hdfs://hdfsCluster")) {
-            return res.substring(18);
+    private static boolean isHdfsFile(String path) throws Exception {
+        String [] cmds = {"hdfs", "dfs", "-test", "-f", path, "&&", "echo", "$?"};
+        ArrayList<String> results = ProcessUtils.exec(cmds);
+        // for debug
+        logger.info("the process utils result: {}", results);
+        if (results == null || results.size() == 0) {
+            logger.error("process utils: no result get");
+            throw new Exception("process utils: no result get");
+        } else {
+            if (results.get(results.size()-1).contains("0")) return true;
         }
-        return res;
+        return false;
     }
+
+    private static List<String> getSubFiles(String path) throws Exception {
+        String [] cmds = {"hdfs", "dfs", "-ls", path};
+        ArrayList<String> results = ProcessUtils.exec(cmds);
+        List<String> dataPaths = new ArrayList<>();
+        // for debug
+        logger.info("the process utils result: {}", results);
+        if (results == null || results.size() == 0) {
+            throw new Exception("getSubFiles: process utils no result get");
+        } else {
+            for (String str: results) {
+                String [] arg = str.split("\\s+");
+                if (arg.length == 8 && !arg[4].equalsIgnoreCase("0")) {
+                    dataPaths.add(arg[7]);
+                }
+            }
+        }
+        return dataPaths;
+    }
+
 }
