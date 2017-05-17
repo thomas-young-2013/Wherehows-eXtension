@@ -145,7 +145,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
         } else {
             for (String str: results) {
                 String [] arg = str.split("\\s+");
-                if (arg.length == 8 && !arg[4].equalsIgnoreCase("0")) {
+                if (arg.length == 8 && !arg[4].equalsIgnoreCase("0") && !arg[7].startsWith("_")) {
                     dataPaths.add(arg[7]);
                 }
             }
