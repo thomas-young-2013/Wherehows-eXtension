@@ -19,9 +19,11 @@ configurations{
     //Libraries needed at compilation time but not to be
     //exported as part of the distribution
     provided
+
 }
 
 dependencies{
+
     // User defined libraries (will be copied to lib/ before `play compile`)
     compile externalDependency.play
     compile externalDependency.play_java_jdbc

@@ -15,6 +15,7 @@ package dao;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +31,7 @@ import play.Logger;
 import play.Play;
 import play.libs.Json;
 import utils.Lineage;
+
 
 public class LineageDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -667,10 +669,9 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.abstracted_path = (String)relatedDataRow.get("abstracted_object_name");
 						relatedNode.storage_type = ((String)relatedDataRow.get("storage_type")).toLowerCase();
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
-
-						relatedNode.job_start_time = relatedDataRow.get("start_time").toString();
-						relatedNode.job_end_time = relatedDataRow.get("end_time").toString();
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
+						relatedNode.job_start_time =  transform(relatedDataRow.get("start_time").toString());
+						relatedNode.job_end_time =  transform(relatedDataRow.get("end_time").toString());
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;
 						node.job_start_time = relatedNode.job_start_time;
@@ -767,7 +768,12 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 		}
 
 	}
-
+	private static String transform(String time) {
+		if(time.endsWith(".0")){
+			time = time.substring(time.lastIndexOf("."));
+		}
+		return time;
+	}
 	public static void getObjectAdjacentNode(
 			LineagePathInfo pathInfo,
 			int level,
