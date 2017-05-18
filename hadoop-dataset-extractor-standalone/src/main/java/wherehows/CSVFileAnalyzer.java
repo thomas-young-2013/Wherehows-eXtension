@@ -34,11 +34,19 @@ public class CSVFileAnalyzer extends FileAnalyzer {
         String str = "";
         List<String[]> lls = new ArrayList<String[]>();
         if (lineNo == 1 && (str = reader.readLine()) != null) {
-            lls.add(str.split(","));
+            if(str.indexOf(",")>0) {                                   //sean_5.11
+                lls.add(str.split(","));
+            }else{
+                lls.add(str.split("\t"));
+            }
             return lls;
         } else if (lineNo >= 2 && (str = reader.readLine()) != null) {
             while ((str = reader.readLine()) != null) {
-                lls.add(str.split(","));
+                if(str.indexOf(",")>0) {
+                    lls.add(str.split(","));
+                }else {
+                    lls.add(str.split("\t"));
+                }
             }
             return lls;
         } else {
@@ -54,7 +62,11 @@ public class CSVFileAnalyzer extends FileAnalyzer {
             List lsList = this.getLineTOData(targetFilePath, 1);
             String[] lsString = (String[]) lsList.get(0);
             for (String realName : lsString) {
-                JsonObjectList.append("{\"name\": \"" + realName + "\", \"type\": \"string\"},"); //4.28
+                if (realName.indexOf("\"")>=0){
+                    JsonObjectList.append("{\"name\": " + realName + ", \"type\": \"string\"},"); //sean_5.11
+                }else {
+                    JsonObjectList.append("{\"name\": \"" + realName + "\", \"type\": \"string\"},"); //4.28
+                }
             }
             JsonObjectList.deleteCharAt(JsonObjectList.length() - 1);
             String schemaString = "{\"fields\":[" + JsonObjectList + "],\"name\": \"Result\", \"namespace\": \"com.tencent.thomas\", \"type\": \"record\"}";
@@ -86,7 +98,11 @@ public class CSVFileAnalyzer extends FileAnalyzer {
             for (int i = 0; i <= 1; i++) {
                 for (int j = 0; j < lsString.length; j++) {
                     lsString2 = (String[]) lsList2.get(i);
-                    lineSample.append("\"" + lsString[j] + "\": \"" + lsString2[j] + "\",");
+                    if (lsString[j].indexOf("\"")>=0||lsString2[j].indexOf("\"")>=0){
+                        lineSample.append(lsString[j] + ": " + lsString2[j] + ","); //sean_5.11
+                    }else {
+                        lineSample.append("\"" + lsString[j] + "\": \"" + lsString2[j] + "\",");
+                    }
                 }
                 lineSample.deleteCharAt(lineSample.length() - 1); //4.28
                 list.add("{" + lineSample + "}");
