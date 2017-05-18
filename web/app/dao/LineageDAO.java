@@ -642,8 +642,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.storage_type = ((String)relatedDataRow.get("storage_type")).toLowerCase();
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
-						relatedNode.job_start_time = transform(relatedNode.job_start_unix_time * 1000);
-						relatedNode.job_end_time = transform(relatedNode.job_end_unix_time * 1000);
+						relatedNode.job_start_time =  transform(relatedNode.job_start_unix_time * 1000);
+						relatedNode.job_end_time =  transform(relatedNode.job_end_unix_time * 1000);
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;
 						node.job_start_time = relatedNode.job_start_time;
