@@ -30,6 +30,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import play.Logger;
 import play.Play;
 import play.libs.Json;
+import utils.DateFormat;
 import utils.Lineage;
 
 public class LineageDAO extends AbstractMySQLOpenSourceDAO
@@ -530,12 +531,6 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 		return results;
 	}
 
-	public static String transform(long timestamp) {
-		Date date = new Date(timestamp);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return simpleDateFormat.format(date);
-	}
-
 	public static void getNodes(
 			LineagePathInfo pathInfo,
 			int level,
@@ -676,10 +671,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
 
-						// relatedNode.job_start_time = relatedDataRow.get("start_time").toString();
-						relatedNode.job_start_time = new Date(relatedNode.job_start_unix_time).toString();
-						// relatedNode.job_end_time = relatedDataRow.get("end_time").toString();
-						relatedNode.job_end_time = new Date(relatedNode.job_end_unix_time).toString();
+						relatedNode.job_start_time = DateFormat.format(relatedDataRow.get("start_time").toString());
+						relatedNode.job_end_time = DateFormat.format(relatedDataRow.get("end_time").toString());
 
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;

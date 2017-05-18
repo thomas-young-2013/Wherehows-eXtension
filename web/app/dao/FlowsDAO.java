@@ -28,6 +28,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import play.Logger;
 import play.libs.Json;
+import utils.DateFormat;
 
 public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -471,12 +472,12 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 						Object created = row.get("created_time");
 						if (created != null)
 						{
-							flow.created = created.toString();
+							flow.created = DateFormat.format(created.toString());
 						}
 						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
-							flow.modified = row.get("modified_time").toString();
+							flow.modified = DateFormat.format(row.get("modified_time").toString());
 						}
 
 						int jobCount = 0;
@@ -590,12 +591,12 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 						job.refFlowId = (Long)row.get("ref_flow_id");
 						if (created != null)
 						{
-							job.created = created.toString();
+							job.created = DateFormat.format(created.toString());
 						}
 						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
-							job.modified = modified.toString();
+							job.modified = DateFormat.format(modified.toString());
 						}
 
 						if (StringUtils.isBlank(flowName))
