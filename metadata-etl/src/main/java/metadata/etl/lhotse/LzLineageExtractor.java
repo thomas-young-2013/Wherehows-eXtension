@@ -117,7 +117,7 @@ public class LzLineageExtractor {
                 String remoteLogFileName2 = files2[files2.length - 1];
                 String remoteLogFile2 = String.format("%s/%s", remoteLogPath, remoteLogFileName2);
                 // prepare the local log file.
-                localLogPathFile += String.format("%d/%s/%s", lzRecord.taskType,
+                localLogPathFile += String.format("%d/%s/%s/", lzRecord.taskType,
                         lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
                 new File(localLogPathFile).mkdirs();
 
