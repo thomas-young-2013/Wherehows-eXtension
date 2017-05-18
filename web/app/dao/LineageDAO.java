@@ -742,7 +742,7 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 	}
 	private static String transform(String time) {
 		if(time.endsWith(".0")){
-			time = time.substring(time.lastIndexOf("."));
+			time = time.substring(0,time.lastIndexOf("."));
 		}
 		return time;
 	}
