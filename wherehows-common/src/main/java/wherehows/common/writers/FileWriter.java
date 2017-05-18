@@ -28,7 +28,11 @@ public class FileWriter extends Writer {
     throws FileNotFoundException {
     super();
     File f = new File(fileName);
-    streamWriter = new OutputStreamWriter(new FileOutputStream(f));
+    try {
+      streamWriter = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
