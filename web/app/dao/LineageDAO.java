@@ -15,6 +15,7 @@ package dao;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -529,6 +530,12 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 		return results;
 	}
 
+	public static String transform(long timestamp) {
+		Date date = new Date(timestamp);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return simpleDateFormat.format(date);
+	}
+
 	public static void getNodes(
 			LineagePathInfo pathInfo,
 			int level,
@@ -667,10 +674,13 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.abstracted_path = (String)relatedDataRow.get("abstracted_object_name");
 						relatedNode.storage_type = ((String)relatedDataRow.get("storage_type")).toLowerCase();
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
-
-						relatedNode.job_start_time = relatedDataRow.get("start_time").toString();
-						relatedNode.job_end_time = relatedDataRow.get("end_time").toString();
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
+
+						// relatedNode.job_start_time = relatedDataRow.get("start_time").toString();
+						relatedNode.job_start_time = new Date(relatedNode.job_start_unix_time).toString();
+						// relatedNode.job_end_time = relatedDataRow.get("end_time").toString();
+						relatedNode.job_end_time = new Date(relatedNode.job_end_unix_time).toString();
+
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;
 						node.job_start_time = relatedNode.job_start_time;
