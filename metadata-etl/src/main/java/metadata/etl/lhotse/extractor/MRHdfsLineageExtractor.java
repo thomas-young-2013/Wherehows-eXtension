@@ -39,7 +39,6 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
             String str="";
             String jobmark="";  //info from logfile in location
             while((jobmark=getJob_mark(reader.readLine()))!=null){break;}
-            Configuration conf = new Configuration();
             String targetfile="/mr-history/done/";
 
             String [] cmds = {"hdfs", "dfs", "-lsr", targetfile};
@@ -59,7 +58,10 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
                     targetRaw = tmps[tmps.length - 1];
                     if(this.isJob_mark(targetRaw,".*"+jobmark+"_conf.xml")){break;}
                 }
-                XmlParser xmlParser = new XmlParser(targetRaw);
+                String [] cmdsget = {"hdfs", "dfs", "-get", targetRaw , "/tmp"};
+                ArrayList<String> results2 = ProcessUtils.exec(cmdsget);
+
+                XmlParser xmlParser = new XmlParser("/tmp/targetRaw.substring(targetRaw.length()-31)");
                 String sourcePath = xmlParser.getExtProperty2("property/mapreduce.input.fileinputformat.inputdir");           //
                 String destPath = xmlParser.getExtProperty2("property/mapreduce.output.fileoutputformat.outputdir");          //
 

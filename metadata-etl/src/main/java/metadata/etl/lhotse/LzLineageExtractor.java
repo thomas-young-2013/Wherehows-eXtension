@@ -147,8 +147,8 @@ public class LzLineageExtractor {
                 lineageExtractor = new Hdfs2HiveLineageExtractor();
                 break;
             case 92:
-                lineageExtractor = new MRCommandLineageExtractor();
-                //lineageExtractor = new MRHdfsLineageExtractor();                                                               //sean 5.18
+                //lineageExtractor = new MRCommandLineageExtractor();
+                lineageExtractor = new MRHdfsLineageExtractor();                                                               //sean 5.18
                 break;
             /*case 39:
                 lineageExtractor = new SparkSubmitLineageExtractor();
