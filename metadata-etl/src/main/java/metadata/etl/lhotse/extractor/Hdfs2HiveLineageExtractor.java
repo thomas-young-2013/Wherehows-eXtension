@@ -20,7 +20,7 @@ public class Hdfs2HiveLineageExtractor implements BaseLineageExtractor {
 
     @Override
     public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
-                                                int defaultDatabaseId) {
+                                                int defaultDatabaseId, String logPath) {
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
         if (lzTaskExecRecord.flowId == null) return lineageRecords;

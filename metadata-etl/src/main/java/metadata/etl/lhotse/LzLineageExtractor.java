@@ -51,6 +51,7 @@ public class LzLineageExtractor {
         List<LineageRecord> jobLineage = new ArrayList<>();
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
         String localLogLocation = null;
+        String logPath = null;
 
         if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
             // the full path
@@ -121,7 +122,8 @@ public class LzLineageExtractor {
         LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
         Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
         if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message, defaultDatabaseId);
+            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message,
+                    defaultDatabaseId, logPath);
             try {
                 logger.info("start lineage combiner.");
                 lineageCombiner.addAll(lineageRecords);

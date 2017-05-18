@@ -10,5 +10,6 @@ import java.util.List;
  * Created by thomas young on 3/31/17.
  */
 public interface BaseLineageExtractor {
-    public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message, int defaultDatabaseId);
+    public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message, int defaultDatabaseId,
+                                                String logPath);
 }

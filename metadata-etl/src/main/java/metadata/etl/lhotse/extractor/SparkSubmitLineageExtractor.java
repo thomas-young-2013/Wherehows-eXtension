@@ -27,7 +27,7 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
     * */
     @Override
     public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
-                                                int defaultDatabaseId) {
+                                                int defaultDatabaseId, String logPath) {
         List<LineageRecord> lineageRecords = new ArrayList<>();
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         if (lzTaskExecRecord.flowId == null) return lineageRecords;
