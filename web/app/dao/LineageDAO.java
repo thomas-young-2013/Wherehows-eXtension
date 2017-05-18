@@ -642,8 +642,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.storage_type = ((String)relatedDataRow.get("storage_type")).toLowerCase();
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
-						relatedNode.job_start_time =  transform(relatedNode.job_start_unix_time * 1000);
-						relatedNode.job_end_time =  transform(relatedNode.job_end_unix_time * 1000);
+						relatedNode.job_start_time =  transform(relatedDataRow.get("start_time").toString());
+						relatedNode.job_end_time =  transform(relatedDataRow.get("end_time").toString());
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;
 						node.job_start_time = relatedNode.job_start_time;
@@ -740,10 +740,11 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 		}
 
 	}
-	private static String transform(long timestamp) {
-		Date date = new Date(timestamp);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return simpleDateFormat.format(date);
+	private static String transform(String time) {
+		if(time.endsWith(".0")){
+			time = time.substring(time.lastIndexOf("."));
+		}
+		return time;
 	}
 	public static void getObjectAdjacentNode(
 			LineagePathInfo pathInfo,
