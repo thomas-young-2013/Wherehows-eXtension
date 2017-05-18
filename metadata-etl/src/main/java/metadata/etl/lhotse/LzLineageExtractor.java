@@ -147,12 +147,12 @@ public class LzLineageExtractor {
                 lineageExtractor = new Hdfs2HiveLineageExtractor();
                 break;
             case 92:
-                //lineageExtractor = new MRCommandLineageExtractor();
-                lineageExtractor = new MRHdfsLineageExtractor();                                                               //sean 5.18
+                lineageExtractor = new MRCommandLineageExtractor();
+                //lineageExtractor = new MRHdfsLineageExtractor();                                                               //sean 5.18
                 break;
-            case 39:
+            /*case 39:
                 lineageExtractor = new SparkSubmitLineageExtractor();
-                break;
+                break;*/
             default:
                 throw new Exception("Not Supported Task Type!");
         }
