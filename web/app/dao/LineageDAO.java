@@ -15,6 +15,7 @@ package dao;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,7 +31,7 @@ import play.Logger;
 import play.Play;
 import play.libs.Json;
 import utils.Lineage;
-import wherehows.common.utils.DateFormater;
+
 
 public class LineageDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -641,8 +642,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 						relatedNode.storage_type = ((String)relatedDataRow.get("storage_type")).toLowerCase();
 						relatedNode.job_start_unix_time = (Long)relatedDataRow.get("job_start_unixtime");
 						relatedNode.job_end_unix_time = (Long)relatedDataRow.get("job_finished_unixtime");
-						relatedNode.job_start_time = DateFormater.transform(relatedNode.job_start_unix_time * 1000);
-						relatedNode.job_end_time = DateFormater.transform(relatedNode.job_end_unix_time * 1000);
+						relatedNode.job_start_time = transform(relatedNode.job_start_unix_time * 1000);
+						relatedNode.job_end_time = transform(relatedNode.job_end_unix_time * 1000);
 						node.job_start_unix_time = relatedNode.job_start_unix_time;
 						node.job_end_unix_time = relatedNode.job_end_unix_time;
 						node.job_start_time = relatedNode.job_start_time;
@@ -739,7 +740,11 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 		}
 
 	}
-
+	private static String transform(long timestamp) {
+		Date date = new Date(timestamp);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return simpleDateFormat.format(date);
+	}
 	public static void getObjectAdjacentNode(
 			LineagePathInfo pathInfo,
 			int level,

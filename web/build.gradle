@@ -20,10 +20,10 @@ configurations{
     //exported as part of the distribution
     provided
 
-    extraLibs
 }
 
 dependencies{
+
     // User defined libraries (will be copied to lib/ before `play compile`)
     compile externalDependency.play
     compile externalDependency.play_java_jdbc
@@ -32,8 +32,8 @@ dependencies{
     compile externalDependency.play_filter
     compile externalDependency.spring_jdbc
     compile externalDependency.mockito
-    extraLibs project(":wherehows-common")
-    //provided project(":wherehows-common")
+
+    provided project(":wherehows-common")
 
     // playManaged files('target/scala-2.9.1/classes_managed')
 }
