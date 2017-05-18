@@ -74,7 +74,7 @@ class LhotseExtract:
                                             'Y',
                                             self.wh_exec_id)
             ## for debug
-            self.logger.info("the flow record is: %s" % flow_record.toCsvString())
+            ## self.logger.info("the flow record is: %s" % flow_record.toCsvString())
             flow_writer.append(flow_record)
 
             # get relative task of this workflow.

@@ -30,7 +30,6 @@ class SchedulerLoad:
 
   def run(self):
     try:
-      print (sys.defaultencoding)
       self.load_flows()
       self.load_jobs()
       self.load_flow_dags()

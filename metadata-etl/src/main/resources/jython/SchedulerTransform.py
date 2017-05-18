@@ -85,7 +85,6 @@ class SchedulerTransform:
 
   def run(self):
     try:
-      print (sys.defaultencoding)
       self.read_flow_file_to_stg()
       self.read_job_file_to_stg()
       self.read_dag_file_to_stg()
