@@ -81,4 +81,38 @@ public class XmlParser {
         }
         return null;
     }
+    public String getExtProperty2(String key) {
+        if (doc == null) return null;
+        try {
+            String []parts = key.split("/");
+            int partSize = parts.length;
+            Element element = doc.getRootElement();
+            /*for (int i=0; i<parts.length-1; i++) {
+                if (parts[i].equals("globalParameters") || parts[i].equals("extProperties")) {
+                    element = element.getChild(parts[i]);
+                    List<Element> elements = element.getChildren();
+                    for (Element element1: elements) {
+                        List<Element> elements1 = element1.getChildren();
+                        if (elements1.size() != 2) logger.error("error: size != 2");
+                        if (elements1.get(0).getText().equals(parts[partSize - 1])) {
+                            return elements1.get(1).getText();
+                        }
+                    }
+                    return null;
+                } else {
+                    element = element.getChild(parts[i]);
+                }
+            }*/
+            element=element.getChild(parts[partSize-2]);
+            List<Element> elements = element.getChildren();
+            if (elements.size() == 4 && elements.get(0).getText().equals(parts[partSize-1])) {
+                return elements.get(1).getText();
+            } else {
+                return element.getChild(parts[partSize-1]).getText();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
