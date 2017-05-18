@@ -22,7 +22,7 @@ dependencies {
   extraLibs externalDependency.hive_exec
   extraLibs externalDependency.pig
   extraLibs externalDependency.dom4j
-
+  extraLibs externalDependency.hbase_common
 
   compile project(":wherehows-common")
   compile externalDependency.hadoop_common
@@ -35,6 +35,7 @@ dependencies {
   compile externalDependency.http_core
   compile externalDependency.logback
   compile  externalDependency.dom4j
+  compile externalDependency.hbase_common
 
   testCompile externalDependency.testng
   testCompile externalDependency.hadoop_client

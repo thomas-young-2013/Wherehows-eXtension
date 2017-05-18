@@ -126,7 +126,8 @@ subprojects {
                             "confluent_common_cfg": "io.confluent:common-config:3.0.1",
                             "jdom"                : "org.jdom:jdom:2.0.2",
                             "dom4j" : "dom4j:dom4j:1.6",
-                            "commons_net" : "commons-net:commons-net:2.0"
+                            "commons_net" : "commons-net:commons-net:2.0",
+                            "hbase_common"        : "org.apache.hbase:hbase-common:1.1.3"
   ]
 
   task buildWithWarning(type: JavaCompile, dependsOn: build) {
