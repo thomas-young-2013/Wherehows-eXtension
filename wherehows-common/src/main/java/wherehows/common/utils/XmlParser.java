@@ -87,13 +87,13 @@ public class XmlParser {
             String []parts = key.split("/");
             int partSize = parts.length;
             Element element = doc.getRootElement();
-            /*for (int i=0; i<parts.length-1; i++) {
-                if (parts[i].equals("globalParameters") || parts[i].equals("extProperties")) {
+            for (int i=0; i<parts.length-1; i++) {
+                if (parts[i].equals("configuration")) {
                     element = element.getChild(parts[i]);
                     List<Element> elements = element.getChildren();
                     for (Element element1: elements) {
                         List<Element> elements1 = element1.getChildren();
-                        if (elements1.size() != 2) logger.error("error: size != 2");
+                        if (elements1.size() != 4) logger.error("error: size != 4");
                         if (elements1.get(0).getText().equals(parts[partSize - 1])) {
                             return elements1.get(1).getText();
                         }
@@ -102,8 +102,7 @@ public class XmlParser {
                 } else {
                     element = element.getChild(parts[i]);
                 }
-            }*/
-            element=element.getChild(parts[partSize-2]);
+            }
             List<Element> elements = element.getChildren();
             if (elements.size() == 4 && elements.get(0).getText().equals(parts[partSize-1])) {
                 return elements.get(1).getText();

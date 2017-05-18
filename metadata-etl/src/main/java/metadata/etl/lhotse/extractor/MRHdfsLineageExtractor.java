@@ -63,9 +63,9 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
 
                 XmlParser xmlParser = new XmlParser("/tmp/"+targetRaw.substring(targetRaw.length()-31));
                 logger.info("get info xml----------------------: {}","/tmp/"+targetRaw.substring(targetRaw.length()-31) );
-                String sourcePath = xmlParser.getExtProperty2("property/mapreduce.input.fileinputformat.inputdir");           //
-                String destPath = xmlParser.getExtProperty2("property/mapreduce.output.fileoutputformat.outputdir");          //
-
+                String sourcePath = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");           //
+                String destPath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");          //
+                logger.info("the destPath is ----------------------------------------------------: {}", destPath);
                 XmlParser xmlParser2 = new XmlParser(logLocation);
                 long flowExecId = Long.parseLong(xmlParser2.getExtProperty("curRunDate"));                                    //
 
