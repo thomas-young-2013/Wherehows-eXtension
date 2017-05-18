@@ -125,10 +125,11 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
         ArrayList<String> results = ProcessUtils.exec(cmds);
         // for debug
         logger.info("the process utils result: {}", results);
-        if (results == null || results.size() == 0) {
+        if (results == null) {
             logger.error("process utils: no result get");
             throw new Exception("process utils: no result get");
         } else {
+            if (results.isEmpty()) return false;
             if (results.get(results.size()-1).contains("0")) return true;
         }
         return false;
