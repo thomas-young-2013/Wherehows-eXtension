@@ -30,8 +30,8 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
         try {
-            logger.info("start to parse the log: {}", logLocation);
-            logger.info("start to parse the log: {}", logPath);
+            logger.info("start to parse the logLocation: {}", logLocation);
+            logger.info("start to parse the logPath: {}", logPath);
             File logfile = new File(logPath);
             BufferedReader br = new BufferedReader(new FileReader(logfile));
             LineNumberReader reader = new LineNumberReader(br);
@@ -41,10 +41,10 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
             while((jobmark=getJob_mark(reader.readLine()))!=null){break;}
             String targetfile="/mr-history/done/";
 
-            String [] cmds = {"hdfs", "dfs", "-lsr", targetfile};
+            //get conf.xml by log info
+           /* String [] cmds = {"hdfs", "dfs", "-lsr", targetfile};
             ArrayList<String> results = ProcessUtils.exec(cmds);
-            // for debug
-            logger.info("the process utils result: {}", results);
+            //logger.info("the process utils result: {}", results);
             if (results == null || results.size() == 0) {
                 logger.error("process utils: no result get");
                 return null;
@@ -57,20 +57,33 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
                     tmps = raw.split(" ");
                     targetRaw = tmps[tmps.length - 1];
                     if(this.isJob_mark(targetRaw,".*"+jobmark+"_conf.xml")){break;}
-                }
-                String [] cmdsget = {"hdfs", "dfs", "-get", targetRaw , "/tmp"};
-                ArrayList<String> results2 = ProcessUtils.exec(cmdsget);
+                }*/
 
-                XmlParser xmlParser = new XmlParser("/tmp/"+targetRaw.substring(targetRaw.length()-31));
+                //get conf.xml by log info
+                String realcom=".*"+jobmark+"_conf.xml";
+                String targetRaw=this.exeLsHdfs(targetfile,realcom);
+
+                //get conf.xml from hdfs to local
+                String [] cmdsget = {"hdfs", "dfs", "-get", targetRaw , "/tmp"};
+                ArrayList<String> nullresults = ProcessUtils.exec(cmdsget);
+
+                //analyse xml file from hdfs
+                XmlParser xmlParser = new XmlParser("/tmp/"+targetRaw.substring(targetRaw.length()-31));                                 //length =31
                 logger.info("get info xml----------------------: {}","/tmp/"+targetRaw.substring(targetRaw.length()-31) );
                 String sourcePath = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");           //
+                logger.info("the destPath is ----------------------------------------------------: {}", sourcePath);
                 String destPath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");          //
                 logger.info("the destPath is ----------------------------------------------------: {}", destPath);
+                String comdest=".*part.*";
+                String destPath2=this.exeLsHdfs(destPath,comdest);
+                logger.info("the destPath is ----------------------------------------------------: {}", destPath2);
+
+                //analyse file from locallog
                 XmlParser xmlParser2 = new XmlParser(logLocation);
                 long flowExecId = Long.parseLong(xmlParser2.getExtProperty("curRunDate"));                                    //
 
 
-
+                //common
                 long taskId = Long.parseLong(lzTaskExecRecord.taskId);
                 String taskName = lzTaskExecRecord.taskName;
                 String flowPath = "/lhotse/mr/" + flowExecId;
@@ -97,7 +110,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
                 lineageRecord2.setFullObjectName(destPath);
                 logger.info("the target record is: {}", lineageRecord2.toDatabaseValue());
                 lineageRecords.add(lineageRecord2);
-            }
+
            /* FileSystem fs = FileSystem.get(URI.create(targetfile),conf);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(targetfile))));
             LineNumberReader  LReader= new LineNumberReader(bufferedReader);
@@ -125,6 +138,24 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
             return true;
         }
         return false;
+    }
+    private String exeLsHdfs(String path,String com){
+        String [] cmds = {"hdfs", "dfs", "-lsr", path};
+        ArrayList<String> results = ProcessUtils.exec(cmds);
+        if (results == null || results.size() == 0) {
+            logger.error("process utils: no result get");
+            return null;
+        } else {
+            String raw=null;
+            String targetRaw=null;
+            String [] tmps;
+            for (int i=0;i<results.size();i++){
+                raw = results.get(i);
+                tmps = raw.split(" ");
+                targetRaw = tmps[tmps.length - 1];
+                if(this.isJob_mark(targetRaw,com)){break;}
+            }return targetRaw;
+        }
     }
 
 }
