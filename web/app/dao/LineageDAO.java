@@ -136,8 +136,7 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String GET_APP_ID  = "SELECT app_id FROM cfg_application WHERE LOWER(app_code) = ?";
 
-
-	private final static String GET_FLOW_JOB = "SELECT ca.app_id, ca.app_code, je.flow_id, je.job_id, " +
+	/*private final static String GET_FLOW_JOB = "SELECT ca.app_id, ca.app_code, je.flow_id, je.job_id, " +
 			"jedl.job_name, fj.job_path, fj.job_type, jedl.flow_path, jedl.storage_type, " +
 			"jedl.source_target_type, jedl.operation, jedl.job_exec_id, fj.pre_jobs, fj.post_jobs, " +
 			"FROM_UNIXTIME(jedl.job_start_unixtime) as start_time, " +
@@ -146,6 +145,18 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
 			"JOIN job_execution je on jedl.app_id = je.app_id and " +
 			"jedl.flow_exec_id = je.flow_exec_id and jedl.job_exec_id = je.job_exec_id " +
+			"JOIN flow_job fj on je.app_id = fj.app_id and je.flow_id = fj.flow_id and je.job_id = fj.job_id " +
+			"WHERE jedl.app_id = ? and jedl.flow_exec_id = ? and " +
+			"FROM_UNIXTIME(job_finished_unixtime) >  CURRENT_DATE - INTERVAL ? DAY";*/
+
+	private final static String GET_FLOW_JOB = "SELECT ca.app_id, ca.app_code, je.flow_id, je.job_id, " +
+			"jedl.job_name, fj.job_path, fj.job_type, jedl.flow_path, jedl.storage_type, " +
+			"jedl.source_target_type, jedl.operation, jedl.job_exec_id, fj.pre_jobs, fj.post_jobs, " +
+			"FROM_UNIXTIME(jedl.job_start_unixtime) as start_time, " +
+			"FROM_UNIXTIME(jedl.job_finished_unixtime) as end_time " +
+			"FROM job_execution_data_lineage jedl " +
+			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
+			"JOIN job_execution je on jedl.flow_exec_id = je.flow_exec_id and jedl.job_exec_id = je.job_exec_id " +
 			"JOIN flow_job fj on je.app_id = fj.app_id and je.flow_id = fj.flow_id and je.job_id = fj.job_id " +
 			"WHERE jedl.app_id = ? and jedl.flow_exec_id = ? and " +
 			"FROM_UNIXTIME(job_finished_unixtime) >  CURRENT_DATE - INTERVAL ? DAY";
@@ -160,7 +171,7 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 			"FROM_UNIXTIME(jedl.job_start_unixtime) as start_time, " +
 			"FROM_UNIXTIME(jedl.job_finished_unixtime) as end_time FROM job_execution_data_lineage jedl " +
 			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
-			"WHERE jedl.app_id = ? and jedl.flow_exec_id = ? ORDER BY jedl.partition_end DESC";
+			"WHERE jedl.app_id != ? and jedl.flow_exec_id = ? ORDER BY jedl.partition_end DESC";
 
 	private final static String GET_ONE_LEVEL_IMPACT_DATABASES = "SELECT DISTINCT j.storage_type, " +
 			"j.abstracted_object_name, d.id FROM job_execution_data_lineage j " +
@@ -899,8 +910,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 					node.partition_start = (String)row.get("partition_start");
 					node.partition_end = (String)row.get("partition_end");
 					node.full_object_name = (String)row.get("full_object_name");
-					node.job_start_time = row.get("start_time").toString();
-					node.job_end_time = row.get("end_time").toString();
+					node.job_start_time = DateFormat.format(row.get("start_time").toString());
+					node.job_end_time = DateFormat.format(row.get("end_time").toString());
 					node.storage_type = ((String)row.get("storage_type")).toLowerCase();
 					node.node_type = "data";
 					node._sort_list = new ArrayList<String>();
@@ -950,8 +961,8 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 					node.pre_jobs = (String)row.get("pre_jobs");
 					node.post_jobs = (String)row.get("post_jobs");
 					node.job_id = (Long)row.get("job_id");
-					node.job_start_time = row.get("start_time").toString();
-					node.job_end_time = row.get("end_time").toString();
+					node.job_start_time = DateFormat.format(row.get("start_time").toString());
+					node.job_end_time = DateFormat.format(row.get("end_time").toString());
 					node.exec_id = jobExecId;
 					node._sort_list.add("cluster");
 					node._sort_list.add("job_path");
