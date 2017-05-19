@@ -67,7 +67,8 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
             //common
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
-            String flowPath = "/lhotse/mr/" + flowExecId;
+            //String flowPath = "/lhotse/mr/" + flowExecId;
+            String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             String operation = "MR command";
             long num = 0L;
             logger.info("start to create the source record!");
