@@ -72,11 +72,10 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
                 logger.info("get info xml----------------------: {}","/tmp/"+targetRaw.substring(targetRaw.length()-31) );
                 String sourcePath = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");           //
                 logger.info("the destPath is ----------------------------------------------------: {}", sourcePath);
-                String destPath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");          //
-                logger.info("the destPath is ----------------------------------------------------: {}", destPath);
+                String destDirpath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");          //
                 String comdest=".*part.*";
-                String destPath2=this.exeLsHdfs(destPath,comdest);
-                logger.info("the destPath is ----------------------------------------------------: {}", destPath2);
+                String destFilepath=this.exeLsHdfs(destDirpath,comdest);
+                logger.info("the destFilePath is ----------------------------------------------------: {}", destFilepath);
 
                 //analyse file from locallog
                 XmlParser xmlParser2 = new XmlParser(logLocation);
@@ -103,11 +102,11 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
                 logger.info("start to create the target record!");
                 LineageRecord lineageRecord2 = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
                 // set lineage record details.
-                lineageRecord2.setDatasetInfo(defaultDatabaseId, destPath, "hdfs");
+                lineageRecord2.setDatasetInfo(defaultDatabaseId, destFilepath, "hdfs");
                 lineageRecord2.setOperationInfo("target", operation, num, num,
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-                lineageRecord2.setAbstractObjectName(destPath);
-                lineageRecord2.setFullObjectName(destPath);
+                lineageRecord2.setAbstractObjectName(destFilepath);
+                lineageRecord2.setFullObjectName(destFilepath);
                 logger.info("the target record is: {}", lineageRecord2.toDatabaseValue());
                 lineageRecords.add(lineageRecord2);
 
