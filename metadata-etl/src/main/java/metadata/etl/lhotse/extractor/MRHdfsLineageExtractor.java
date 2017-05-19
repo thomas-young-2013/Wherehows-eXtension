@@ -42,78 +42,55 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor{
             String targetfile="/mr-history/done/";
 
             //get conf.xml by log info
-           /* String [] cmds = {"hdfs", "dfs", "-lsr", targetfile};
-            ArrayList<String> results = ProcessUtils.exec(cmds);
-            //logger.info("the process utils result: {}", results);
-            if (results == null || results.size() == 0) {
-                logger.error("process utils: no result get");
-                return null;
-            } else {
-                String raw=null;
-                String targetRaw=null;
-                String [] tmps;
-                for (int i=0;i<results.size();i++){
-                    raw = results.get(i);
-                    tmps = raw.split(" ");
-                    targetRaw = tmps[tmps.length - 1];
-                    if(this.isJob_mark(targetRaw,".*"+jobmark+"_conf.xml")){break;}
-                }*/
+            String realcom=".*"+jobmark+"_conf.xml";
+            String targetRaw=this.exeLsHdfs(targetfile,realcom);
 
-                //get conf.xml by log info
-                String realcom=".*"+jobmark+"_conf.xml";
-                String targetRaw=this.exeLsHdfs(targetfile,realcom);
+            //get conf.xml from hdfs to local
+            String [] cmdsget = {"hdfs", "dfs", "-get", targetRaw , "/tmp"};
+            ArrayList<String> nullresults = ProcessUtils.exec(cmdsget);
 
-                //get conf.xml from hdfs to local
-                String [] cmdsget = {"hdfs", "dfs", "-get", targetRaw , "/tmp"};
-                ArrayList<String> nullresults = ProcessUtils.exec(cmdsget);
+            //analyse xml file from hdfs
+            XmlParser xmlParser = new XmlParser("/tmp/"+targetRaw.substring(targetRaw.length()-31));                                 //length =31
+            logger.info("get info xml----------------------: {}","/tmp/"+targetRaw.substring(targetRaw.length()-31) );
+            String sourcePath = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");
+            logger.info("the destPath is ----------------------------------------------------: {}", sourcePath);
+            String destDirpath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");
+            String comdest=".*part.*";
+            String destFilepath=this.exeLsHdfs(destDirpath,comdest);
+            logger.info("the destFilePath is ----------------------------------------------------: {}", destFilepath);
 
-                //analyse xml file from hdfs
-                XmlParser xmlParser = new XmlParser("/tmp/"+targetRaw.substring(targetRaw.length()-31));                                 //length =31
-                logger.info("get info xml----------------------: {}","/tmp/"+targetRaw.substring(targetRaw.length()-31) );
-                String sourcePath = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");           //
-                logger.info("the destPath is ----------------------------------------------------: {}", sourcePath);
-                String destDirpath = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");          //
-                String comdest=".*part.*";
-                String destFilepath=this.exeLsHdfs(destDirpath,comdest);
-                logger.info("the destFilePath is ----------------------------------------------------: {}", destFilepath);
-
-                //analyse file from locallog
-                XmlParser xmlParser2 = new XmlParser(logLocation);
-                long flowExecId = Long.parseLong(xmlParser2.getExtProperty("curRunDate"));                                    //
+            //analyse file from locallog
+            XmlParser xmlParser2 = new XmlParser(logLocation);
+            long flowExecId = Long.parseLong(xmlParser2.getExtProperty("curRunDate"));
 
 
-                //common
-                long taskId = Long.parseLong(lzTaskExecRecord.taskId);
-                String taskName = lzTaskExecRecord.taskName;
-                String flowPath = "/lhotse/mr/" + flowExecId;
-                String operation = "MR command";
-                long num = 0L;
-                logger.info("start to create the source record!");
-                LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
-                // set lineage record details.
-                lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hdfs");
-                lineageRecord.setOperationInfo("source", operation, num, num,
+            //common
+            long taskId = Long.parseLong(lzTaskExecRecord.taskId);
+            String taskName = lzTaskExecRecord.taskName;
+            String flowPath = "/lhotse/mr/" + flowExecId;
+            String operation = "MR command";
+            long num = 0L;
+            logger.info("start to create the source record!");
+            LineageRecord lineageRecord = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+            // set lineage record details.
+            lineageRecord.setDatasetInfo(defaultDatabaseId, sourcePath, "hdfs");
+            lineageRecord.setOperationInfo("source", operation, num, num,
+                    num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
+            lineageRecord.setAbstractObjectName(sourcePath);
+            lineageRecord.setFullObjectName(sourcePath);
+            logger.info("the source record is: {}", lineageRecord.toDatabaseValue());
+            lineageRecords.add(lineageRecord);
+
+            logger.info("start to create the target record!");
+            LineageRecord lineageRecord2 = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
+            // set lineage record details.
+            lineageRecord2.setDatasetInfo(defaultDatabaseId, destFilepath, "hdfs");
+            lineageRecord2.setOperationInfo("target", operation, num, num,
                         num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-                lineageRecord.setAbstractObjectName(sourcePath);
-                lineageRecord.setFullObjectName(sourcePath);
-                logger.info("the source record is: {}", lineageRecord.toDatabaseValue());
-                lineageRecords.add(lineageRecord);
-
-                logger.info("start to create the target record!");
-                LineageRecord lineageRecord2 = new LineageRecord(lzTaskExecRecord.appId, flowExecId, taskName, taskId);
-                // set lineage record details.
-                lineageRecord2.setDatasetInfo(defaultDatabaseId, destFilepath, "hdfs");
-                lineageRecord2.setOperationInfo("target", operation, num, num,
-                        num, num, lzTaskExecRecord.taskStartTime, lzTaskExecRecord.taskEndTime, flowPath);
-                lineageRecord2.setAbstractObjectName(destFilepath);
-                lineageRecord2.setFullObjectName(destFilepath);
-                logger.info("the target record is: {}", lineageRecord2.toDatabaseValue());
-                lineageRecords.add(lineageRecord2);
-
-           /* FileSystem fs = FileSystem.get(URI.create(targetfile),conf);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(targetfile))));
-            LineNumberReader  LReader= new LineNumberReader(bufferedReader);
-            LReader.setLineNumber(100);*/
+            lineageRecord2.setAbstractObjectName(destFilepath);
+            lineageRecord2.setFullObjectName(destFilepath);
+            logger.info("the target record is: {}", lineageRecord2.toDatabaseValue());
+            lineageRecords.add(lineageRecord2);
         }catch (Exception e){
             e.printStackTrace();
             logger.info("error happened in collecting lineage record.");
