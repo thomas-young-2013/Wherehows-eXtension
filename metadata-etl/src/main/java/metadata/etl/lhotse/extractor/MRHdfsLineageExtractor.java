@@ -76,6 +76,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
                 logger.info("the sourcePathfiles is ----------------------------------------------------: {}", sourcePathfiles.toArray().toString());
             }catch (Exception e){
                 e.printStackTrace();
+                logger.info("the sourcePathfiles is --------------------------------------------error--------: {}");
             }
             // get all output files.
             try {
@@ -176,18 +177,17 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
             return targetRaw;
         }
     }
-    private boolean isHdfsFile(String path) throws Exception {
-        String [] cmds = {"hdfs", "dfs", "-test", "-f", path, "&&", "echo", "$?"};
+    private static boolean isHdfsFile(String path) throws Exception {
+        String [] cmds = {"hdfs", "dfs", "-ls", path};
         ArrayList<String> results = ProcessUtils.exec(cmds);
         // for debug
         logger.info("the process utils result: {}", results);
         if (results == null || results.size() == 0) {
-            logger.error("process utils: no result get");
-            throw new Exception("process utils: no result get");
+            throw new Exception("getSubFiles: process utils no result get");
         } else {
-            if (results.get(results.size()-1).contains("0")) return true;
+            String [] arg = results.get(results.size()-1).split("\\s+");
+            return arg.length == 8 && arg[7].equals(path);
         }
-        return false;
     }
     private static List<String> getSubFiles(String path) throws Exception {
         String [] cmds = {"hdfs", "dfs", "-ls", path};
