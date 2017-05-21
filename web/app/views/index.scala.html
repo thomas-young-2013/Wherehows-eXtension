@@ -268,13 +268,13 @@
                 type="button"
                 class="btn {{if isTable 'btn-primary'}} {{unless isTable 'btn-default'}}"
                 {{action "setView" "tabular"}}>
-                View As Tabular
+                @Messages("view_as_tabular")
               </button>
               <button
                 type="button"
                 class="btn {{if isJSON 'btn-primary'}} {{unless isJSON 'btn-default'}}"
                 {{action "setView" "json"}}>
-                View As JSON
+               @Messages("view_as_json")
               </button>
             </div>
           </div>
@@ -353,7 +353,7 @@
           {{/each}}
         </div>
       {{else}}
-        <p>Property is not available</p>
+        <p>@Messages("property_is_not_ava")</p>
       {{/if}}
     </script>
 
@@ -408,13 +408,13 @@
       <table class="table table-striped" style="word-break: break-all;">
         <thead>
           <tr>
-            <th class="col-xs-2">User Name</th>
-            <th class="col-xs-2">Full Name</th>
-            <th class="col-xs-1">Owner ID Type</th>
-            <th class="col-xs-1">Owner Source</th>
-            <th class="col-xs-2">Owner Type</th>
-            <th class="col-xs-2">Owner Sub Type</th>
-            <th class="col-xs-1">Confirmed</th>
+            <th class="col-xs-2">@Messages("username")</th>
+            <th class="col-xs-2">@Messages("fullname")</th>
+            <th class="col-xs-1">@Messages("owneridtype")</th>
+            <th class="col-xs-1">@Messages("owner_source")</th>
+            <th class="col-xs-2">@Messages("owner_type")</th>
+            <th class="col-xs-2">@Messages("owne_sub_ype")</th>
+            <th class="col-xs-1">@Messages("confirmed")</th>
             <th class="col-xs-1"></th>
           </tr>
         </thead>

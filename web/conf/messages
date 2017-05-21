@@ -73,3 +73,15 @@ modify_time=Modified Time
 
 job=jobs
 metric=metrics
+
+view_as_json=View As JSON
+view_as_tabular=View As Tabular
+
+fullname=Full Name
+owneridtype=Owner ID Type
+
+property_is_not_ava=Property is not available
+owner_type=Owner Type
+owner_source = Owner Source
+owne_sub_ype = Owner Sub Type
+confirmed = Confirmed

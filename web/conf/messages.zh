@@ -71,3 +71,17 @@ modify_time=修改时间
 
 job=个任务
 metric=个度量
+
+view_as_json=以JSON查看
+view_as_tabular=以表格查看
+
+fullname=全名
+owneridtype=物主ID类型
+owner_type=物主类型
+property_is_not_ava=属性不可用，看看是不是格式或者没有内容
+
+owner_source = 物主源
+
+owne_sub_ype = 物主子类型
+
+confirmed = 确认信息
