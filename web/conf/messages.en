@@ -90,3 +90,7 @@ column = Column
 default_comments = Default Comments
 no_known_owners_for_this_dataset =    No known owners for this dataset
 impact_analysis_is_not_available = Impact analysis is not available
+sample_data_is_not_available = Sample data is not available
+data = Data
+job1 = Job
+accessibility_is_not_available = Accessibility is not available

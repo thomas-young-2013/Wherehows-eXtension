@@ -91,3 +91,7 @@ default_comments = 默认注释
 
 no_known_owners_for_this_dataset =    该数据集的拥有主数据不可用
 impact_analysis_is_not_available = 分析结果不可用
+sample_data_is_not_available = 样本数据不可用
+data = 数据
+job1 = 作业
+accessibility_is_not_available =可用性相关字段属性不可用
