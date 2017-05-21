@@ -637,7 +637,7 @@
     <script type="text/x-handlebars" id="components/dataset-comments">
       <div class="row commentsHeader">
         <div class="col-xs-3">
-        <b>Comments</b>
+        <b>@Messages("comment")</b>
         </div>
         <div
           class="col-xs-6 text-center commentsPagination"
@@ -715,7 +715,7 @@
           {{#if commentsLoading}}
             <i class="fa fa-spinner fa-3x spinning"></i>
           {{else}}
-            No Comments.
+            @Messages("no_comments")
           {{/if}}
         </div>
         {{/if}}
