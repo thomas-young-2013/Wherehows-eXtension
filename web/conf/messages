@@ -88,3 +88,6 @@ confirmed = Confirmed
 data_type = Data Type
 column = Column
 default_comments = Default Comments
+
+no_known_owners_for_this_dataset =    No known owners for this dataset
+impact_analysis_is_not_available = Impact analysis is not available
