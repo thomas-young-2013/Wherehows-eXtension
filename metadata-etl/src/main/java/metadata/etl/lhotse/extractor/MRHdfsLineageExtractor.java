@@ -58,8 +58,9 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
 
             String sourcePathdf = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");
             logger.info("the sourcePathdf is ----------------------------------------------------: {}", sourcePathdf);
-
+            sourcePathdf=sourcePathdf.substring(18);
             String destPathdf = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");
+            destPathdf=destPathdf.substring(18);
             /*String comdest = ".*part.*";
             String destFilepath = this.exeLsHdfs(destDirpath, comdest);*/
             logger.info("the destPathdf is ----------------------------------------------------: {}", destPathdf);
