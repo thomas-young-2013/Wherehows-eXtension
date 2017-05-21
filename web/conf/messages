@@ -85,3 +85,6 @@ owner_type=Owner Type
 owner_source = Owner Source
 owne_sub_ype = Owner Sub Type
 confirmed = Confirmed
+data_type = Data Type
+column = Column
+default_comments = Default Comments

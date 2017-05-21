@@ -85,3 +85,6 @@ owner_source = 物主源
 owne_sub_ype = 物主子类型
 
 confirmed = 确认信息
+data_type = 数据类型
+column = 列
+default_comments = 默认注释
