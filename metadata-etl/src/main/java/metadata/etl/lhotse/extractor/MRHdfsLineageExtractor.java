@@ -93,8 +93,8 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
             }
 
             //analyse file from locallog
-            XmlParser xmlParser2 = new XmlParser(logLocation);
-            long flowExecId = Long.parseLong(xmlParser2.getExtProperty("curRunDate"));
+            //XmlParser xmlParser2 = new XmlParser(logLocation);
+            long flowExecId = lzTaskExecRecord.flowId;
 
 
             //common
