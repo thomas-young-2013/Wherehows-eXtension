@@ -13,6 +13,7 @@
  */
 package metadata.etl.lhotse;
 
+import metadata.etl.lhotse.crawler.BaseCrawler;
 import metadata.etl.lhotse.crawler.LhotseMRLogCrawler;
 import metadata.etl.lhotse.crawler.LhtoseConfCrawler;
 import metadata.etl.lhotse.extractor.*;
@@ -35,8 +36,6 @@ import java.util.List;
 public class LzLineageExtractor {
 
     private static final Logger logger = LoggerFactory.getLogger(LzLineageExtractor.class);
-    public static final String defaultLogLocation = "/usr/local/lhotse_runners/log/";
-
     /**
      * Reference: Get one job's lineage.
      * Process :

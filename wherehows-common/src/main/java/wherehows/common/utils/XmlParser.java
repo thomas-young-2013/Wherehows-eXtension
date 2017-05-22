@@ -56,7 +56,7 @@ public class XmlParser {
             Element element = doc.getRootElement();
             for (int i=0; i<parts.length-1; i++) {
                 if (parts[i].equals("globalParameters") || parts[i].equals("extProperties")) {
-                    element = element.getChild(parts[i]);
+                    element = element.getChild(parts[i]); //extProperties
                     List<Element> elements = element.getChildren();
                     for (Element element1: elements) {
                         List<Element> elements1 = element1.getChildren();
@@ -77,6 +77,27 @@ public class XmlParser {
                 return element.getChild(parts[partSize-1]).getText();
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public String getExtProperty2(String key) {
+        if (doc == null) return null;
+        try {
+            String []parts = key.split("/");
+            int partSize = parts.length;
+            Element element = doc.getRootElement();
+            List<Element> elements = element.getChildren();
+            for (Element element1: elements) {
+                List<Element> elements1 = element1.getChildren();
+                if (elements1.size() != 4) logger.error("error: size != 4");
+                if (elements1.get(0).getText().equals(parts[partSize - 1])) {
+                    return elements1.get(1).getText();
+                }
+            }
+            return null;
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;
