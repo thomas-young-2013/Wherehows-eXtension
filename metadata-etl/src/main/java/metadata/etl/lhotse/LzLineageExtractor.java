@@ -13,6 +13,8 @@
  */
 package metadata.etl.lhotse;
 
+import metadata.etl.lhotse.crawler.LhotseMRLogCrawler;
+import metadata.etl.lhotse.crawler.LhtoseConfCrawler;
 import metadata.etl.lhotse.extractor.*;
 import wherehows.common.utils.FileOperator;
 import wherehows.common.utils.SshUtils;
@@ -50,54 +52,8 @@ public class LzLineageExtractor {
 
         List<LineageRecord> jobLineage = new ArrayList<>();
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
-        String localLogLocation = null;
+        String localLogLocation = new LhtoseConfCrawler().getRemoteLog(message);
         String logPath = null;
-
-        if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
-            // the full path
-            localLogLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
-            localLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-            // find the latest file name.
-            String fileName = FileOperator.getOneLogFile(localLogLocation);
-            localLogLocation += "/" + fileName;
-        } else {
-            String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
-            String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
-            String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
-            // in remote mode, this field stands for the local dir to store the log files.
-            String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
-
-            // move the log file from remote host to local host
-            String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
-            remoteLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
-            // get the file list in the remote directory.
-            String fileList = SshUtils.exec(remoteHost, remoteUser, keyLocation, "ls " + remoteLogLocation);
-            String []files = fileList.split(" ");
-            if (files.length > 0) {
-                Arrays.sort(files);
-            } else {
-                logger.error("no log file found! task_id is: {}", message.lzTaskExecRecord.taskId);
-                return jobLineage;
-            }
-            // prepare the remote log file.
-            String remoteLogFileName = files[files.length - 1];
-            String remoteLogFile = String.format("%s/%s", remoteLogLocation, remoteLogFileName);
-            // prepare the local log file.
-            localLogFile += String.format("tasklog/%d/%s/", lzRecord.taskType, lzRecord.taskId);
-            new File(localLogFile).mkdirs();
-
-            // fetch the remote log file to local directory.
-            logger.info("local log directory is: {}", localLogFile);
-            SshUtils.fileFetch(remoteHost, remoteUser, keyLocation, remoteLogFile, localLogFile);
-            localLogLocation = localLogFile + remoteLogFileName;
-        }
-
-        // for debug.
-        if (localLogLocation == null) {
-            logger.error("log file location error!");
-        } else {
-            logger.info("log file to parse: {}", localLogLocation);
-        }
 
         BaseLineageExtractor lineageExtractor = null;
         switch (lzRecord.taskType) {
@@ -111,6 +67,7 @@ public class LzLineageExtractor {
                 lineageExtractor = new Hdfs2HiveLineageExtractor();
                 break;
             case 92:
+                logPath = new LhotseMRLogCrawler().getRemoteLog(message);
                 lineageExtractor = new MRCommandLineageExtractor();
                 break;
             case 39:
