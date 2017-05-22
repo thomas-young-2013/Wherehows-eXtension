@@ -158,7 +158,7 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
 			"JOIN job_execution je on jedl.flow_exec_id = je.flow_exec_id and jedl.job_exec_id = je.job_exec_id " +
 			"JOIN flow_job fj on je.app_id = fj.app_id and je.flow_id = fj.flow_id and je.job_id = fj.job_id " +
-			"WHERE jedl.app_id = ? and jedl.flow_exec_id = ? and " +
+			"WHERE jedl.app_id != ? and jedl.flow_exec_id = ? and " +
 			"FROM_UNIXTIME(job_finished_unixtime) >  CURRENT_DATE - INTERVAL ? DAY";
 
 	private final static String GET_LATEST_FLOW_EXEC_ID = "SELECT max(flow_exec_id) FROM " +
