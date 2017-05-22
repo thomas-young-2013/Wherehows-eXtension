@@ -67,7 +67,7 @@ public class LzLineageExtractor {
                 break;
             case 92:
                 logPath = new LhotseMRLogCrawler().getRemoteLog(message);
-                lineageExtractor = new MRCommandLineageExtractor();
+                lineageExtractor = new MRHdfsLineageExtractor();
                 break;
             case 39:
                 lineageExtractor = new SparkSubmitLineageExtractor();
