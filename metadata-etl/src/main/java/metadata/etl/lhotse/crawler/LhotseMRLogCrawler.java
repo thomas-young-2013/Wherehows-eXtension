@@ -39,26 +39,25 @@ public class LhotseMRLogCrawler implements BaseCrawler {
             remoteLogPath += String.format("%d/%s/%s", lzRecord.taskType,
                     lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
             // get the file list in the remote directory.
-            String fileList2 = SshUtils.exec(remoteHost, remoteUser, keyLocation, "ls " + remoteLogPath);
-            String []files2 = fileList2.split(" ");
-            if (files2.length > 0) {
-                Arrays.sort(files2);
+            String fileList = SshUtils.exec(remoteHost, remoteUser, keyLocation, "ls " + remoteLogPath);
+            String []files = fileList.split(" ");
+            if (files.length > 0) {
+                Arrays.sort(files);
             } else {
                 logger.error("no log file found! task_id is: {}", message.lzTaskExecRecord.taskId);
                 return null;
             }
             // prepare the remote log file.
-            String remoteLogFileName2 = files2[files2.length - 1];
-            String remoteLogFile2 = String.format("%s/%s", remoteLogPath, remoteLogFileName2);
+            String remoteLogFileName = files[files.length - 1];
+            String remoteLogFile = String.format("%s/%s", remoteLogPath, remoteLogFileName);
             // prepare the local log file.
             localLogPathFile += String.format("%d/%s/%s/", lzRecord.taskType,
                     lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
             new File(localLogPathFile).mkdirs();
-
             // fetch the remote log file to local directory.
             logger.info("local log directory is: {}", localLogPathFile);
-            SshUtils.fileFetch(remoteHost, remoteUser, keyLocation, remoteLogFile2, localLogPathFile);
-            logPath = localLogPathFile + remoteLogFileName2;
+            SshUtils.fileFetch(remoteHost, remoteUser, keyLocation, remoteLogFile, localLogPathFile);
+            logPath = localLogPathFile + remoteLogFileName;
         }
         if (logPath == null) {
             logger.error("log file location error!");

@@ -27,14 +27,14 @@ public class CSVFileAnalyzer extends FileAnalyzer {
         STORAGE_TYPE = "csv";
     }
 
-    public List<String[]> getLineTOData(Path path, int lineNo) throws IOException {
+    public List<String[]> getLineToData(Path path, int lineNo) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(path)));
         LineNumberReader reader = new LineNumberReader(br);
         reader.setLineNumber(lineNo);
         String str = "";
         List<String[]> lls = new ArrayList<String[]>();
         if (lineNo == 1 && (str = reader.readLine()) != null) {
-            if(str.indexOf(",")>0) {                                   //sean_5.11
+            if(str.indexOf(",")>0) {
                 lls.add(str.split(","));
             }else{
                 lls.add(str.split("\t"));
@@ -59,13 +59,13 @@ public class CSVFileAnalyzer extends FileAnalyzer {
         DatasetJsonRecord datasetJsonRecord = null;
         try {
             StringBuilder JsonObjectList = new StringBuilder();
-            List lsList = this.getLineTOData(targetFilePath, 1);
+            List lsList = this.getLineToData(targetFilePath, 1);
             String[] lsString = (String[]) lsList.get(0);
             for (String realName : lsString) {
                 if (realName.indexOf("\"")>=0){
-                    JsonObjectList.append("{\"name\": " + realName + ", \"type\": \"string\"},"); //sean_5.11
+                    JsonObjectList.append("{\"name\": " + realName + ", \"type\": \"string\"},");
                 }else {
-                    JsonObjectList.append("{\"name\": \"" + realName + "\", \"type\": \"string\"},"); //4.28
+                    JsonObjectList.append("{\"name\": \"" + realName + "\", \"type\": \"string\"},");
                 }
             }
             JsonObjectList.deleteCharAt(JsonObjectList.length() - 1);
@@ -82,15 +82,14 @@ public class CSVFileAnalyzer extends FileAnalyzer {
             LOG.error("path : {} content " + " is not CSV File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
         }
-
         return datasetJsonRecord;
     }
 
     public SampleDataRecord getSampleData(Path targetFilePath) throws IOException {
         SampleDataRecord sampleDataRecord = null;
         try {
-            List lsList1 = this.getLineTOData(targetFilePath, 1);
-            List lsList2 = this.getLineTOData(targetFilePath, 2);
+            List lsList1 = this.getLineToData(targetFilePath, 1);
+            List lsList2 = this.getLineToData(targetFilePath, 2);
             List<Object> list = new ArrayList<>();
             String[] lsString = (String[]) lsList1.get(0);
             StringBuilder lineSample = new StringBuilder();
@@ -99,12 +98,12 @@ public class CSVFileAnalyzer extends FileAnalyzer {
                 for (int j = 0; j < lsString.length; j++) {
                     lsString2 = (String[]) lsList2.get(i);
                     if (lsString[j].indexOf("\"")>=0||lsString2[j].indexOf("\"")>=0){
-                        lineSample.append(lsString[j] + ": " + lsString2[j] + ","); //sean_5.11
+                        lineSample.append(lsString[j] + ": " + lsString2[j] + ",");
                     }else {
                         lineSample.append("\"" + lsString[j] + "\": \"" + lsString2[j] + "\",");
                     }
                 }
-                lineSample.deleteCharAt(lineSample.length() - 1); //4.28
+                lineSample.deleteCharAt(lineSample.length() - 1);
                 list.add("{" + lineSample + "}");
                 lineSample.delete(0, lineSample.length());
             }
@@ -114,7 +113,6 @@ public class CSVFileAnalyzer extends FileAnalyzer {
             LOG.error("path : {} content " + " is not CSV File format content  ",targetFilePath.toUri().getPath());
             LOG.info(e.getStackTrace().toString());
         }
-
         return sampleDataRecord;
     }
 }

@@ -81,7 +81,7 @@ public class XmlParser {
         }
         return null;
     }
-    public String getExtProperty2(String key) {
+    public String getExtPropertyMr(String key) {
         if (doc == null) return null;
         try {
             String []parts = key.split("/");
