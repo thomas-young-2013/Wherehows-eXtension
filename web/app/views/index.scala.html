@@ -152,11 +152,11 @@
                   <li class="next">
                     {{#if urn}}
                       {{#link-to 'subpage' currentName nextPage (query-params urn=urn)}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'page' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -903,16 +903,16 @@
                   <li class="next">
                     {{#if group}}
                       {{#link-to 'metricnamesubpage' dashboard group nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#if dashboard}}
                       {{#link-to 'metricnamepage' dashboard nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                       {{else}}
                       {{#link-to 'metricspage' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                       {{/if}}
                     {{/if}}
@@ -1097,7 +1097,7 @@
                   {{#unless last}}
                     <li class="next">
                           {{#link-to 'search' (query-params categroy=category source=source page=nextPage)}}
-                            Next &rarr;
+                            @Messages("next")
                           {{/link-to}}
                     </li>
                   {{/unless}}
@@ -1211,7 +1211,7 @@
                 {{#unless last}}
                   <li class="next">
                     {{#link-to 'advsearch' (query-params page=nextPage)}}
-                      Next &rarr;
+                      @Messages("next")
                     {{/link-to}}
                   </li>
                 {{/unless}}
@@ -1334,11 +1334,11 @@
                   <li class="next">
                     {{#if queryParams}}
                       {{#link-to 'flowssubpage' currentName nextPage (query-params urn=queryParams)}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'flowspage' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -1429,7 +1429,7 @@
                     <a target="_blank" href={{lineageUrl}}>
                       <i class="fa fa-sitemap"></i>
                       <span class="hidden-sm hidden-xs">
-                        View Lineage
+                        @Messages("lineage")
                       </span>
                     </a>
                   </li>
@@ -1451,7 +1451,7 @@
                 {{#unless last}}
                   <li class="next">
                     {{#link-to 'pagedflow' nextPage (query-params urn=urn)}}
-                      Next &rarr;
+                      @Messages("next")
                     {{/link-to}}
                   </li>
                 {{/unless}}
@@ -1460,11 +1460,11 @@
             <table class="table table-bordered search-results">
               <thead>
                 <tr class="results-header">
-                  <th class="span3">Job Path</th>
-                  <th class="span2">Job Name</th>
-                  <th class="span1">Job Type</th>
-                  <th class="span3">Created Time</th>
-                  <th class="span3">Modified Time</th>
+                  <th class="span3">@Messages("job_path")</th>
+                  <th class="span2">@Messages("job_name")</th>
+                  <th class="span1">@Messages("job_type")</th>
+                  <th class="span3">@Messages("created_time")</th>
+                  <th class="span3">@Messages("modified_time")</th>
                 </tr>
               </thead>
               <tbody>

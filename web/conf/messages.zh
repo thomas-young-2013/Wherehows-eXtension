@@ -96,3 +96,11 @@ data = 数据
 job1 = 作业
 accessibility_is_not_available =可用性相关字段属性不可用
 no_comments = 没有评论可用
+next = 下一页
+
+job_path = 作业路径
+job_name = 作业名称
+job_type =作业类型
+created_time = 创建时间
+modified_time = 修改时间
+
