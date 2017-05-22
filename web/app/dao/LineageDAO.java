@@ -164,6 +164,15 @@ public class LineageDAO extends AbstractMySQLOpenSourceDAO
 	private final static String GET_LATEST_FLOW_EXEC_ID = "SELECT max(flow_exec_id) FROM " +
 			"flow_execution where flow_exec_status in ('SUCCEEDED', 'FINISHED') and app_id = ? and flow_id = ?";
 
+	/*private final static String GET_FLOW_DATA_LINEAGE = "SELECT ca.app_code, jedl.job_exec_id, jedl.job_name, " +
+			"jedl.storage_type, jedl.abstracted_object_name, jedl.source_target_type, jedl.record_count, " +
+			"jedl.app_id, jedl.partition_type, jedl.operation, jedl.partition_start, " +
+			"jedl.partition_end, jedl.full_object_name, " +
+			"FROM_UNIXTIME(jedl.job_start_unixtime) as start_time, " +
+			"FROM_UNIXTIME(jedl.job_finished_unixtime) as end_time FROM job_execution_data_lineage jedl " +
+			"JOIN cfg_application ca on ca.app_id = jedl.app_id " +
+			"WHERE jedl.app_id = ? and jedl.flow_exec_id = ? ORDER BY jedl.partition_end DESC";*/
+
 	private final static String GET_FLOW_DATA_LINEAGE = "SELECT ca.app_code, jedl.job_exec_id, jedl.job_name, " +
 			"jedl.storage_type, jedl.abstracted_object_name, jedl.source_target_type, jedl.record_count, " +
 			"jedl.app_id, jedl.partition_type, jedl.operation, jedl.partition_start, " +
