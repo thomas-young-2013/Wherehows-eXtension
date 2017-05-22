@@ -13,21 +13,16 @@
  */
 package metadata.etl.lhotse;
 
-import metadata.etl.lhotse.crawler.BaseCrawler;
 import metadata.etl.lhotse.crawler.LhotseMRLogCrawler;
 import metadata.etl.lhotse.crawler.LhtoseConfCrawler;
 import metadata.etl.lhotse.extractor.*;
-import wherehows.common.utils.FileOperator;
-import wherehows.common.utils.SshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
 import wherehows.common.LineageCombiner;
 import wherehows.common.schemas.LineageRecord;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,7 +62,7 @@ public class LzLineageExtractor {
                 break;
             case 92:
                 logPath = new LhotseMRLogCrawler().getRemoteLog(message);
-                lineageExtractor = new MRHdfsLineageExtractor();
+                lineageExtractor = new MRSubmitLineageExtractor();
                 break;
             case 39:
                 lineageExtractor = new SparkSubmitLineageExtractor();

@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
 /**
  * Created by jiahuilliu on 5/17/17.
  */
-public class MRHdfsLineageExtractor implements BaseLineageExtractor {
+public class MRSubmitLineageExtractor implements BaseLineageExtractor {
 
-    private static final Logger logger = LoggerFactory.getLogger(MRHdfsLineageExtractor.class);
+    private static final Logger logger = LoggerFactory.getLogger(MRSubmitLineageExtractor.class);
 
     @Override
     public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
@@ -37,33 +37,27 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
             LineNumberReader reader = new LineNumberReader(br);
             reader.setLineNumber(60);
             String str = "";
-            String jobmark = "";  //info from logfile in location
-            while ((jobmark = getJob_mark(reader.readLine())) != null) {
+            // info from logfile in location
+            String jobmark = "";
+            while ((jobmark = getJobMark(reader.readLine())) != null) {
                 break;
             }
             String targetfile = "/mr-history/done/";
-
-            //get conf.xml by log info
+            // get conf.xml by log info
             String realcom = ".*" + jobmark + "_conf.xml";
-            String targetRaw = this.exeLsHdfs(targetfile, realcom);
-
-            //get conf.xml from hdfs to local
+            String targetRaw = this.execHdfsCommand(targetfile, realcom);
+            // get conf.xml from hdfs to local
             String[] cmdsget = {"hdfs", "dfs", "-get", targetRaw, "/tmp"};
             ArrayList<String> nullresults = ProcessUtils.exec(cmdsget);
-
-            //analyse xml file from hdfs
-            XmlParser xmlParser = new XmlParser("/tmp/" + targetRaw.substring(targetRaw.length() - 31));                                 //length =31
-            logger.info("get info xml----------------------: {}", "/tmp/" + targetRaw.substring(targetRaw.length() - 31));
-
-            String sourcePathdf = xmlParser.getExtProperty2("configuration/property/mapreduce.input.fileinputformat.inputdir");
-            logger.info("the sourcePathdf is ----------------------------------------------------: {}", sourcePathdf);
+            // analyse xml file from hdfs
+            XmlParser xmlParser = new XmlParser("/tmp/" + targetRaw.substring(targetRaw.length() - 31));
+            logger.info("get info xml : {}", "/tmp/" + targetRaw.substring(targetRaw.length() - 31));
+            String sourcePathdf = xmlParser.getExtPropertyMr("configuration/property/mapreduce.input.fileinputformat.inputdir");
+            logger.info("the sourcePathdf is : {}", sourcePathdf);
             sourcePathdf=sourcePathdf.substring(18);
-            String destPathdf = xmlParser.getExtProperty2("configuration/property/mapreduce.output.fileoutputformat.outputdir");
+            String destPathdf = xmlParser.getExtPropertyMr("configuration/property/mapreduce.output.fileoutputformat.outputdir");
             destPathdf=destPathdf.substring(18);
-            /*String comdest = ".*part.*";
-            String destFilepath = this.exeLsHdfs(destDirpath, comdest);*/
-            logger.info("the destPathdf is ----------------------------------------------------: {}", destPathdf);
-
+            logger.info("the destPathdf is : {}", destPathdf);
             // get all input files.
             ArrayList<String> sourcePathfiles = new ArrayList<>();
             List<String> destPathfiles = new ArrayList<>();
@@ -73,34 +67,28 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
                 }else {
                     sourcePathfiles.addAll(getSubFiles(sourcePathdf));
                 }
-                logger.info("the sourcePathfiles is ----------------------------------------------------: {}", sourcePathfiles.toArray().toString());
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
-                logger.info("the sourcePathfiles is --------------------------------------------error--------: {}");
             }
             // get all output files.
             try {
                 if (isHdfsFile(destPathdf)){
                     destPathfiles.add(destPathdf);
-                }
-                else {
+                }else {
                     destPathfiles.addAll(getSubFiles(destPathdf));
                 }
-                logger.info("the destPathfiles is ----------------------------------------------------: {}", destPathfiles.toArray().toString());
+                logger.info("the destPathfiles is : {}", destPathfiles.toArray().toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 return lineageRecords;
             }
-
-            //analyse file from locallog
+            // analyse file from locallog
             //XmlParser xmlParser2 = new XmlParser(logLocation);
             long flowExecId = lzTaskExecRecord.flowId;
 
-
-            //common
+            // common
             long taskId = Long.parseLong(lzTaskExecRecord.taskId);
             String taskName = lzTaskExecRecord.taskName;
-            //String flowPath = "/lhotse/mr/" + flowExecId;
             String flowPath = String.format("%s:%s", lzTaskExecRecord.projectName, lzTaskExecRecord.workflowName);
             String operation = "MR command";
             long num = 0L;
@@ -136,7 +124,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
         return lineageRecords;
     }
 
-    private String getJob_mark(String str) {
+    private String getJobMark(String str) {
         Pattern pattern = Pattern.compile(".*+(job_\\d+_\\d+)");
         Matcher RLine = pattern.matcher(str);
         String job_mark;
@@ -147,7 +135,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
         return null;
     }
 
-    private boolean isJob_mark(String str, String com) {
+    private boolean findJobMark(String str, String com) {
         Pattern pattern = Pattern.compile(com);
         Matcher RLine = pattern.matcher(str);
         if (RLine.find()) {
@@ -156,7 +144,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
         return false;
     }
 
-    private String exeLsHdfs(String path, String com) {
+    private String execHdfsCommand(String path, String com) {
         String[] cmds = {"hdfs", "dfs", "-lsr", path};
         ArrayList<String> results = ProcessUtils.exec(cmds);
         if (results == null || results.size() == 0) {
@@ -170,13 +158,14 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
                 raw = results.get(i);
                 tmps = raw.split(" ");
                 targetRaw = tmps[tmps.length - 1];
-                if (this.isJob_mark(targetRaw, com)) {
+                if (this.findJobMark(targetRaw, com)) {
                     break;
                 }
             }
             return targetRaw;
         }
     }
+
     private static boolean isHdfsFile(String path) throws Exception {
         String [] cmds = {"hdfs", "dfs", "-ls", path};
         ArrayList<String> results = ProcessUtils.exec(cmds);
@@ -189,6 +178,7 @@ public class MRHdfsLineageExtractor implements BaseLineageExtractor {
             return arg.length == 8 && arg[7].equals(path);
         }
     }
+
     private static List<String> getSubFiles(String path) throws Exception {
         String [] cmds = {"hdfs", "dfs", "-ls", path};
         ArrayList<String> results = ProcessUtils.exec(cmds);
