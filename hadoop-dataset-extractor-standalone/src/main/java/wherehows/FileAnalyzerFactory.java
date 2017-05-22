@@ -42,8 +42,8 @@ public class FileAnalyzerFactory {
         allFileAnalyzer.add(new OrcFileAnalyzer(fs));
         allFileAnalyzer.add(new XMLFileAnalyzer(fs));
         allFileAnalyzer.add(new SequenceFileAnalyzer(fs));
-        allFileAnalyzer.add(new CSVFileAnalyzer(fs));
         allFileAnalyzer.add(new JSONFileAnalyzer(fs));
+        allFileAnalyzer.add(new CSVFileAnalyzer(fs));
     }
 
     // iterate through all possibilities
