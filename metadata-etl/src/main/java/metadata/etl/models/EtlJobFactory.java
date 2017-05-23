@@ -15,6 +15,7 @@ package metadata.etl.models;
 
 import java.util.Properties;
 import metadata.etl.EtlJob;
+import metadata.etl.dataset.hbase.HBaseMetadataEtl;
 import metadata.etl.dataset.hdfs.HdfsMetadataEtl;
 import metadata.etl.dataset.hive.HiveMetadataEtl;
 import metadata.etl.dataset.oracle.OracleMetadataEtl;
@@ -47,6 +48,8 @@ public class EtlJobFactory {
         return new OozieExecEtl(refId, whExecId, properties);
       case HADOOP_DATASET_METADATA_ETL:
         return new HdfsMetadataEtl(refId, whExecId, properties);
+      case HBASE_DATASET_METADATA_ETL:
+        return new HBaseMetadataEtl(refId, whExecId, properties);
       case TERADATA_DATASET_METADATA_ETL:
         return new TeradataMetadataEtl(refId, whExecId, properties);
       case AZKABAN_LINEAGE_METADATA_ETL:

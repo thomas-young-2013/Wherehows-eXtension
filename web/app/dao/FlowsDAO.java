@@ -347,12 +347,12 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 						Object created = row.get("created_time");
 						if (created != null)
 						{
-							flow.created = created.toString();
+							flow.created = DateFormat.format(created.toString());
 						}
 						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
-							flow.modified = row.get("modified_time").toString();
+							flow.modified = DateFormat.format(row.get("modified_time").toString());
 						}
 
 						int jobCount = 0;

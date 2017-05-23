@@ -152,11 +152,11 @@
                   <li class="next">
                     {{#if urn}}
                       {{#link-to 'subpage' currentName nextPage (query-params urn=urn)}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'page' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -268,13 +268,13 @@
                 type="button"
                 class="btn {{if isTable 'btn-primary'}} {{unless isTable 'btn-default'}}"
                 {{action "setView" "tabular"}}>
-                View As Tabular
+                @Messages("view_as_tabular")
               </button>
               <button
                 type="button"
                 class="btn {{if isJSON 'btn-primary'}} {{unless isJSON 'btn-default'}}"
                 {{action "setView" "json"}}>
-                View As JSON
+               @Messages("view_as_json")
               </button>
             </div>
           </div>
@@ -282,13 +282,13 @@
         <table id="json-table" class="columntreegrid tree table table-bordered dataset-detail-table">
           <thead>
             <tr class="results-header">
-              <th style="min-width: 200px;" class="col-xs-2">Column</th>
-              <th class="col-xs-1">Data Type</th>
+              <th style="min-width: 200px;" class="col-xs-2">@Messages("column")</th>
+              <th class="col-xs-1">@Messages("data_type")</th>
               <th title="Is nullable" style="width:15px;">N</th>
               <th title="Is indexed" style="width:15px;">I</th>
               <th title="Is partitioned" style="width:15px;">P</th>
               <th title="Is distributed" style="width:15px;">D</th>
-              <th class="col-xs-7"> Default Comments</th>
+              <th class="col-xs-7"> @Messages("default_comments")</th>
               <th title="Comment Count" style="width:15px;">
                 <i class="fa fa-comments" title="Comment Count"></i>
               </th>
@@ -353,7 +353,7 @@
           {{/each}}
         </div>
       {{else}}
-        <p>Property is not available</p>
+        <p>@Messages("property_is_not_ava")</p>
       {{/if}}
     </script>
 
@@ -382,7 +382,7 @@
       {{/if}}
     </header>
   {{else}}
-    No known owners for this dataset
+  @Messages("no_known_owners_for_this_dataset")
   {{/if}}
 </script>
 
@@ -408,13 +408,13 @@
       <table class="table table-striped" style="word-break: break-all;">
         <thead>
           <tr>
-            <th class="col-xs-2">User Name</th>
-            <th class="col-xs-2">Full Name</th>
-            <th class="col-xs-1">Owner ID Type</th>
-            <th class="col-xs-1">Owner Source</th>
-            <th class="col-xs-2">Owner Type</th>
-            <th class="col-xs-2">Owner Sub Type</th>
-            <th class="col-xs-1">Confirmed</th>
+            <th class="col-xs-2">@Messages("username")</th>
+            <th class="col-xs-2">@Messages("fullname")</th>
+            <th class="col-xs-1">@Messages("owneridtype")</th>
+            <th class="col-xs-1">@Messages("owner_source")</th>
+            <th class="col-xs-2">@Messages("owner_type")</th>
+            <th class="col-xs-2">@Messages("owne_sub_ype")</th>
+            <th class="col-xs-1">@Messages("confirmed")</th>
             <th class="col-xs-1"></th>
           </tr>
         </thead>
@@ -476,7 +476,7 @@
           <div id="datasetSampleData-json-human" class="table-responsive"></div>
         {{/if}}
       {{else}}
-        <p>Sample data is not available</p>
+        <p>@Messages("sample_data_is_not_available")</p>
       {{/if}}
     </script>
 
@@ -509,7 +509,7 @@
           </tbody>
         </table>
       {{else}}
-        <p>Impact analysis is not available</p>
+        <p>@Messages("impact_analysis_is_not_available")</p>
       {{/if}}
     </script>
 
@@ -726,7 +726,7 @@
             <h4 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion"
                 href="#properties" aria-expanded="true" aria-controls="properties">
-                Properties
+                @Messages("properties")
               </a>
             </h4>
           </div>
@@ -746,7 +746,7 @@
             <h4 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion"
                 href="#comments" aria-expanded="true" aria-controls="comments">
-                Comments
+                @Messages("comment")
               </a>
             </h4>
           </div>
@@ -763,7 +763,7 @@
             <h4 class="panel-title">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                href="#schema" aria-expanded="false" aria-controls="schema">
-                Schema
+                @Messages("schema")
               </a>
             </h4>
           </div>
@@ -780,7 +780,7 @@
             <h4 class="panel-title">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                 href="#ownership" aria-expanded="false" aria-controls="ownership">
-                Ownership
+               @Messages("ownership")
               </a>
             </h4>
           </div>
@@ -802,7 +802,7 @@
             <h4 class="panel-title">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                href="#sampleData" aria-expanded="false" aria-controls="sampleData">
-                Sample Data
+               @Messages("sample_data")
               </a>
             </h4>
           </div>
@@ -821,7 +821,7 @@
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                href="#impactAnalysis" title="Down Stream Impact Analysis"
                aria-expanded="false" aria-controls="sampleData">
-                Downstream
+                @Messages("downstream")
               </a>
             </h4>
           </div>
@@ -838,7 +838,7 @@
             <h4 class="panel-title">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                href="#dependsview" aria-expanded="false" aria-controls="sampleData">
-                Relations
+                @Messages("relation")
               </a>
             </h4>
           </div>
@@ -855,7 +855,7 @@
             <h4 class="panel-title">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                href="#accessview" aria-expanded="false" aria-controls="accessData">
-                Accessiblities
+                @Messages("accessibility")
               </a>
             </h4>
           </div>
@@ -903,16 +903,16 @@
                   <li class="next">
                     {{#if group}}
                       {{#link-to 'metricnamesubpage' dashboard group nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#if dashboard}}
                       {{#link-to 'metricnamepage' dashboard nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                       {{else}}
                       {{#link-to 'metricspage' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                       {{/if}}
                     {{/if}}
@@ -1097,7 +1097,7 @@
                   {{#unless last}}
                     <li class="next">
                           {{#link-to 'search' (query-params categroy=category source=source page=nextPage)}}
-                            Next &rarr;
+                            @Messages("next")
                           {{/link-to}}
                     </li>
                   {{/unless}}
@@ -1211,7 +1211,7 @@
                 {{#unless last}}
                   <li class="next">
                     {{#link-to 'advsearch' (query-params page=nextPage)}}
-                      Next &rarr;
+                      @Messages("next")
                     {{/link-to}}
                   </li>
                 {{/unless}}
@@ -1334,11 +1334,11 @@
                   <li class="next">
                     {{#if queryParams}}
                       {{#link-to 'flowssubpage' currentName nextPage (query-params urn=queryParams)}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'flowspage' nextPage}}
-                        Next &rarr;
+                        @Messages("next")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -1429,7 +1429,7 @@
                     <a target="_blank" href={{lineageUrl}}>
                       <i class="fa fa-sitemap"></i>
                       <span class="hidden-sm hidden-xs">
-                        View Lineage
+                        @Messages("lineage")
                       </span>
                     </a>
                   </li>
@@ -1451,7 +1451,7 @@
                 {{#unless last}}
                   <li class="next">
                     {{#link-to 'pagedflow' nextPage (query-params urn=urn)}}
-                      Next &rarr;
+                      @Messages("next")
                     {{/link-to}}
                   </li>
                 {{/unless}}
@@ -1460,11 +1460,11 @@
             <table class="table table-bordered search-results">
               <thead>
                 <tr class="results-header">
-                  <th class="span3">Job Path</th>
-                  <th class="span2">Job Name</th>
-                  <th class="span1">Job Type</th>
-                  <th class="span3">Created Time</th>
-                  <th class="span3">Modified Time</th>
+                  <th class="span3">@Messages("job_path")</th>
+                  <th class="span2">@Messages("job_name")</th>
+                  <th class="span1">@Messages("job_type")</th>
+                  <th class="span3">@Messages("created_time")</th>
+                  <th class="span3">@Messages("modified_time")</th>
                 </tr>
               </thead>
               <tbody>
