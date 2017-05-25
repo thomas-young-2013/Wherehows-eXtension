@@ -1,6 +1,9 @@
 package metadata.etl.dataset.hbase;
 
 import metadata.etl.EtlJob;
+import org.apache.hadoop.hbase.TableName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wherehows.common.Constant;
 
 import java.io.*;
@@ -10,6 +13,8 @@ import java.util.Properties;
  * Created by thomas young on 5/22/17.
  */
 public class HBaseMetadataEtl extends EtlJob {
+    private static final Logger LOG = LoggerFactory.getLogger(HBaseMetadataEtl.class);
+
 
     @Deprecated
     public HBaseMetadataEtl(Integer dbId, Long whExecId) {
@@ -24,7 +29,7 @@ public class HBaseMetadataEtl extends EtlJob {
     public void extract()
             throws Exception {
         logger.info("Begin hbase metadata extract! - " + prop.getProperty(Constant.WH_EXEC_ID_KEY));
-
+        doExtractHBase();
     }
 
     @Override
@@ -46,5 +51,22 @@ public class HBaseMetadataEtl extends EtlJob {
         interpreter.execfile(inputStream);
         inputStream.close();
         logger.info("hbase metadata load finished : " + prop.getProperty(Constant.WH_EXEC_ID_KEY));
+    }
+
+
+    private void doExtractHBase() throws IOException {
+
+
+        LOG.info("start to get hbase metadata!");
+        HBaseMetaHelper metaHelper = new HBaseMetaHelper();
+        TableName[] allTables = metaHelper.getAllTables();
+        for (TableName tableName : allTables) {
+            metaHelper.extractTableInfo(tableName);
+        }
+
+        metaHelper.dataFlush();
+        metaHelper.close();
+
+        LOG.info("hbase all table get success!");
     }
 }
