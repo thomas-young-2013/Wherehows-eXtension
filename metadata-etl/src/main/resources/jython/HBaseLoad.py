@@ -59,12 +59,8 @@ class HBaseLoad:
         where db_id = {db_id};
         
         update stg_dict_dataset
-        set parent_name =
-         case
-           when urn like 'hdfs:///data/external/gobblin/%'
-           then substring_index(substring_index(urn, '/', 2), '/', -1)
-         end
-        where db_id = {db_id} and parent_name = null ;
+        set parent_name = substring_index(substring_index(urn, '/', 2), '/', -1)
+        where db_id = {db_id};
         
         DELETE FROM stg_dict_dataset_instance WHERE db_id = {db_id};
         INSERT INTO stg_dict_dataset_instance
