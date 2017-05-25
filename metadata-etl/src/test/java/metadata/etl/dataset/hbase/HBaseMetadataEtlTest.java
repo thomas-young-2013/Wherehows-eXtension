@@ -4,6 +4,8 @@ import metadata.etl.dataset.hdfs.HdfsMetadataEtl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.File;
+
 /**
  * Created by lake on 17-5-25.
  */
@@ -16,10 +18,12 @@ public class HBaseMetadataEtlTest {
         ds = new HBaseMetadataEtl(2, 0L);
     }
 
-    @Test(groups = {"needConfig"})
+    @Test
     public void testRun()
             throws Exception {
         ds.run();
+        File file = new File("/usr/tmp/hbase-data/hbase_meta");
+        assert file.exists() == true;
     }
 
     @Test(groups = {"needConfig"})
