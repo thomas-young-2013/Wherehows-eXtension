@@ -402,9 +402,9 @@ if __name__ == "__main__":
   JDBC_DRIVER = args[Constant.WH_DB_DRIVER_KEY]
   JDBC_URL = args[Constant.WH_DB_URL_KEY]
 
-  l.input_file = args["/var/tmp/wherehows/hbase_meta"]
-  l.input_field_file = args["/var/tmp/wherehows/hbase_field_meta"]
-  l.input_sample_file = args["/var/tmp/wherehows/hbase_sample"]
+  l.input_file = "/var/tmp/wherehows/hbase_meta"
+  l.input_field_file = "/var/tmp/wherehows/hbase_field_meta"
+  l.input_sample_file = "/var/tmp/wherehows/hbase_sample"
 
   l.db_id = args[Constant.DB_ID_KEY]
   l.wh_etl_exec_id = args[Constant.WH_EXEC_ID_KEY]

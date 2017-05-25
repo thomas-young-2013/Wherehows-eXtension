@@ -37,8 +37,8 @@ public class HBaseMetaHelper {
     private Connection con;
     private FileWriter schemaFileWriter;
     private FileWriter sampleFileWriter;
-    private final String META_DIR = "/tmp/hbase-data/";
-    private final String HBASE_META = "hbase_meta";
+    private final String META_DIR = "/var/tmp/wherehows/";
+    private final String HBASE_META = "hbase_raw_meta";
     private final String HBASE_SAMPLE = "hbase_sample";
     private final int SAMPLE_DATA_ROW_NUM = 5;
 
