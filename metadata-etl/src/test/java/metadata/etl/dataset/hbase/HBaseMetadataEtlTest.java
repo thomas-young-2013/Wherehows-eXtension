@@ -1,48 +1,17 @@
 package metadata.etl.dataset.hbase;
 
-import metadata.etl.dataset.hdfs.HdfsMetadataEtl;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
-import java.io.File;
 
 /**
  * Created by lake on 17-5-25.
  */
 public class HBaseMetadataEtlTest {
-    HBaseMetadataEtl ds;
 
-    @BeforeTest
-    public void setUp()
-            throws Exception {
-        ds = new HBaseMetadataEtl(2, 0L);
-    }
 
-    @Test
-    public void testRun()
-            throws Exception {
-        ds.run();
-        File file = new File("/usr/tmp/hbase-data/hbase_meta");
-        assert file.exists() == true;
-    }
+   public static void main (String []args) throws Exception{
+       HBaseMetadataEtl ds = new HBaseMetadataEtl(0,1L);
 
-    @Test(groups = {"needConfig"})
-    public void testExtract()
-            throws Exception {
-        ds.extract();
-        //TODO check it copy back the files
-    }
+       ds.extract();
 
-    @Test(groups = {"needConfig"})
-    public void testTransform()
-            throws Exception {
-        ds.transform();
-        //TODO check it generate the final csv file
-    }
-
-    @Test(groups = {"needConfig"})
-    public void testLoad()
-            throws Exception {
-        ds.load();
-    }
+   }
 }
