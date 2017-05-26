@@ -37,13 +37,17 @@ public class HBaseMetaHelper {
     private Connection con;
     private FileWriter schemaFileWriter;
     private FileWriter sampleFileWriter;
+    // TODO -- path should config in database
     private final String META_DIR = "/var/tmp/wherehows/";
     private final String HBASE_META = "hbase_raw_meta";
     private final String HBASE_SAMPLE = "hbase_sample";
+
     private final int SAMPLE_DATA_ROW_NUM = 5;
+    private final int SAMPLE_DATA_COLUMN_NUM = 10;
 
     private void init() throws IOException {
         config = HBaseConfiguration.create();
+        // TODO -- some config params to connect hbase should config in database
         config.set("hbase.zookeeper.quorum", "10.141.91.83,10.141.111.247,10.141.116.103");
         config.set("hbase.zookeeper.property.clientPort", "2181");
         config.set("hbase.master.port", "60000");
@@ -67,7 +71,6 @@ public class HBaseMetaHelper {
         schemaFileWriter = new FileWriter(META_DIR + HBASE_META);
         sampleFileWriter = new FileWriter(META_DIR + HBASE_SAMPLE);
     }
-
 
 
     private void initFiles() throws IOException {
@@ -146,7 +149,7 @@ public class HBaseMetaHelper {
         int replicationNum = descriptor.getRegionReplication();
         String owner = descriptor.getOwnerString();
         int coprocessorsNum = descriptor.getCoprocessors().size();
-        String families = getAllColumnFamily(descriptor);
+        String families = getAllFamilies(descriptor);
 
 
         properties.put("maxfilesize", maxFileSize);
@@ -155,8 +158,8 @@ public class HBaseMetaHelper {
         properties.put("owner", owner);
         properties.put("coprocessorsNum", coprocessorsNum);
         properties.put("families", families);
-        properties.put("flushpolicyclassname", descriptor.getFlushPolicyClassName());
-        properties.put("regionsplitpolicyclassname", descriptor.getRegionSplitPolicyClassName());
+        properties.put("flushpolicyclassname", "" + descriptor.getFlushPolicyClassName());
+        properties.put("regionsplitpolicyclassname", "" + descriptor.getRegionSplitPolicyClassName());
 
 
         writeFile.put("attributes", properties);
@@ -205,15 +208,6 @@ public class HBaseMetaHelper {
     }
 
 
-    public String changeListToStr(List<String> values) {
-        StringBuilder builder = new StringBuilder();
-        for (String value : values) {
-            builder.append(value);
-            builder.append(",");
-        }
-        return builder.toString().substring(0, builder.length() - 1);
-    }
-
     public void dataFlush() throws IOException {
         schemaFileWriter.flush();
         sampleFileWriter.flush();
@@ -230,7 +224,7 @@ public class HBaseMetaHelper {
         List<String> columns = new ArrayList<String>();
         int columnCount = 0;
         for (Cell value : result.listCells()) {
-            if (columnCount < 10) {
+            if (columnCount < SAMPLE_DATA_COLUMN_NUM) {
                 String family = Bytes.toString(value.getFamily());
                 String qualifier = Bytes.toString(value.getQualifier());
                 String column = family + ":" + qualifier;
@@ -244,11 +238,11 @@ public class HBaseMetaHelper {
     private List<ColumnType> getJsonFields(List<String> columns) {
         List<ColumnType> fields = new ArrayList<ColumnType>();
         for (String column : columns)
-            fields.add(new ColumnType(column, "byte"));
+            fields.add(new ColumnType(column, "bytes"));
         return fields;
     }
 
-    private String getAllColumnFamily(HTableDescriptor descriptor) {
+    private String getAllFamilies(HTableDescriptor descriptor) {
 
         if (descriptor.getFamilies().size() == 0) {
             return "";
@@ -270,6 +264,7 @@ public class HBaseMetaHelper {
 
     /**
      * ------------------------------------------------------------------------------
+     * use Gson change it to json string,like {name : 'age' ,type : 'int'}
      */
     private class ColumnType {
         private String name;
