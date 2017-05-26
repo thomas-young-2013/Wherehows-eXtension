@@ -157,6 +157,11 @@ public class HBaseMetaHelper {
         properties.put("replicationnum", replicationNum);
         properties.put("owner", owner);
         properties.put("coprocessorsNum", coprocessorsNum);
+        if(coprocessorsNum != 0 ){
+            for(int i = 0 ;i < coprocessorsNum ;i ++){
+                properties.put("coprocessor"+i,descriptor.getCoprocessors().get(i).getClass().getCanonicalName());
+            }
+        }
         properties.put("families", families);
         properties.put("flushpolicyclassname", "" + descriptor.getFlushPolicyClassName());
         properties.put("regionsplitpolicyclassname", "" + descriptor.getRegionSplitPolicyClassName());
