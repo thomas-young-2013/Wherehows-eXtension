@@ -166,9 +166,9 @@ public class HBaseMetaHelper {
         properties.put("flushpolicyclassname", "" + descriptor.getFlushPolicyClassName());
         properties.put("regionsplitpolicyclassname", "" + descriptor.getRegionSplitPolicyClassName());
 
-        hdfs:///project/T405/data.txt
+
         writeFile.put("attributes", properties);
-        writeFile.put("uri", "hbase:///" + table.getNameAsString());
+        writeFile.put("uri", "hbase:///hbase" + table.getNameAsString());
         writeFile.put("name", "Result");
         writeFile.put("namespace", "com.leishen");
         writeFile.put("type", "record");
