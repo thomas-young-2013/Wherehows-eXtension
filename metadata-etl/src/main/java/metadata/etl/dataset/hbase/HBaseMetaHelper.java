@@ -1,5 +1,4 @@
 package metadata.etl.dataset.hbase;
-
 /**
  * Created by lakeshen on 2017/5/23.
  */
@@ -76,7 +75,7 @@ public class HBaseMetaHelper {
     private void initFiles() throws IOException {
         createFileIfNotExist(META_DIR + HBASE_META);
         createFileIfNotExist(META_DIR + HBASE_SAMPLE);
-        setFilesPermisstion();
+
     }
 
     private void createFileIfNotExist(String path) throws IOException {
@@ -97,10 +96,7 @@ public class HBaseMetaHelper {
         ProcessUtils.exec(cmds);
     }
 
-    private void setFilesPermisstion() throws IOException {
-        String[] cmd = {"chmod", "777", "-R", META_DIR};
-        ProcessUtils.exec(cmd);
-    }
+
 
 
     public TableName[] getAllTables() throws IOException {
@@ -159,7 +155,7 @@ public class HBaseMetaHelper {
         properties.put("coprocessorsNum", coprocessorsNum);
         if(coprocessorsNum != 0 ){
             for(int i = 0 ;i < coprocessorsNum ;i ++){
-                properties.put("coprocessor"+i,descriptor.getCoprocessors().get(i).getClass().getCanonicalName());
+                properties.put("coprocessor"+i,descriptor.getCoprocessors().get(i));
             }
         }
         properties.put("families", families);
@@ -168,7 +164,7 @@ public class HBaseMetaHelper {
 
 
         writeFile.put("attributes", properties);
-        writeFile.put("uri", "hbase:///hbase" + table.getNameAsString());
+        writeFile.put("uri", "hbase:///hbase/" + table.getNameAsString());
         writeFile.put("name", "Result");
         writeFile.put("namespace", "com.leishen");
         writeFile.put("type", "record");

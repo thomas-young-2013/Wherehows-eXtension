@@ -159,7 +159,7 @@ class HBaseLoad:
           wh_etl_exec_id
         )
         select s.dataset_id, s.db_id, s.deployment_tier, s.data_center,
-          s.server_cluster, s.slice, s.status_id, s.native_name, s.logical_name, s.version,
+          s.server_cluster, s.slice, s.status_id, concat('hbase.',s.logical), s.logical_name, s.version,
           case when s.version regexp '[0-9]+\.[0-9]+\.[0-9]+'
             then cast(substring_index(s.version, '.', 1) as unsigned) * 100000000 +
                  cast(substring_index(substring_index(s.version, '.', 2), '.', -1) as unsigned) * 10000 +
