@@ -38,6 +38,9 @@ class HBaseLoad:
         (`name`, `schema`, properties, fields, urn, source,  @dataset_type, @storage_type,
         sample_partition_full_path, source_created_time, source_modified_time)
         SET db_id = {db_id},wh_etl_exec_id = {wh_etl_exec_id};
+
+        UPDATE stg_dict_dataset set dataset_type = 'Hbase'
+        ,storage_type = 'Table' where source = 'Hbase';
         
         DELETE FROM stg_dict_dataset
         where db_id = {db_id}
