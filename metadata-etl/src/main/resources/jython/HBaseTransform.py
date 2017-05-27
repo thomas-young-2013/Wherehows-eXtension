@@ -66,7 +66,7 @@ class HBaseTransform:
         o_field_list_ += acp.get_column_list_result()
       dataset_schema_record = DatasetSchemaRecord(o_name, json.dumps(j, sort_keys=True),
                                                   json.dumps(o_properties, sort_keys=True), json.dumps(o_fields), o_urn,
-                                                  o_source, None, None, None)
+                                                  o_source, 'HBase', 'Table', None,None,None)
       schema_file_writer.append(dataset_schema_record)
       for fields in o_field_list_:
         field_record = DatasetFieldRecord(fields)
