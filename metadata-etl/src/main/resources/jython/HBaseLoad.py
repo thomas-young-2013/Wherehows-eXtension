@@ -80,7 +80,7 @@ class HBaseLoad:
           abstract_dataset_urn,
           schema_text
         )
-        select s.urn,{db_id}, d.deployment_tier,d.data_center, d.cluster, '*', 0,s.name, s.name,
+        select s.urn,{db_id}, d.deployment_tier,d.data_center, d.cluster, '*', 0,concat('hbase.',s.name), s.name,
           0, s.source_created_time, s.created_time,{wh_etl_exec_id}, s.urn, s.schema
         from stg_dict_dataset s JOIN cfg_database d on s.db_id = d.db_id
         where s.db_id = {db_id}
@@ -159,7 +159,7 @@ class HBaseLoad:
           wh_etl_exec_id
         )
         select s.dataset_id, s.db_id, s.deployment_tier, s.data_center,
-          s.server_cluster, s.slice, s.status_id, concat('hbase.',s.logical_name), s.logical_name, s.version,
+          s.server_cluster, s.slice, s.status_id,  s.native_name, s.logical_name, s.version,
           case when s.version regexp '[0-9]+\.[0-9]+\.[0-9]+'
             then cast(substring_index(s.version, '.', 1) as unsigned) * 100000000 +
                  cast(substring_index(substring_index(s.version, '.', 2), '.', -1) as unsigned) * 10000 +
