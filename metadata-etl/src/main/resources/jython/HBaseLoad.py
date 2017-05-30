@@ -48,21 +48,22 @@ class HBaseLoad:
              OR name like 'tmp\_%'
              OR urn like '%/\_tmp'
              OR urn like '%/\_distcp\_%');
-        
+
+        #change location_prefix
         update stg_dict_dataset
         set location_prefix =
            case
             when source = 'Hbase'
-            then '/hbase'
+            then ''
            end
         WHERE db_id = {db_id} and location_prefix is null;
 
         update stg_dict_dataset
         set name = substring_index(urn, '/', -1)
         where db_id = {db_id};
-
+        #change parent name
         update stg_dict_dataset
-        set parent_name = 'hbase'
+        set parent_name = ''
         where db_id = {db_id};
         
         DELETE FROM stg_dict_dataset_instance WHERE db_id = {db_id};

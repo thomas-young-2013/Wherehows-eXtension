@@ -164,7 +164,7 @@ public class HBaseMetaHelper {
 
 
         writeFile.put("attributes", properties);
-        writeFile.put("uri", "hbase:///hbase/" + table.getNameAsString());
+        writeFile.put("uri", "hbase:///" + table.getNameAsString());
         writeFile.put("name", "Result");
         writeFile.put("namespace", "com.leishen");
         writeFile.put("type", "record");
