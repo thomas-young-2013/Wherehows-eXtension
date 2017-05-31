@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Created by lake on 17-5-23.
  */
-public class HBaseMetaHelper {
+public class HBaseMetaExtractor {
     public Admin admin;
     private Configuration config;
     private Connection con;
@@ -62,7 +62,7 @@ public class HBaseMetaHelper {
 
     }
 
-    public HBaseMetaHelper() throws IOException {
+    public HBaseMetaExtractor() throws IOException {
         init();
     }
 
@@ -97,8 +97,6 @@ public class HBaseMetaHelper {
     }
 
 
-
-
     public TableName[] getAllTables() throws IOException {
         return admin.listTableNames();
     }
@@ -106,7 +104,7 @@ public class HBaseMetaHelper {
 
     public void extractTableInfo(TableName tableName) throws IOException {
 
-        Map<String, Object> keyToMeta = getTableMetaData(tableName);
+        Map<String, Object> keyToMeta = getTableProperties(tableName);
 
         FilterList filterList = getSampleFilter();
         Table table = con.getTable(tableName);
@@ -130,12 +128,12 @@ public class HBaseMetaHelper {
             String realJsonSchema = mapToJson(keyToMeta);
             schemaFileWriter.append(realJsonSchema + "\n");
             List<Object> sampleList = getSampleData(scanner, cts, result);
-            sampleFileWriter.append("/hbase/" + tableName.getNameAsString() + "\u001a" + null + "\u001a" + "{\"sample\": " + sampleList.toString() + "}" + "\n");
+            sampleFileWriter.append("hbase:///" + tableName.getNameAsString() + "\u001a" + null + "\u001a" + "{\"sample\": " + sampleList.toString() + "}" + "\n");
         }
 
     }
 
-    private Map<String, Object> getTableMetaData(TableName table) throws IOException {
+    private Map<String, Object> getTableProperties(TableName table) throws IOException {
         Map<String, Object> properties = new HashMap<String, Object>();
         Map<String, Object> writeFile = new HashMap<String, Object>();
 
@@ -153,9 +151,9 @@ public class HBaseMetaHelper {
         properties.put("replicationnum", replicationNum);
         properties.put("owner", owner);
         properties.put("coprocessorsNum", coprocessorsNum);
-        if(coprocessorsNum != 0 ){
-            for(int i = 0 ;i < coprocessorsNum ;i ++){
-                properties.put("coprocessor"+i,descriptor.getCoprocessors().get(i));
+        if (coprocessorsNum != 0) {
+            for (int i = 0; i < coprocessorsNum; i++) {
+                properties.put("coprocessor" + i, descriptor.getCoprocessors().get(i));
             }
         }
         properties.put("families", families);
