@@ -283,7 +283,7 @@ public class Constant {
 
   public static final String HBASE_ZOOKEEPER_QUORUM_KEY = "hbase.zookeeper.quorum";
   public static final String HBASE_ZOOKEEPER_PROPERTY_CLIENT_PORT_KEY = "hbase.zookeeper.property.clientPort";
-  public static final String HBASE_ZOOKEEPER_ZNODE_PARENT_KEY = " hbase.zookeeper.znode.parent";
+  public static final String HBASE_ZOOKEEPER_ZNODE_PARENT_KEY = "hbase.zookeeper.znode.parent";
 
   public static final String HBASE_MASTER_PORT_KEY = "hbase.master.port";
   public static final String HBASE_MASTER_INFO_BIND_ADDRESS_KEY = "hbase.master.info.bindAddress";
