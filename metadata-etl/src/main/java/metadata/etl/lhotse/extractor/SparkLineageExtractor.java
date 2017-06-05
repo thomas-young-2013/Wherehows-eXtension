@@ -25,6 +25,7 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId, String logPath) {
         List<LineageRecord> lineageRecords = new ArrayList<>();
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
         List<String> sourcePaths = new ArrayList<>();
         List<String> destPaths = new ArrayList<>();
 
@@ -91,7 +92,7 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
         String [] cmds = {"hdfs", "dfs", "-ls", path};
         ArrayList<String> results = ProcessUtils.exec(cmds);
         // for debug
-        logger.info("the process utils result: {}", results);
+        // logger.info("the process utils result: {}", results);
         if (results == null || results.size() == 0) {
             throw new Exception("getSubFiles: process utils no result get");
         } else {
@@ -105,7 +106,7 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
         ArrayList<String> results = ProcessUtils.exec(cmds);
         List<String> dataPaths = new ArrayList<>();
         // for debug
-        logger.info("the process utils result: {}", results);
+        // logger.info("the process utils result: {}", results);
         if (results == null || results.size() == 0) {
             throw new Exception("getSubFiles: process utils no result get");
         } else {

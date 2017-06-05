@@ -67,7 +67,6 @@ public class LzLineageExtractor {
             case 39:
                 logPath = new LhotseExecLogCrawler().getRemoteLog(message);
                 lineageExtractor = new SparkLineageExtractor();
-                // lineageExtractor = new SparkSubmitLineageExtractor();
                 break;
             default:
                 throw new Exception("Not Supported Task Type!");
