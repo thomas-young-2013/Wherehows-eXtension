@@ -101,3 +101,4 @@ job_name = Job Name
 job_type =Job Type
 created_time = Created Time
 modified_time = Modified Time
+prev=Prev
