@@ -12,9 +12,9 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
- * Created by hadoop on 5/22/17.
+ * Created by thomas young on 5/22/17.
  */
-public class LhotseMRLogCrawler implements BaseCrawler {
+public class LhotseExecLogCrawler implements BaseCrawler {
     private static final Logger logger = LoggerFactory.getLogger(LhtoseConfCrawler.class);
     public static final String defaultLogLocation = "/usr/local/lhotse_runners/log/";
 
