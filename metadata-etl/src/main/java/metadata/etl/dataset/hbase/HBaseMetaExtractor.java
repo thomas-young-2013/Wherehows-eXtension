@@ -126,7 +126,7 @@ public class HBaseMetaExtractor {
             cts = getJsonFields(displayColumns);
             keyToMeta.put("fields", cts);
             String realJsonSchema = mapToJson(keyToMeta);
-            schemaFileWriter.append(realJsonSchema + "\n");
+            schemaFileWriter.append(realJsonSchema +  "\n");
             List<Object> sampleList = getSampleData(scanner, cts, result);
             sampleFileWriter.append("hbase:///" + tableName.getNameAsString() + "\u001a" + null + "\u001a" + "{\"sample\": " + sampleList.toString() + "}" + "\n");
         }
