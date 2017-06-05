@@ -15,16 +15,14 @@ import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
+import wherehows.common.Constant;
 import wherehows.common.utils.ProcessUtils;
 
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -36,23 +34,34 @@ public class HBaseMetaExtractor {
     private Connection con;
     private FileWriter schemaFileWriter;
     private FileWriter sampleFileWriter;
-    // TODO -- path should config in database
-    private final String META_DIR = "/var/tmp/wherehows/";
-    private final String HBASE_META = "hbase_raw_meta";
-    private final String HBASE_SAMPLE = "hbase_sample";
+    private Properties prop;
+
+
+    private String hbaseMetaFile = null;
+    private String hbaseSampleFile = null;
 
     private final int SAMPLE_DATA_ROW_NUM = 5;
     private final int SAMPLE_DATA_COLUMN_NUM = 10;
 
     private void init() throws IOException {
+
         config = HBaseConfiguration.create();
-        // TODO -- some config params to connect hbase should config in database
-        config.set("hbase.zookeeper.quorum", "10.141.91.83,10.141.111.247,10.141.116.103");
-        config.set("hbase.zookeeper.property.clientPort", "2181");
-        config.set("hbase.master.port", "60000");
-        config.set("hbase.master.info.bindAddress", "10.141.68.47");
-        config.set("hbase.master.info.port", "60010");
-        config.set("zookeeper.znode.parent", "/hbase-unsecure");
+
+        String zookeeperQuorum = prop.getProperty(Constant.HBASE_ZOOKEEPER_QUORUM_KEY);
+        String zkPropertyClientPort = prop.getProperty(Constant.HBASE_ZOOKEEPER_PROPERTY_CLIENT_PORT_KEY);
+        String masterPort = prop.getProperty(Constant.HBASE_MASTER_PORT_KEY);
+        String masterBindAddress = prop.getProperty(Constant.HBASE_MASTER_INFO_BIND_ADDRESS_KEY);
+        String zkZnodeParent = prop.getProperty(Constant.HBASE_ZOOKEEPER_ZNODE_PARENT_KEY);
+
+        this.hbaseMetaFile = prop.getProperty(Constant.WH_APP_FOLDER_KEY) + "/" + prop.getProperty(Constant.HBASE_LOCAL_META_DATA_KEY);
+        this.hbaseSampleFile = prop.getProperty(Constant.WH_APP_FOLDER_KEY) + "/" + prop.getProperty(Constant.HBASE_LOCAL_SAMPLE_KEY);
+
+        config.set("hbase.zookeeper.quorum", zookeeperQuorum);
+        config.set("hbase.zookeeper.property.clientPort", zkPropertyClientPort);
+        config.set("hbase.master.port", masterPort);
+        config.set("hbase.master.info.bindAddress", masterBindAddress);
+
+        config.set("zookeeper.znode.parent", zkZnodeParent);
 
         con = ConnectionFactory.createConnection(config);
         admin = con.getAdmin();
@@ -62,40 +71,50 @@ public class HBaseMetaExtractor {
 
     }
 
-    public HBaseMetaExtractor() throws IOException {
+    public HBaseMetaExtractor(Properties prop) throws IOException {
+        this.prop = prop;
         init();
     }
 
+
     private void initWriters() throws IOException {
-        schemaFileWriter = new FileWriter(META_DIR + HBASE_META);
-        sampleFileWriter = new FileWriter(META_DIR + HBASE_SAMPLE);
+
+        schemaFileWriter = new FileWriter(this.hbaseMetaFile);
+        sampleFileWriter = new FileWriter(this.hbaseSampleFile);
+        schemaFileWriter.write("");
+        sampleFileWriter.write("");
     }
 
 
     private void initFiles() throws IOException {
-        createFileIfNotExist(META_DIR + HBASE_META);
-        createFileIfNotExist(META_DIR + HBASE_SAMPLE);
+        if (this.hbaseSampleFile == null || this.hbaseMetaFile == null) {
+            String message = Constant.HBASE_LOCAL_RAW_META_DATA_KEY + " or " +
+                    Constant.HBASE_LOCAL_SAMPLE_KEY + " is null,please config them in database";
+            throw new IOException(message);
+        }
+
+        createFileIfNotExist(this.hbaseMetaFile);
+        createFileIfNotExist(this.hbaseSampleFile);
 
     }
 
     private void createFileIfNotExist(String path) throws IOException {
-        File metaDir = new File(META_DIR);
         File file = new File(path);
-
-        if (file.exists()) {
-            String[] cmds = {"rm", path};
+        if (!file.exists()) {
+            String[] cmds = {"touch", path};
             ProcessUtils.exec(cmds);
         }
-
-        if (!metaDir.exists()) {
-            String[] cmds = {"mkdir", META_DIR};
-            ProcessUtils.exec(cmds);
-        }
-
-        String[] cmds = {"touch", path};
-        ProcessUtils.exec(cmds);
     }
 
+    public void startToExtractHBaseData() throws IOException {
+        TableName[] allTables = this.getAllTables();
+        for (TableName tableName : allTables) {
+            this.extractTableInfo(tableName);
+        }
+
+        this.dataFlush();
+        this.close();
+    }
 
     public TableName[] getAllTables() throws IOException {
         return admin.listTableNames();
@@ -126,7 +145,7 @@ public class HBaseMetaExtractor {
             cts = getJsonFields(displayColumns);
             keyToMeta.put("fields", cts);
             String realJsonSchema = mapToJson(keyToMeta);
-            schemaFileWriter.append(realJsonSchema +  "\n");
+            schemaFileWriter.append(realJsonSchema + "\n");
             List<Object> sampleList = getSampleData(scanner, cts, result);
             sampleFileWriter.append("hbase:///" + tableName.getNameAsString() + "\u001a" + null + "\u001a" + "{\"sample\": " + sampleList.toString() + "}" + "\n");
         }

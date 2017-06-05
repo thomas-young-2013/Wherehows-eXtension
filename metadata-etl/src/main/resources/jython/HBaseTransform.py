@@ -80,5 +80,5 @@ if __name__ == "__main__":
   args = sys.argv[1]
 # parse the arguments and do transformation.
   t = HBaseTransform()
-  t.transform("/var/tmp/wherehows/hbase_raw_meta","/var/tmp/wherehows/hbase_meta",
-              "/var/tmp/wherehows/hbase_field_meta")
+  t.transform(args[HBASE_LOCAL_RAW_META_DATA_KEY],args[HBASE_LOCAL_META_DATA_KEY],
+              args[HBASE_LOCAL_FIELD_META_DATA_KEY])

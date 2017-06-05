@@ -272,6 +272,25 @@ public class Constant {
 
   // code search
   public static final String DATABASE_SCM_REPO_OUTPUT_KEY = "database.scm.repo";
-  public static final String BASE_URL_KEY = "base.url.key";
+  public static final String BASE_URL_KEY = "base.url.key"; 
+  
+  
+  // HBase 
+  public static final String HBASE_LOCAL_FIELD_META_DATA_KEY = "hbase.local.field_metadata";
+  public static final String HBASE_LOCAL_META_DATA_KEY = "hbase.local.metadata";
+  public static final String HBASE_LOCAL_RAW_META_DATA_KEY = "hbase.local.raw_metadata";
+  public static final String HBASE_LOCAL_SAMPLE_KEY = "hbase.local.sample";
+
+  public static final String HBASE_ZOOKEEPER_QUORUM_KEY = "hbase.zookeeper.quorum";
+  public static final String HBASE_ZOOKEEPER_PROPERTY_CLIENT_PORT_KEY = "hbase.zookeeper.property.clientPort";
+  public static final String HBASE_ZOOKEEPER_ZNODE_PARENT_KEY = " hbase.zookeeper.znode.parent";
+
+  public static final String HBASE_MASTER_PORT_KEY = "hbase.master.port";
+  public static final String HBASE_MASTER_INFO_BIND_ADDRESS_KEY = "hbase.master.info.bindAddress";
+
+
+
+
+
 
 }
