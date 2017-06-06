@@ -46,10 +46,6 @@ class LhotseTransform(SchedulerTransform):
             self.wh_con_1.close()
 
 if __name__ == "__main__":
-    ## set the encodings
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-
     props = sys.argv[1]
     lz = LhotseTransform(props)
     lz.run()

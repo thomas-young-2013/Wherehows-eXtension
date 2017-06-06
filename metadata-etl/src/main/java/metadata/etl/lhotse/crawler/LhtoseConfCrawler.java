@@ -16,7 +16,8 @@ import java.util.Arrays;
  */
 public class LhtoseConfCrawler implements BaseCrawler {
     private static final Logger logger = LoggerFactory.getLogger(LhtoseConfCrawler.class);
-    public static final String defaultLogLocation = "/usr/local/lhotse_runners/log/";
+    public static final String defaultRemoteConfLocation = "/usr/local/lhotse_runners/log/";
+    public static final String defaultLocalConfLocation = "/var/tmp/wherehows/crawl_data/";
 
     @Override
     public String getRemoteLog(LzExecMessage message) throws Exception {
@@ -25,7 +26,7 @@ public class LhtoseConfCrawler implements BaseCrawler {
 
         if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
             // the full path
-            localLogLocation = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
+            localLogLocation = defaultRemoteConfLocation;
             localLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
             // find the latest file name.
             String fileName = FileOperator.getOneLogFile(localLogLocation);
@@ -35,10 +36,11 @@ public class LhtoseConfCrawler implements BaseCrawler {
             String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
             String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
             // in remote mode, this field stands for the local dir to store the log files.
-            String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+            // String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+            String localLogFile = defaultLocalConfLocation;
 
             // move the log file from remote host to local host
-            String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
+            String remoteLogLocation = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultRemoteConfLocation);
             remoteLogLocation += String.format("tasklog/%d/%s", lzRecord.taskType, lzRecord.taskId);
             // get the file list in the remote directory.
             String fileList = SshUtils.exec(remoteHost, remoteUser, keyLocation, "ls " + remoteLogLocation);
