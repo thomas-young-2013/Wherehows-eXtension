@@ -1,6 +1,5 @@
 ## Description
-This project was cloned from LinkedIn WhereHows [original project link](https://github.com/linkedin/WhereHows/)
-And we do some extension and reconstruction to the original one.
+This project was cloned from [LinkedIn WhereHows](https://github.com/linkedin/WhereHows/), and We add some extensions and reconstructions to the original one.
 
 ## Contribution
 * support metadata extraction of HBase
