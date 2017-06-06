@@ -6,5 +6,5 @@ And we do some extension and reconstruction to the original one.
 * support metadata extraction of HBase
 * support data lineage extraction of task {mapreduce, spark, expert and import between several storage systems} in some scheduler like (Oozie, Azkaban)
 
-## End
+## Contact us
 If you want to contact us, please send emails to `thomasyoung1995@foxmail.com `!
