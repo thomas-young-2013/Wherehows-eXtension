@@ -53,15 +53,15 @@ public class HBaseMetaExtractor {
         String masterBindAddress = prop.getProperty(Constant.HBASE_MASTER_INFO_BIND_ADDRESS_KEY);
         String zkZnodeParent = prop.getProperty(Constant.HBASE_ZOOKEEPER_ZNODE_PARENT_KEY);
 
-        this.hbaseMetaFile = prop.getProperty(Constant.WH_APP_FOLDER_KEY) + "/" + prop.getProperty(Constant.HBASE_LOCAL_META_DATA_KEY);
-        this.hbaseSampleFile = prop.getProperty(Constant.WH_APP_FOLDER_KEY) + "/" + prop.getProperty(Constant.HBASE_LOCAL_SAMPLE_KEY);
+        this.hbaseMetaFile = prop.getProperty(Constant.HBASE_LOCAL_META_DATA_KEY);
+        this.hbaseSampleFile = prop.getProperty(Constant.HBASE_LOCAL_SAMPLE_KEY);
 
-        config.set("hbase.zookeeper.quorum", zookeeperQuorum);
-        config.set("hbase.zookeeper.property.clientPort", zkPropertyClientPort);
         config.set("hbase.master.port", masterPort);
         config.set("hbase.master.info.bindAddress", masterBindAddress);
 
         config.set("zookeeper.znode.parent", zkZnodeParent);
+        config.set("hbase.zookeeper.quorum", zookeeperQuorum);
+        config.set("hbase.zookeeper.property.clientPort", zkPropertyClientPort);
 
         con = ConnectionFactory.createConnection(config);
         admin = con.getAdmin();
