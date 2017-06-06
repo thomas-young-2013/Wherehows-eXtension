@@ -33,7 +33,9 @@ public class LhtoseConfCrawler implements BaseCrawler {
             localLogLocation += "/" + fileName;
         } else {
             String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
-            String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            // String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            String remoteHost = lzRecord.brokerId;
+            logger.info("conf lhotse runner ip is: {}", remoteHost);
             String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
             // in remote mode, this field stands for the local dir to store the log files.
             // String localLogFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);

@@ -32,7 +32,9 @@ public class LhotseExecLogCrawler implements BaseCrawler {
             logPath += "/" + mrfileName;
         }else {
             String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
-            String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            // String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            String remoteHost = lzRecord.brokerId;
+            logger.info("log lhotse runner ip is: {}", remoteHost);
             String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
             String localLogPathFile = defaultLocalConfLocation;
             // move the log file from remote host to local host
