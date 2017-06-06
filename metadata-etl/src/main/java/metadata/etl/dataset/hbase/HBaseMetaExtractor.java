@@ -81,6 +81,7 @@ public class HBaseMetaExtractor {
 
         schemaFileWriter = new FileWriter(this.hbaseMetaFile);
         sampleFileWriter = new FileWriter(this.hbaseSampleFile);
+        //if file exist and clear its content
         schemaFileWriter.write("");
         sampleFileWriter.write("");
     }
@@ -191,7 +192,7 @@ public class HBaseMetaExtractor {
     private FilterList getSampleFilter() {
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         Filter pageFilter = new PageFilter(20);
-        Filter columnFilter = new ColumnPaginationFilter(1, 1);
+        Filter columnFilter = new ColumnPaginationFilter(5, 10);
         filterList.addFilter(pageFilter);
         filterList.addFilter(columnFilter);
         return filterList;
