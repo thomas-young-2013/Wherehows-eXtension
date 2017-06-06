@@ -18,6 +18,7 @@ from org.slf4j import LoggerFactory
 from wherehows.common.writers import FileWriter
 from wherehows.common.schemas import DatasetSchemaRecord, DatasetFieldRecord
 from AvroColumnParser import AvroColumnParser
+from wherehows.common import Constant
 
 from org.python.core import codecs
 codecs.setDefaultEncoding('utf-8')
