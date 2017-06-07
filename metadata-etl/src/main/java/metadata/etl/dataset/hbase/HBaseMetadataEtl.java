@@ -29,7 +29,8 @@ public class HBaseMetadataEtl extends EtlJob {
     public void extract()
             throws Exception {
         logger.info("Begin hbase metadata extract! - " + prop.getProperty(Constant.WH_EXEC_ID_KEY));
-        startExtractHBase();
+      /*  HBaseMetaExtractor metaExtractor = new HBaseMetaExtractor(this.prop);
+        metaExtractor.startToExtractHBaseData();*/
     }
 
     @Override
@@ -54,19 +55,4 @@ public class HBaseMetadataEtl extends EtlJob {
     }
 
 
-    private void startExtractHBase() throws IOException {
-
-
-        LOG.info("start to get hbase metadata!");
-        HBaseMetaExtractor metaExtractor = new HBaseMetaExtractor();
-        TableName[] allTables = metaExtractor.getAllTables();
-        for (TableName tableName : allTables) {
-            metaExtractor.extractTableInfo(tableName);
-        }
-
-        metaExtractor.dataFlush();
-        metaExtractor.close();
-
-        LOG.info("hbase all table get success!");
-    }
 }

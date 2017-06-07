@@ -14,9 +14,11 @@
 
 import json
 import csv, sys
+import re
 from org.slf4j import LoggerFactory
 from wherehows.common.writers import FileWriter
 from wherehows.common.schemas import DatasetSchemaRecord, DatasetFieldRecord
+from wherehows.common import Constant
 from AvroColumnParser import AvroColumnParser
 
 from org.python.core import codecs
@@ -80,5 +82,5 @@ if __name__ == "__main__":
   args = sys.argv[1]
 # parse the arguments and do transformation.
   t = HBaseTransform()
-  t.transform("/var/tmp/wherehows/hbase_raw_meta","/var/tmp/wherehows/hbase_meta",
-              "/var/tmp/wherehows/hbase_field_meta")
+  t.transform(args[Constant.HBASE_LOCAL_RAW_META_DATA_KEY],args[Constant.HBASE_LOCAL_META_DATA_KEY],
+              args[Constant.HBASE_LOCAL_FIELD_META_DATA_KEY])
