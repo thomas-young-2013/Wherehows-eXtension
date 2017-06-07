@@ -2,10 +2,10 @@ package metadata.etl.lhotse.extractor;
 
 import metadata.etl.lhotse.LzExecMessage;
 import metadata.etl.lhotse.LzTaskExecRecord;
+import metadata.etl.utils.HdfsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wherehows.common.schemas.LineageRecord;
-import wherehows.common.utils.ProcessUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,13 +37,13 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
 
             // add all source files.
             for (String path: sourceFiles) {
-                if (isHdfsFile(path)) sourcePaths.add(path);
+                if (HdfsUtils.isFile(path)) sourcePaths.add(path);
             }
 
             // add all destination files.
             for (String path: destFiles) {
-                if (isHdfsFile(path)) destPaths.add(path);
-                else destPaths.addAll(getSubFiles(path));
+                if (HdfsUtils.isFile(path)) destPaths.add(path);
+                else destPaths.addAll(HdfsUtils.listFiles(path));
             }
 
             long flowExecId = lzTaskExecRecord.flowId;
@@ -85,39 +85,6 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
             logger.info("error happened in collecting lineage record.");
         }
         return lineageRecords;
-    }
-
-    private static boolean isHdfsFile(String path) throws Exception {
-        // String [] cmds = {"hdfs", "dfs", "-test", "-f", path, "&&", "echo", "$?"};
-        String [] cmds = {"hdfs", "dfs", "-ls", path};
-        ArrayList<String> results = ProcessUtils.exec(cmds);
-        // for debug
-        // logger.info("the process utils result: {}", results);
-        if (results == null || results.size() == 0) {
-            throw new Exception("getSubFiles: process utils no result get");
-        } else {
-            String [] arg = results.get(results.size()-1).split("\\s+");
-            return arg.length == 8 && arg[7].equals(path);
-        }
-    }
-
-    private static List<String> getSubFiles(String path) throws Exception {
-        String [] cmds = {"hdfs", "dfs", "-ls", path};
-        ArrayList<String> results = ProcessUtils.exec(cmds);
-        List<String> dataPaths = new ArrayList<>();
-        // for debug
-        // logger.info("the process utils result: {}", results);
-        if (results == null || results.size() == 0) {
-            throw new Exception("getSubFiles: process utils no result get");
-        } else {
-            for (String str: results) {
-                String [] arg = str.split("\\s+");
-                if (arg.length == 8 && !arg[4].equalsIgnoreCase("0") && !arg[7].startsWith("_")) {
-                    dataPaths.add(arg[7]);
-                }
-            }
-        }
-        return dataPaths;
     }
 
     private static void extractInputandOutput(String logFile, List<String> sourcePaths, List<String> destPaths) {
