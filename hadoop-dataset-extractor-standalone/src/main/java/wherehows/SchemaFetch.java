@@ -322,25 +322,25 @@ public class SchemaFetch {
       // original:
       // DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
       // tencent: thomasyngli modified here.
-      DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), fstat.getPath().toUri().getPath());
+      DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(displayPath, displayPath.toUri().getPath());
 
       if (datasetSchemaRecord != null) {
         // for debug.
         System.out.println(datasetSchemaRecord.toCsvString());
         schemaFileWriter.append(datasetSchemaRecord);
       } else {
-        logger.error("* Cannot resolve the schema of " + fullPath);
+        logger.error("* Cannot resolve the schema of " + displayPath);
       }
 
       // original:
       // SampleDataRecord sampleDataRecord = fileAnalyzerFactory.getSampleData(fstat.getPath(), path.toUri().getPath());
       // tencent: thomasyngli modified here.
       SampleDataRecord sampleDataRecord =
-              fileAnalyzerFactory.getSampleData(fstat.getPath(), fstat.getPath().toUri().getPath());
+              fileAnalyzerFactory.getSampleData(displayPath, displayPath.toUri().getPath());
       if (sampleDataRecord != null) {
         sampleFileWriter.append(sampleDataRecord);
       } else {
-        System.err.println("* Cannot fetch sample data of " + fullPath);
+        System.err.println("* Cannot fetch sample data of " + displayPath);
       }
     }
 
