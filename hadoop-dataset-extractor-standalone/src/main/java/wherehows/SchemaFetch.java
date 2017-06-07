@@ -175,12 +175,10 @@ public class SchemaFetch {
     int x = isTable(path, scanFs);
     if (x > 0) {
       // System.err.println("  traceTable(" + path.toString() + ")");
-      logger.info("x > 0,path is "+path);
       traceTableInfo(path, scanFs);
     } else if (x == 0) { // iterate over each table
       // FileStatus[] fslist = scanFs.listStatus(path);
       // System.err.println(" => " + fslist.length + " subdirs");
-      logger.info("x == 0 , path is "+path);
       for (FileStatus fstat : scanFs.listStatus(path)) {
         n = fstat.getPath();
         curPath = n.toUri().getPath();
@@ -252,6 +250,9 @@ public class SchemaFetch {
     int i, x;
     // String data_source = checkDataSource(fullPath);
 
+    List<Path> webDisplayFile = new ArrayList<Path>();
+
+
     // TODO this part need to rewrite
     try {
       while (fstat.isDirectory()) {
@@ -294,7 +295,7 @@ public class SchemaFetch {
           if (fstat.isDirectory() == false
             && xName.matches("(_|\\.).*|.*\\.(jar|json|txt|csv|tsv|zip|gz|lzo)") == false) {
             is_fstat_visible = 1;
-            break;
+           // break;
           }
 
           // if fstat is a Directory
@@ -302,6 +303,8 @@ public class SchemaFetch {
             is_fstat_visible = 1;
             break;
           }
+
+          webDisplayFile.add(fstat.getPath());
         }
         
         if (is_fstat_visible == 0) {
