@@ -16,8 +16,8 @@ public class HdfsUtils {
     static {
         try {
             Configuration conf = new Configuration();
-            conf.addResource(new Path("config/hdfs-site.xml"));
-            conf.addResource(new Path("config/core-site.xml"));
+            conf.addResource(new Path("hdfs-site.xml"));
+            conf.addResource(new Path("core-site.xml"));
             fs = FileSystem.get(conf);
         } catch (Exception e) {
             fs = null;
