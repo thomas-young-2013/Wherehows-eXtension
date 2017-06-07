@@ -175,10 +175,12 @@ public class SchemaFetch {
     int x = isTable(path, scanFs);
     if (x > 0) {
       // System.err.println("  traceTable(" + path.toString() + ")");
+      logger.info("x > 0,path is "+path);
       traceTableInfo(path, scanFs);
     } else if (x == 0) { // iterate over each table
       // FileStatus[] fslist = scanFs.listStatus(path);
       // System.err.println(" => " + fslist.length + " subdirs");
+      logger.info("x == 0 , path is "+path);
       for (FileStatus fstat : scanFs.listStatus(path)) {
         n = fstat.getPath();
         curPath = n.toUri().getPath();
