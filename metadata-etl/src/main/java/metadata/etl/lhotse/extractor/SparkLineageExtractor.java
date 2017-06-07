@@ -42,8 +42,14 @@ public class SparkLineageExtractor implements BaseLineageExtractor {
 
             // add all destination files.
             for (String path: destFiles) {
-                if (HdfsUtils.isFile(path)) destPaths.add(path);
-                else destPaths.addAll(HdfsUtils.listFiles(path));
+                if (HdfsUtils.isFile(path)) {
+                    destPaths.add(path);
+                } else {
+                    if (!path.endsWith("/")) path += "/";
+                    for (String tmp: HdfsUtils.listFiles(path)) {
+                        destPaths.add(path + tmp);
+                    }
+                }
             }
 
             long flowExecId = lzTaskExecRecord.flowId;
