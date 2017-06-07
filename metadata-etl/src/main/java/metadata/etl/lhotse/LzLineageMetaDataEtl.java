@@ -74,6 +74,9 @@ public class LzLineageMetaDataEtl extends EtlJob {
         String emptyStaggingTable =
                 "DELETE FROM stg_job_execution_data_lineage WHERE app_id = " + this.prop.getProperty(Constant.APP_ID_KEY);
         conn.createStatement().execute(emptyStaggingTable);
+        String emptyStableTable =
+                "DELETE FROM job_execution_data_lineage WHERE app_id = " + this.prop.getProperty(Constant.APP_ID_KEY);
+        conn.createStatement().execute(emptyStableTable);
 
         LzLineageExtractorMaster lzLineageExtractorMaster = new LzLineageExtractorMaster(prop);
         logger.info("time frame is: " + timeFrame);
@@ -103,7 +106,7 @@ public class LzLineageMetaDataEtl extends EtlJob {
         logger.info("Lhotse lineage metadata load");
         // insert into the final table
         // TODO: need to be insert on duplicate update, so the running flows can be updated
-        String insertIntoFinalTable = "REPLACE INTO job_execution_data_lineage\n"
+        String insertIntoFinalTable = "INSERT IGNORE INTO job_execution_data_lineage\n"
                 + "( app_id, flow_exec_id, job_exec_id, job_exec_uuid, job_name, job_start_unixtime, job_finished_unixtime,\n"
                 + "db_id, abstracted_object_name, full_object_name, partition_start, partition_end, partition_type,\n"
                 + "layout_id, storage_type, source_target_type, srl_no, source_srl_no, operation,\n"
