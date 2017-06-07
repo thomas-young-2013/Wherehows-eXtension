@@ -316,8 +316,9 @@ public class SchemaFetch {
       return;
     }
 
-
+    logger.info("webDisplay size : "+webDisplayFile.size());
     for (Path displayPath : webDisplayFile) {
+      logger.info("web display path is "+displayPath);
       // get schema and sample data
       // original:
       // DatasetJsonRecord datasetSchemaRecord = fileAnalyzerFactory.getSchema(fstat.getPath(), path.toUri().getPath());
