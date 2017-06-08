@@ -17,7 +17,8 @@ import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import wherehows.common.Constant;
 import wherehows.common.utils.ProcessUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,6 +30,7 @@ import java.util.*;
  * Created by lake on 17-5-23.
  */
 public class HBaseMetaExtractor {
+    private static final Logger LOG = LoggerFactory.getLogger(HBaseMetaExtractor.class);
     public Admin admin;
     private Configuration config;
     private Connection con;
@@ -100,8 +102,10 @@ public class HBaseMetaExtractor {
     }
 
     private void createFileIfNotExist(String path) throws IOException {
+        LOG.info("create file path : "+path);
         File file = new File(path);
         if (!file.exists()) {
+            LOG.info("file path : "+path+" not exist , create it");
             String[] cmds = {"touch", path};
             ProcessUtils.exec(cmds);
         }
@@ -110,6 +114,7 @@ public class HBaseMetaExtractor {
     public void startToExtractHBaseData() throws IOException {
         TableName[] allTables = this.getAllTables();
         for (TableName tableName : allTables) {
+            LOG.info("Hbase table : "+table.getNameAsString());
             this.extractTableInfo(tableName);
         }
 
