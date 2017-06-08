@@ -26,7 +26,7 @@ class HiveLoad:
     cursor = self.conn_mysql.cursor()
     load_cmd = """
         DELETE FROM stg_dict_dataset WHERE db_id = {db_id};
-        DELETE FROM dict_dataset WHERE db_id = {db_id};
+        DELETE FROM dict_dataset WHERE source = 'Hive'
 
         LOAD DATA LOCAL INFILE '{source_file}'
         INTO TABLE stg_dict_dataset
