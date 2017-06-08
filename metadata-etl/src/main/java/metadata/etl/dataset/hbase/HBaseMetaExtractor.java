@@ -137,7 +137,7 @@ public class HBaseMetaExtractor {
         List<ColumnType> cts = new ArrayList<ColumnType>();
 
         if (result == null) {
-            keyToMeta.put("fields", new ColumnType("", ""));
+            keyToMeta.put("fields", new ColumnType("_", "_"));
             String realJsonSchema = mapToJson(keyToMeta);
             schemaFileWriter.append(realJsonSchema + "\n");
 
