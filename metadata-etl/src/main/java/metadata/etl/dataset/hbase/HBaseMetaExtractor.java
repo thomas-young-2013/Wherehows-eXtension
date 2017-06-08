@@ -134,7 +134,7 @@ public class HBaseMetaExtractor {
 
         Table table = con.getTable(tableName);
         Scan scan = new Scan();
-        scan.setLimit(5);
+        
         scan.setBatch(10);
         ResultScanner scanner = table.getScanner(scan);
         Result result = scanner.next();
