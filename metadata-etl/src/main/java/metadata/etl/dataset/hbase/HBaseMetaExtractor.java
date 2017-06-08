@@ -131,12 +131,11 @@ public class HBaseMetaExtractor {
 
         Map<String, Object> keyToMeta = getTableProperties(tableName);
 
-        FilterList filterList = getSampleFilter();
+
         Table table = con.getTable(tableName);
         Scan scan = new Scan();
-        scan.setMaxResultSize(10);
-        scan.setFilter(filterList);
 
+        scan.setBatch(10);
         ResultScanner scanner = table.getScanner(scan);
         Result result = scanner.next();
 
@@ -194,14 +193,6 @@ public class HBaseMetaExtractor {
         return writeFile;
     }
 
-    private FilterList getSampleFilter() {
-        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
-        Filter pageFilter = new PageFilter(20);
-        Filter columnFilter = new ColumnPaginationFilter(5, 10);
-        filterList.addFilter(pageFilter);
-        filterList.addFilter(columnFilter);
-        return filterList;
-    }
 
     private List<Object> getSampleData(ResultScanner scanner, List<ColumnType> cts, Result firstResult) throws IOException {
 
