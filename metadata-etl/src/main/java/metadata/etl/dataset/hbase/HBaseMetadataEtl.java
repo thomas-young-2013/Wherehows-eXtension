@@ -29,8 +29,8 @@ public class HBaseMetadataEtl extends EtlJob {
     public void extract()
             throws Exception {
         logger.info("Begin hbase metadata extract! - " + prop.getProperty(Constant.WH_EXEC_ID_KEY));
-      /*  HBaseMetaExtractor metaExtractor = new HBaseMetaExtractor(this.prop);
-        metaExtractor.startToExtractHBaseData();*/
+        HBaseMetaExtractor metaExtractor = new HBaseMetaExtractor(this.prop);
+        metaExtractor.startToExtractHBaseData();
     }
 
     @Override
