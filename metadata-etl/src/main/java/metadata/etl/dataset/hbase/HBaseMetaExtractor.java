@@ -55,7 +55,7 @@ public class HBaseMetaExtractor {
         String masterBindAddress = prop.getProperty(Constant.HBASE_MASTER_INFO_BIND_ADDRESS_KEY);
         String zkZnodeParent = prop.getProperty(Constant.HBASE_ZOOKEEPER_ZNODE_PARENT_KEY);
 
-        this.hbaseMetaFile = prop.getProperty(Constant.HBASE_LOCAL_META_DATA_KEY);
+        this.hbaseMetaFile = prop.getProperty(Constant.HBASE_LOCAL_RAW_META_DATA_KEY);
         this.hbaseSampleFile = prop.getProperty(Constant.HBASE_LOCAL_SAMPLE_KEY);
 
         config.set("hbase.master.port", masterPort);
