@@ -10,10 +10,7 @@ import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.ColumnPaginationFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.PageFilter;
+
 import org.apache.hadoop.hbase.util.Bytes;
 import wherehows.common.Constant;
 import wherehows.common.utils.ProcessUtils;
