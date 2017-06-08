@@ -10,10 +10,7 @@ import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.ColumnPaginationFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.PageFilter;
+
 import org.apache.hadoop.hbase.util.Bytes;
 import wherehows.common.Constant;
 import wherehows.common.utils.ProcessUtils;
@@ -42,8 +39,6 @@ public class HBaseMetaExtractor {
     private String hbaseMetaFile = null;
     private String hbaseSampleFile = null;
 
-    private final int SAMPLE_DATA_ROW_NUM = 5;
-    private final int SAMPLE_DATA_COLUMN_NUM = 10;
 
     private void init() throws IOException {
 
@@ -102,10 +97,10 @@ public class HBaseMetaExtractor {
     }
 
     private void createFileIfNotExist(String path) throws IOException {
-        LOG.info("create file path : "+path);
+        LOG.info("create file path : " + path);
         File file = new File(path);
         if (!file.exists()) {
-            LOG.info("file path : "+path+" not exist , create it");
+            LOG.info("file path : " + path + " not exist , create it");
             String[] cmds = {"touch", path};
             ProcessUtils.exec(cmds);
         }
@@ -114,7 +109,7 @@ public class HBaseMetaExtractor {
     public void startToExtractHBaseData() throws IOException {
         TableName[] allTables = this.getAllTables();
         for (TableName tableName : allTables) {
-            LOG.info("Hbase table : "+tableName.getNameAsString());
+            LOG.info("Hbase table : " + tableName.getNameAsString());
             this.extractTableInfo(tableName);
         }
 
@@ -131,17 +126,18 @@ public class HBaseMetaExtractor {
 
         Map<String, Object> keyToMeta = getTableProperties(tableName);
 
-        FilterList filterList = getSampleFilter();
         Table table = con.getTable(tableName);
+
         Scan scan = new Scan();
-        scan.setMaxResultSize(10);
-        scan.setFilter(filterList);
+        scan.setBatch(10);
 
         ResultScanner scanner = table.getScanner(scan);
         Result result = scanner.next();
 
         List<ColumnType> cts = new ArrayList<ColumnType>();
+
         if (result == null) {
+            cts.add(new ColumnType("", ""));
             keyToMeta.put("fields", cts);
             String realJsonSchema = mapToJson(keyToMeta);
             schemaFileWriter.append(realJsonSchema + "\n");
@@ -152,11 +148,24 @@ public class HBaseMetaExtractor {
             keyToMeta.put("fields", cts);
             String realJsonSchema = mapToJson(keyToMeta);
             schemaFileWriter.append(realJsonSchema + "\n");
-            List<Object> sampleList = getSampleData(scanner, cts, result);
+            List<Object> sampleList = getSampleData(cts, result);
             sampleFileWriter.append("hbase:///" + tableName.getNameAsString() + "\u001a" + null + "\u001a" + "{\"sample\": " + sampleList.toString() + "}" + "\n");
         }
 
     }
+
+    private List<String> getColumnsWithFirstRow(Result result) {
+        List<String> columns = new ArrayList<String>();
+
+        for (Cell value : result.listCells()) {
+            String family = Bytes.toString(value.getFamily());
+            String qualifier = Bytes.toString(value.getQualifier());
+            String column = family + ":" + qualifier;
+            columns.add(column);
+        }
+        return columns;
+    }
+
 
     private Map<String, Object> getTableProperties(TableName table) throws IOException {
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -194,39 +203,27 @@ public class HBaseMetaExtractor {
         return writeFile;
     }
 
-    private FilterList getSampleFilter() {
-        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
-        Filter pageFilter = new PageFilter(20);
-        Filter columnFilter = new ColumnPaginationFilter(5, 10);
-        filterList.addFilter(pageFilter);
-        filterList.addFilter(columnFilter);
-        return filterList;
-    }
 
-    private List<Object> getSampleData(ResultScanner scanner, List<ColumnType> cts, Result firstResult) throws IOException {
+    private List<Object> getSampleData(List<ColumnType> cts, Result firstResult) throws IOException {
 
-        int totalRows = 0;
         Result result = firstResult;
         List<Object> sampleList = new ArrayList<Object>();
-        while (result != null && totalRows < SAMPLE_DATA_ROW_NUM) {
 
-            Map<String, Object> columnToValue = new HashMap<String, Object>();
-            for (ColumnType type : cts) {
-                String strFam = type.getName().split(":")[0];
-                String strQua = type.getName().split(":")[1];
-                byte[] family = Bytes.toBytes(strFam);
-                byte[] qualier = Bytes.toBytes(strQua);
-                if (result.containsColumn(family, qualier)) {
-                    String value = Bytes.toString(result.getValue(family, qualier));
-                    columnToValue.put(strFam + ":" + strQua, value);
-                } else {
-                    columnToValue.put(strFam + ":" + strQua, "null");
-                }
+        Map<String, Object> columnToValue = new HashMap<String, Object>();
+        for (ColumnType type : cts) {
+            String strFam = type.getName().split(":")[0];
+            String strQua = type.getName().split(":")[1];
+            byte[] family = Bytes.toBytes(strFam);
+            byte[] qualier = Bytes.toBytes(strQua);
+            if (result.containsColumn(family, qualier)) {
+                String value = Bytes.toString(result.getValue(family, qualier));
+                columnToValue.put(strFam + ":" + strQua, value);
+            } else {
+                columnToValue.put(strFam + ":" + strQua, "null");
             }
-            sampleList.add(mapToJson(columnToValue));
-            totalRows++;
-            result = scanner.next();
         }
+        sampleList.add(mapToJson(columnToValue));
+
 
         return sampleList;
     }
@@ -244,20 +241,6 @@ public class HBaseMetaExtractor {
         admin.close();
     }
 
-    private List<String> getColumnsWithFirstRow(Result result) {
-        List<String> columns = new ArrayList<String>();
-        int columnCount = 0;
-        for (Cell value : result.listCells()) {
-            if (columnCount < SAMPLE_DATA_COLUMN_NUM) {
-                String family = Bytes.toString(value.getFamily());
-                String qualifier = Bytes.toString(value.getQualifier());
-                String column = family + ":" + qualifier;
-                columns.add(column);
-                columnCount++;
-            }
-        }
-        return columns;
-    }
 
     private List<ColumnType> getJsonFields(List<String> columns) {
         List<ColumnType> fields = new ArrayList<ColumnType>();
