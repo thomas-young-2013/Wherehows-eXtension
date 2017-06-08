@@ -114,7 +114,7 @@ public class HBaseMetaExtractor {
     public void startToExtractHBaseData() throws IOException {
         TableName[] allTables = this.getAllTables();
         for (TableName tableName : allTables) {
-            LOG.info("Hbase table : "+table.getNameAsString());
+            LOG.info("Hbase table : "+tableName.getNameAsString());
             this.extractTableInfo(tableName);
         }
 
