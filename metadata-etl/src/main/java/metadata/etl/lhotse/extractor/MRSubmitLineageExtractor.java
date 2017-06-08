@@ -29,6 +29,8 @@ public class MRSubmitLineageExtractor implements BaseLineageExtractor {
                                                 int defaultDatabaseId, String logPath) {
         LzTaskExecRecord lzTaskExecRecord = message.lzTaskExecRecord;
         List<LineageRecord> lineageRecords = new ArrayList<>();
+        if (lzTaskExecRecord.flowId == null) return lineageRecords;
+
         try {
             logger.info("start to parse the logLocation: {}", logLocation);
             logger.info("start to parse the logPath: {}", logPath);

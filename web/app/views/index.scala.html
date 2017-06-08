@@ -136,11 +136,11 @@
                   <li class="previous">
                     {{#if urn}}
                       {{#link-to 'subpage' currentName previousPage (query-params urn=urn)}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'page' previousPage}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -881,16 +881,16 @@
                   <li class="previous">
                     {{#if group}}
                       {{#link-to 'metricnamesubpage' dashboard group previousPage}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                     {{else}}
                       {{#if dashboard}}
                       {{#link-to 'metricnamepage' dashboard previousPage}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                       {{else}}
                       {{#link-to 'metricspage' previousPage}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                       {{/if}}
                     {{/if}}
@@ -1087,7 +1087,7 @@
                   {{#unless first}}
                     <li class="previous">
                           {{#link-to 'search' (query-params categroy=category source=source page=previousPage)}}
-                            &larr; Prev
+                            &larr;@Messages("prev")
                           {{/link-to}}
                     </li>
                   {{/unless}}
@@ -1201,7 +1201,7 @@
                 {{#unless first}}
                   <li class="previous">
                     {{#link-to 'advsearch' (query-params page=previousPage)}}
-                      &larr; Prev
+                      &larr;@Messages("prev")
                     {{/link-to}}
                   </li>
                 {{/unless}}
@@ -1318,11 +1318,11 @@
                   <li class="previous">
                     {{#if queryParams}}
                       {{#link-to 'flowssubpage' currentName previousPage (query-params urn=queryParams)}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                     {{else}}
                       {{#link-to 'flowspage' previousPage}}
-                        &larr; Prev
+                        &larr;@Messages("prev")
                       {{/link-to}}
                     {{/if}}
                   </li>
@@ -1441,7 +1441,7 @@
                 {{#unless first}}
                   <li class="previous">
                     {{#link-to 'pagedflow' previousPage (query-params urn=urn)}}
-                      &larr; Prev
+                      &larr;@Messages("prev")
                     {{/link-to}}
                   </li>
                 {{/unless}}

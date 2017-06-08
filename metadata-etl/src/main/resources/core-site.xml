@@ -1,0 +1,240 @@
+<!--Mon Jun  5 17:25:04 2017-->
+    <configuration>
+    
+    <property>
+      <name>fs.defaultFS</name>
+      <value>hdfs://hdfsCluster</value>
+      <final>true</final>
+    </property>
+    
+    <property>
+      <name>fs.trash.interval</name>
+      <value>360</value>
+    </property>
+    
+    <property>
+      <name>ha.failover-controller.active-standby-elector.zk.op.retries</name>
+      <value>120</value>
+    </property>
+    
+    <property>
+      <name>hadoop.http.authentication.simple.anonymous.allowed</name>
+      <value>true</value>
+    </property>
+    
+    <property>
+      <name>hadoop.http.staticuser.user</name>
+      <value>yarn</value>
+    </property>
+    
+    <property>
+      <name>hadoop.httpfs.port</name>
+      <value>14000</value>
+    </property>
+    
+    <property>
+      <name>hadoop.httpfs.tomcat.admin.port</name>
+      <value>14002</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hbase.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hbase.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hcat.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hcat.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hdfs.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hdfs.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hive.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hive.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.httpfs.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.httpfs.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hue.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hue.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.jstorm.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.jstorm.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.olap.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.olap.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.yarn.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.yarn.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.auth_to_local</name>
+      <value>DEFAULT</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.authentication</name>
+      <value>simple</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.authorization</name>
+      <value>true</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping</name>
+      <value>org.apache.hadoop.security.LdapGroupsMapping</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.base</name>
+      <value>dc=tbds,dc=com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.bind.password</name>
+      <value>admin</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.bind.user</name>
+      <value>cn=admin,dc=tbds,dc=com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.search.attr.group.name</name>
+      <value>cn</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.search.attr.member</name>
+      <value>member</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.search.filter.group</name>
+      <value>(objectClass=groupOfNames)</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.search.filter.user</name>
+      <value>(&amp;(objectClass=inetOrgPerson)(cn={0}))</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.group.mapping.ldap.url</name>
+      <value>ldap://10.141.125.245:389</value>
+    </property>
+    
+    <property>
+      <name>io.compression.codec.lzo.class</name>
+      <value>com.hadoop.compression.lzo.LzoCodec</value>
+    </property>
+    
+    <property>
+      <name>io.compression.codecs</name>
+      <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.SnappyCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec</value>
+    </property>
+    
+    <property>
+      <name>io.file.buffer.size</name>
+      <value>131072</value>
+    </property>
+    
+    <property>
+      <name>io.serializations</name>
+      <value>org.apache.hadoop.io.serializer.WritableSerialization</value>
+    </property>
+    
+    <property>
+      <name>ipc.client.connect.max.retries</name>
+      <value>50</value>
+    </property>
+    
+    <property>
+      <name>ipc.client.connection.maxidletime</name>
+      <value>30000</value>
+    </property>
+    
+    <property>
+      <name>ipc.client.idlethreshold</name>
+      <value>8000</value>
+    </property>
+    
+    <property>
+      <name>ipc.server.tcpnodelay</name>
+      <value>true</value>
+    </property>
+    
+    <property>
+      <name>mapreduce.jobtracker.webinterface.trusted</name>
+      <value>false</value>
+    </property>
+    
+    <property>
+      <name>proxyuser_group</name>
+      <value>users</value>
+    </property>
+    
+  </configuration>

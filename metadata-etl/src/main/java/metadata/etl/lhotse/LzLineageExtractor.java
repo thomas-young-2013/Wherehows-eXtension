@@ -13,7 +13,7 @@
  */
 package metadata.etl.lhotse;
 
-import metadata.etl.lhotse.crawler.LhotseMRLogCrawler;
+import metadata.etl.lhotse.crawler.LhotseExecLogCrawler;
 import metadata.etl.lhotse.crawler.LhtoseConfCrawler;
 import metadata.etl.lhotse.extractor.*;
 import org.slf4j.Logger;
@@ -61,11 +61,15 @@ public class LzLineageExtractor {
                 lineageExtractor = new Hdfs2HiveLineageExtractor();
                 break;
             case 92:
-                logPath = new LhotseMRLogCrawler().getRemoteLog(message);
+                logPath = new LhotseExecLogCrawler().getRemoteLog(message);
                 lineageExtractor = new MRSubmitLineageExtractor();
                 break;
             case 39:
-                lineageExtractor = new SparkSubmitLineageExtractor();
+                logPath = new LhotseExecLogCrawler().getRemoteLog(message);
+                lineageExtractor = new SparkLineageExtractor();
+                break;
+            case 37:
+                lineageExtractor = new Hdfs2HBaseLineageExtractor();
                 break;
             default:
                 throw new Exception("Not Supported Task Type!");

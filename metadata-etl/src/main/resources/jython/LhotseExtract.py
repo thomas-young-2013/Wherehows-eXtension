@@ -214,10 +214,6 @@ class LhotseExtract:
         user_writer.close()
 
 if __name__ == "__main__":
-    ## set the encodings
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-
     props = sys.argv[1]
     lz = LhotseExtract(props)
     lz.run()

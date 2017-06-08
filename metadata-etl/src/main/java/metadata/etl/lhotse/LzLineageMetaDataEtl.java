@@ -74,6 +74,9 @@ public class LzLineageMetaDataEtl extends EtlJob {
         String emptyStaggingTable =
                 "DELETE FROM stg_job_execution_data_lineage WHERE app_id = " + this.prop.getProperty(Constant.APP_ID_KEY);
         conn.createStatement().execute(emptyStaggingTable);
+        String emptyStableTable =
+                "DELETE FROM job_execution_data_lineage WHERE app_id = " + this.prop.getProperty(Constant.APP_ID_KEY);
+        conn.createStatement().execute(emptyStableTable);
 
         LzLineageExtractorMaster lzLineageExtractorMaster = new LzLineageExtractorMaster(prop);
         logger.info("time frame is: " + timeFrame);

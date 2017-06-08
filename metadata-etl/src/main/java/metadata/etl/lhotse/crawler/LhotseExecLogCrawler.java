@@ -12,11 +12,12 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
- * Created by hadoop on 5/22/17.
+ * Created by thomas young on 5/22/17.
  */
-public class LhotseMRLogCrawler implements BaseCrawler {
+public class LhotseExecLogCrawler implements BaseCrawler {
     private static final Logger logger = LoggerFactory.getLogger(LhtoseConfCrawler.class);
-    public static final String defaultLogLocation = "/usr/local/lhotse_runners/log/";
+    public static final String defaultRemoteConfLocation = "/usr/local/lhotse_runners/log/";
+    public static final String defaultLocalConfLocation = "/var/tmp/wherehows/crawl_data/";
 
     @Override
     public String getRemoteLog(LzExecMessage message) throws Exception {
@@ -24,18 +25,20 @@ public class LhotseMRLogCrawler implements BaseCrawler {
         String logPath = null;
 
         if (message.prop.getProperty(Constant.LZ_LINEAGE_LOG_REMOTE, "false").equalsIgnoreCase("false")) {
-            logPath = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR, defaultLogLocation);
+            logPath = defaultLocalConfLocation;
             logPath += String.format("%d/%s/%s", lzRecord.taskType,
                     lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
             String mrfileName = FileOperator.getOneLogFile(logPath);
             logPath += "/" + mrfileName;
         }else {
             String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
-            String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            // String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
+            String remoteHost = lzRecord.brokerId;
+            logger.info("log lhotse runner ip is: {}", remoteHost);
             String keyLocation = message.prop.getProperty(Constant.LZ_PRIVATE_KEY_LOCATION_KEY);
-            String localLogPathFile = message.prop.getProperty(Constant.LZ_LINEAGE_LOG_DEFAULT_DIR);
+            String localLogPathFile = defaultLocalConfLocation;
             // move the log file from remote host to local host
-            String remoteLogPath = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultLogLocation);
+            String remoteLogPath = message.prop.getProperty(Constant.LZ_REMOTE_LOG_DIR, defaultRemoteConfLocation);
             remoteLogPath += String.format("%d/%s/%s", lzRecord.taskType,
                     lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
             // get the file list in the remote directory.
