@@ -30,7 +30,6 @@ import metadata.etl.ldap.LdapEtl;
 import metadata.etl.scheduler.azkaban.AzkabanExecEtl;
 import metadata.etl.scheduler.lhotse.LhotseExecEtl;
 import metadata.etl.scheduler.oozie.OozieExecEtl;
-import metadata.etl.models.EtlJobName;
 import metadata.etl.git.CodeSearchMetadataEtl;
 
 

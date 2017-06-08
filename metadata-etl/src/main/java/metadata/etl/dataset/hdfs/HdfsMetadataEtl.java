@@ -159,7 +159,7 @@ public class HdfsMetadataEtl extends EtlJob {
         "PreferredAuthentications",
         "publickey,gssapi-with-mic,keyboard-interactive,password");
       jsch.addIdentity(this.prop.getProperty(Constant.HDFS_PRIVATE_KEY_LOCATION_KEY));
-      java.util.Properties config = new java.util.Properties();
+      Properties config = new Properties();
       config.put("StrictHostKeyChecking", "no");
       session.setConfig(config);
       session.connect();
