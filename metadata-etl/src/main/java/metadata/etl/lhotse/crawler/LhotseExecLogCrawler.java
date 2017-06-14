@@ -30,7 +30,7 @@ public class LhotseExecLogCrawler implements BaseCrawler {
                     lzRecord.taskId.substring(lzRecord.taskId.length() - 2), lzRecord.taskId);
             String mrfileName = FileOperator.getOneLogFile(logPath);
             logPath += "/" + mrfileName;
-        }else {
+        } else {
             String remoteUser = message.prop.getProperty(Constant.LZ_REMOTE_USER_KEY);
             // String remoteHost = message.prop.getProperty(Constant.LZ_REMOTE_MACHINE_KEY);
             String remoteHost = lzRecord.brokerId;
@@ -63,8 +63,8 @@ public class LhotseExecLogCrawler implements BaseCrawler {
             logPath = localLogPathFile + remoteLogFileName;
         }
         if (logPath == null) {
-            logger.error("log file location error!");
-            throw new Exception("log file location error!");
+            logger.error("log file location error: IS null!");
+            throw new Exception("log file location error: IS null!");
         } else {
             logger.info("log file to parse: {}", logPath);
         }

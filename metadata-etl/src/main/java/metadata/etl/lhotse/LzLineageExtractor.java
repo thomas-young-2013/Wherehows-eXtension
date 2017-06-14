@@ -46,49 +46,54 @@ public class LzLineageExtractor {
 
         List<LineageRecord> jobLineage = new ArrayList<>();
         LzTaskExecRecord lzRecord = message.lzTaskExecRecord;
-        String localLogLocation = new LhtoseConfCrawler().getRemoteLog(message);
-        String logPath = null;
+        try {
+            String localLogLocation = new LhtoseConfCrawler().getRemoteLog(message);
+            String logPath = null;
 
-        BaseLineageExtractor lineageExtractor = null;
-        switch (lzRecord.taskType) {
-            case 72:
-                lineageExtractor = new Hive2HdfsLineageExtractor();
-                break;
-            case 70:
-                lineageExtractor = new HiveSqlLineageExtractor();
-                break;
-            case 75:
-                lineageExtractor = new Hdfs2HiveLineageExtractor();
-                break;
-            case 92:
-                logPath = new LhotseExecLogCrawler().getRemoteLog(message);
-                lineageExtractor = new MRSubmitLineageExtractor();
-                break;
-            case 39:
-                logPath = new LhotseExecLogCrawler().getRemoteLog(message);
-                lineageExtractor = new SparkLineageExtractor();
-                break;
-            case 37:
-                lineageExtractor = new Hdfs2HBaseLineageExtractor();
-                break;
-            default:
-                throw new Exception("Not Supported Task Type!");
-        }
-        LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
-        Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
-        if (lineageExtractor != null) {
-            List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message,
-                    defaultDatabaseId, logPath);
-            try {
-                logger.info("start lineage combiner.");
-                lineageCombiner.addAll(lineageRecords);
-                logger.info("get combined lineage.");
-                jobLineage.addAll(lineageCombiner.getCombinedLineage());
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.info(e.getMessage());
-                return lineageRecords;
+            BaseLineageExtractor lineageExtractor = null;
+            switch (lzRecord.taskType) {
+                case 72:
+                    lineageExtractor = new Hive2HdfsLineageExtractor();
+                    break;
+                case 70:
+                    lineageExtractor = new HiveSqlLineageExtractor();
+                    break;
+                case 75:
+                    lineageExtractor = new Hdfs2HiveLineageExtractor();
+                    break;
+                case 92:
+                    logPath = new LhotseExecLogCrawler().getRemoteLog(message);
+                    lineageExtractor = new MRSubmitLineageExtractor();
+                    break;
+                case 39:
+                    logPath = new LhotseExecLogCrawler().getRemoteLog(message);
+                    lineageExtractor = new SparkLineageExtractor();
+                    break;
+                case 37:
+                    lineageExtractor = new Hdfs2HBaseLineageExtractor();
+                    break;
+                default:
+                    throw new Exception("Not Supported Task Type!");
             }
+            LineageCombiner lineageCombiner = new LineageCombiner(message.connection);
+            Integer defaultDatabaseId = Integer.valueOf(message.prop.getProperty(Constant.LZ_DEFAULT_HADOOP_DATABASE_ID_KEY));
+            if (lineageExtractor != null) {
+                List<LineageRecord> lineageRecords = lineageExtractor.getLineageRecord(localLogLocation, message,
+                        defaultDatabaseId, logPath);
+                try {
+                    logger.info("start lineage combiner.");
+                    lineageCombiner.addAll(lineageRecords);
+                    logger.info("get combined lineage.");
+                    jobLineage.addAll(lineageCombiner.getCombinedLineage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info(e.getMessage());
+                    return lineageRecords;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("error got: extract lineage!");
+            logger.info(e.getMessage());
         }
         return jobLineage;
     }
