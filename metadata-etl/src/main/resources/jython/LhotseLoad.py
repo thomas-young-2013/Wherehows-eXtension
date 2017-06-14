@@ -23,6 +23,10 @@ class LhotseLoad(SchedulerLoad):
         SchedulerLoad.load_flows(self)
 
 if __name__ == "__main__":
+    ## set the encodings
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     props = sys.argv[1]
     lz = LhotseLoad(props)
     lz.run()

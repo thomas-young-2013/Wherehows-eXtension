@@ -18,8 +18,6 @@ import static wherehows.common.utils.RegexUtils.isPath;
 /**
  * Created by thomas young on 5/10/17.
  */
-
-@Deprecated
 public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
 
     private static final Logger logger = LoggerFactory.getLogger(SparkSubmitLineageExtractor.class);
@@ -27,7 +25,6 @@ public class SparkSubmitLineageExtractor implements BaseLineageExtractor {
     /*
     * [++] this class need to be rewritten in the latter.
     * */
-
     @Override
     public List<LineageRecord> getLineageRecord(String logLocation, LzExecMessage message,
                                                 int defaultDatabaseId, String logPath) {
