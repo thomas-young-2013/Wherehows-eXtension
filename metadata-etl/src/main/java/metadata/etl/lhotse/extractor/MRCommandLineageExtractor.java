@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 /**
  * Created by thomas young on 5/10/17.
  */
-
-@Deprecated
 public class MRCommandLineageExtractor implements BaseLineageExtractor {
 
     private static final Logger logger = LoggerFactory.getLogger(MRCommandLineageExtractor.class);

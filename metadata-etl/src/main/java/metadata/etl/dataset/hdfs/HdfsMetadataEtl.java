@@ -97,7 +97,7 @@ public class HdfsMetadataEtl extends EtlJob {
     String whiteList = prop.getProperty(Constant.HDFS_WHITE_LIST_KEY);
     String numOfThread = prop.getProperty(Constant.HDFS_NUM_OF_THREAD_KEY, String.valueOf(1));
     String hdfsUser = prop.getProperty(Constant.HDFS_REMOTE_USER_KEY);
-    // String hdfsKeyTab = prop.getProperty(Constant.HDFS_REMOTE_KEYTAB_LOCATION_KEY);
+    String hdfsKeyTab = prop.getProperty(Constant.HDFS_REMOTE_KEYTAB_LOCATION_KEY);
     String hdfsExtractLogFile = outputSchemaFile + ".log";
 
     String[] hadoopCmd = {"hadoop", "jar", remoteJarFile,
@@ -107,8 +107,9 @@ public class HdfsMetadataEtl extends EtlJob {
             "-D" + Constant.HDFS_WHITE_LIST_KEY + "=" + whiteList,
             "-D" + Constant.HDFS_NUM_OF_THREAD_KEY + "=" + numOfThread,
             "-D" + Constant.HDFS_REMOTE_USER_KEY + "=" + hdfsUser,
+            "-D" + Constant.HDFS_REMOTE_KEYTAB_LOCATION_KEY + "=" + hdfsKeyTab,
             "-Dlog.file.name=hdfs_schema_fetch" };
-    // delete the line (no kerberos needed): "-D" + Constant.HDFS_REMOTE_KEYTAB_LOCATION_KEY + "=" + hdfsKeyTab,
+
     ProcessBuilder pb = new ProcessBuilder(hadoopCmd);
     File logFile = new File(hdfsExtractLogFile);
     pb.redirectErrorStream(true);

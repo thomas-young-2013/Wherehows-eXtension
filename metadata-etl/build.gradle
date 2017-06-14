@@ -40,9 +40,6 @@ dependencies {
   compile files("extralibs/mysql-connector-java-5.1.*.jar") // externalDependency.mysql
   compile files("extralibs/jython-standalone-2.7.0.jar") // externalDependency.jython
   compile fileTree(dir: 'extralibs', include: ['*.jar']) // externalDependency.oracle/teradata/gsp
-
-  compile externalDependency.hbase_client
-
   provided project(":hadoop-dataset-extractor-standalone")
   testCompile externalDependency.testng
 }

@@ -20,7 +20,9 @@ import wherehows.common.Constant;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by thomas young on 3/30/17.
@@ -85,17 +87,12 @@ public class LzJobChecker {
         logger.info("the time interval is: [" + startTime + " -> " + endTime + "]");
 
         List<LzTaskExecRecord> results = new ArrayList<>();
-        Map<String, RefOject> workflowMapper = new HashMap<>();
-        Map<String, Integer> flowIdMapper = new HashMap<>();
-
         Statement stmt = conn.createStatement();
         Statement stmt1 = conn1.createStatement();
         Statement stmt2 = conn2.createStatement();
-        final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, " +
-                "task_run.end_time, ref.task_name, task_run.runtime_broker " +
+        final String cmd = "select task_run.task_id, task_run.task_type, task_run.start_time, task_run.end_time, ref.task_name " +
                 "from lb_task_run as task_run, lb_task as ref where task_run.start_time > \"%s\" " +
-                "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id  and task_run.state = 2 " +
-                "and task_run.runtime_broker is not NULL";
+                "and task_run.end_time < \"%s\" and ref.task_id = task_run.task_id";
         final String cmd1 = "select wi.workflow_name, ti.project_name from task_info as ti, workflow_info wi " +
                 "where ti.real_task_id = \"%s\" and ti.workflow_id = wi.workflow_id";
         final String cmd2 = "select flow_id from flow where flow_path = \"%s\"";
@@ -103,8 +100,10 @@ public class LzJobChecker {
         logger.info("Get recent task sql : " + String.format(cmd, startTime, endTime));
         final ResultSet rs = stmt.executeQuery(String.format(cmd, startTime, endTime));
 
-        // TO DO LIST: PROBLEMS MAY HAPPEN HERE: topological sort
-
+        // TO DO LIST: PROBLEMS MAY HAPPEN HERE.
+        /*
+        * topological sort.
+        * */
         try {
             while (rs.next()) {
                 String taskId = rs.getString("task_id");
@@ -112,9 +111,8 @@ public class LzJobChecker {
                 Integer taskStartTime = DateFormater.getInt(rs.getString("start_time"));
                 Integer taskEndTime = DateFormater.getInt(rs.getString("end_time"));
                 String taskName = rs.getString("task_name");
-                String broker = rs.getString("runtime_broker");
+
                 LzTaskExecRecord lzTaskExecRecord = new LzTaskExecRecord(appId, taskId, typeId, taskName, taskStartTime, taskEndTime);
-                lzTaskExecRecord.brokerId = broker;
                 results.add(lzTaskExecRecord);
             }
         } catch (Exception e) {
@@ -124,42 +122,25 @@ public class LzJobChecker {
 
         // query workflow and project name from tbds database.
         for (LzTaskExecRecord lzTaskExecRecord: results) {
-            String key = lzTaskExecRecord.taskId;
-            if (workflowMapper.containsKey(key)) {
-                lzTaskExecRecord.projectName = workflowMapper.get(key).projectName;
-                lzTaskExecRecord.workflowName = workflowMapper.get(key).workflowName;
-            } else {
-                RefOject refOject = null;
-                String sql = String.format(cmd1, key);
-                final ResultSet resultSet = stmt1.executeQuery(sql);
-                while (resultSet.next()) {
-                    String workflowName = resultSet.getString("workflow_name");
-                    String projectName = resultSet.getString("project_name");
-                    lzTaskExecRecord.projectName = projectName;
-                    lzTaskExecRecord.workflowName = workflowName;
-                    refOject = new RefOject(projectName, workflowName);
-                }
-                if (refOject != null) workflowMapper.put(key, refOject);
-                if (workflowMapper.size() > 1000) workflowMapper.clear();
+            String sql = String.format(cmd1, lzTaskExecRecord.taskId);
+            final ResultSet resultSet = stmt1.executeQuery(sql);
+            while (resultSet.next()) {
+                String workflowName = resultSet.getString("workflow_name");
+                String projectName = resultSet.getString("project_name");
+                lzTaskExecRecord.projectName = projectName;
+                lzTaskExecRecord.workflowName = workflowName;
             }
         }
 
         // query workflow_id from wherehows database.
         for (LzTaskExecRecord lzTaskExecRecord: results) {
             String flowPath = lzTaskExecRecord.projectName + ":" + lzTaskExecRecord.workflowName;
-            if (flowIdMapper.containsKey(flowPath)) {
-                lzTaskExecRecord.flowId = flowIdMapper.get(flowPath);
-            } else {
-                Integer flowId = null;
-                logger.info("the sql is: {}", String.format(cmd2, flowPath));
-                final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath));
-                while (resultSet.next()) {
-                    flowId = resultSet.getInt("flow_id");
-                    logger.info("the flow id is: {}", flowId);
-                    lzTaskExecRecord.flowId = flowId;
-                }
-                if (flowId != null) flowIdMapper.put(flowPath, flowId);
-                if (flowIdMapper.size() > 1000) flowIdMapper.clear();
+            logger.info("the sql is: {}", String.format(cmd2, flowPath));
+            final ResultSet resultSet = stmt2.executeQuery(String.format(cmd2, flowPath));
+            while (resultSet.next()) {
+                Integer flowId = resultSet.getInt("flow_id");
+                logger.info("the flow id is: {}", flowId);
+                lzTaskExecRecord.flowId = flowId;
             }
             logger.info("the lztaskexecrecord is: {}", lzTaskExecRecord.toString());
         }
@@ -172,16 +153,5 @@ public class LzJobChecker {
         conn.close();
         conn1.close();
         conn2.close();
-    }
-
-    private class RefOject {
-        public String projectName;
-        public String workflowName;
-
-        public RefOject() {}
-        public RefOject(String projectName, String workflowName) {
-            this.projectName = projectName;
-            this.workflowName = workflowName;
-        }
     }
 }
