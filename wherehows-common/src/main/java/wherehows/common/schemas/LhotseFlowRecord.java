@@ -12,18 +12,21 @@ public class LhotseFlowRecord extends AbstractRecord {
     String flowGroup;
     String flowPath;
     Integer flowLevel;
+    Long sourceCreatedTime;
     Long sourceModifiedTime;
     Integer sourceVersion;
     Character isActive;
     Long whExecId;
 
-    public LhotseFlowRecord(Integer appId, String flowName, String flowGroup, String flowPath, Integer flowLevel, Long sourceModifiedTime,
+    public LhotseFlowRecord(Integer appId, String flowName, String flowGroup, String flowPath, Integer flowLevel,
+                            Long sourceCreatedTime, Long sourceModifiedTime,
                              Integer sourceVersion, Character isActive, Long whExecId) {
         this.appId = appId;
         this.flowName = flowName;
         this.flowGroup = flowGroup;
         this.flowPath = flowPath;
         this.flowLevel = flowLevel;
+        this.sourceCreatedTime = sourceCreatedTime;
         this.sourceModifiedTime = sourceModifiedTime;
         this.sourceVersion = sourceVersion;
         this.isActive = isActive;
@@ -38,6 +41,7 @@ public class LhotseFlowRecord extends AbstractRecord {
         allFields.add(flowGroup);
         allFields.add(flowPath);
         allFields.add(flowLevel);
+        allFields.add(sourceCreatedTime);
         allFields.add(sourceModifiedTime);
         allFields.add(sourceVersion);
         allFields.add(isActive);

@@ -17,8 +17,10 @@ from org.slf4j import LoggerFactory
 from com.ziclix.python.sql import zxJDBC
 from wherehows.common import Constant
 
+from org.python.core import codecs
+codecs.setDefaultEncoding('utf-8')
 
-class HdfsLoad:
+class HBaseLoad:
   def __init__(self, exec_id):
     self.logger = LoggerFactory.getLogger(self.__class__.__name__ + ':' + str(exec_id))
 
@@ -30,56 +32,42 @@ class HdfsLoad:
     cursor = self.conn_mysql.cursor()
     load_cmd = '''
         DELETE FROM stg_dict_dataset WHERE db_id = {db_id};
-        DELETE FROM dict_dataset WHERE source = 'Hdfs';
+        DELETE FROM dict_dataset WHERE source = 'Hbase';
+
         LOAD DATA LOCAL INFILE '{source_file}'
         INTO TABLE stg_dict_dataset
         FIELDS TERMINATED BY '\Z' ESCAPED BY '\0'
         (`name`, `schema`, properties, fields, urn, source,  @dataset_type, @storage_type,
         sample_partition_full_path, source_created_time, source_modified_time)
-        SET db_id = {db_id},
-        wh_etl_exec_id = {wh_etl_exec_id};
+        SET db_id = {db_id},wh_etl_exec_id = {wh_etl_exec_id};
 
-        -- clear
+        UPDATE stg_dict_dataset set dataset_type = 'Hbase'
+        ,storage_type = 'Table' where source = 'Hbase';
+        
         DELETE FROM stg_dict_dataset
         where db_id = {db_id}
-          AND (length(`name`) = 0
-           OR name like 'tmp\_%'
-           OR urn like '%/\_tmp'
-           OR urn like '%/\_distcp\_%')
-        ;
+            AND (length(`name`) = 0
+             OR name like 'tmp\_%'
+             OR urn like '%/\_tmp'
+             OR urn like '%/\_distcp\_%');
 
+        #change location_prefix
         update stg_dict_dataset
         set location_prefix =
-          case
-            when source in ('Espresso', 'Oracle', 'Hdfs', 'Kafka', 'Hive')
-            then substring_index(substring_index(urn, '/', 5), '/', -3) /* get the leading 2 levels */
-            when urn like '%:///%/%'
-            then substring_index(substring_index(urn, '/', 4), '/', -2) /* get the leading 1 level */
-          end
+           case
+            when source = 'Hbase'
+            then ''
+           end
         WHERE db_id = {db_id} and location_prefix is null;
 
-        -- fix for some edge cases
         update stg_dict_dataset
-        set name = substring_index(urn, '/', -2)
-        where db_id = {db_id}
-          and name regexp '[0-9]+\\.[0-9]+|dedup|dedupe|[0-9]+-day';
-
-        -- update parent name, this depends on the data from source system
+        set name = substring_index(urn, '/', -1)
+        where db_id = {db_id};
+        #change parent name
         update stg_dict_dataset
-        set parent_name =
-        case
-        when urn like 'hdfs:///data/external/gobblin/%'
-        then substring_index(substring_index(urn, '/', 7), '/', -1)
-        when (urn like 'hdfs:///%data/databases/%' or urn like 'hdfs:///%data/dbchanges/%' or urn like 'hdfs:///data/external/%')
-        then substring_index(substring_index(urn, '/', 5), '/', -1)
-        when (urn like 'hdfs:///%data/tracking/%' or urn like 'hdfs:///data/service/%' or urn like 'hdfs:///%data/derived/%')
-        then substring_index(substring_index(urn, '/', 4), '/', -1)
-        else substring_index(substring_index(urn, '/', 4), '/', -1)
-        end
-        where db_id = {db_id} and parent_name is null
-        ;
-
-        -- load into stg_dict_dataset_instance
+        set parent_name = ''
+        where db_id = {db_id};
+        
         DELETE FROM stg_dict_dataset_instance WHERE db_id = {db_id};
         INSERT INTO stg_dict_dataset_instance
         ( dataset_urn,
@@ -98,9 +86,8 @@ class HdfsLoad:
           abstract_dataset_urn,
           schema_text
         )
-        select s.urn, {db_id}, d.deployment_tier, d.data_center, d.cluster,
-          '*', 0, s.name, s.name, 0, s.source_created_time, s.created_time,
-           {wh_etl_exec_id}, s.urn, s.schema
+        select s.urn,{db_id}, d.deployment_tier,d.data_center, d.cluster, '*', 0,concat('hbase.',s.name), s.name,
+          0, s.source_created_time, s.created_time,{wh_etl_exec_id}, s.urn, s.schema
         from stg_dict_dataset s JOIN cfg_database d on s.db_id = d.db_id
         where s.db_id = {db_id}
         on duplicate key update
@@ -108,8 +95,8 @@ class HdfsLoad:
           server_cluster=d.cluster, native_name=s.name, logical_name=s.name,
           instance_created_time=s.source_created_time, created_time=s.created_time,
           wh_etl_exec_id={wh_etl_exec_id}, abstract_dataset_urn=s.urn, schema_text=s.schema;
-
-        -- insert into final table
+        
+        
         INSERT IGNORE INTO dict_dataset
         ( `name`,
           `schema`,
@@ -153,13 +140,12 @@ class HdfsLoad:
           modified_time=UNIX_TIMESTAMP(now()), wh_etl_exec_id=s.wh_etl_exec_id
         ;
         analyze table dict_dataset;
-
-        -- update dataset_id of instance table
+        
+        
         update stg_dict_dataset_instance sdi, dict_dataset d
         set sdi.dataset_id = d.id where sdi.abstract_dataset_urn = d.urn
         and sdi.db_id = {db_id};
-
-        -- insert into final instance table
+        
         INSERT IGNORE INTO dict_dataset_instance
         ( dataset_id,
           db_id,
@@ -179,7 +165,7 @@ class HdfsLoad:
           wh_etl_exec_id
         )
         select s.dataset_id, s.db_id, s.deployment_tier, s.data_center,
-          s.server_cluster, s.slice, s.status_id, s.native_name, s.logical_name, s.version,
+          s.server_cluster, s.slice, s.status_id,  s.native_name, s.logical_name, s.version,
           case when s.version regexp '[0-9]+\.[0-9]+\.[0-9]+'
             then cast(substring_index(s.version, '.', 1) as unsigned) * 100000000 +
                  cast(substring_index(substring_index(s.version, '.', 2), '.', -1) as unsigned) * 10000 +
@@ -195,31 +181,30 @@ class HdfsLoad:
           schema_text=s.schema_text, ddl_text=s.ddl_text,
           instance_created_time=s.instance_created_time, created_time=s.created_time, wh_etl_exec_id=s.wh_etl_exec_id
           ;
-        '''.format(source_file=self.input_file, db_id=self.db_id, wh_etl_exec_id=self.wh_etl_exec_id)
 
+        '''.format(source_file=self.input_file, db_id=self.db_id, wh_etl_exec_id=self.wh_etl_exec_id)
     for state in load_cmd.split(";"):
-      self.logger.debug(state)
-      cursor.execute(state)
-      self.conn_mysql.commit()
+        self.logger.debug(state)
+        cursor.execute(state)
+        self.conn_mysql.commit()
     cursor.close()
-    self.logger.info("finish loading hdfs metadata db_id={db_id} to dict_dataset".format(db_id=self.db_id))
+    self.logger.info("finish loading hbase metadata db_id={db_id} to dict_dataset".format(db_id=self.db_id))
+
 
   def load_field(self):
     cursor = self.conn_mysql.cursor()
     load_field_cmd = '''
         DELETE FROM stg_dict_field_detail where db_id = {db_id};
-
+        
         LOAD DATA LOCAL INFILE '{source_file}'
         INTO TABLE stg_dict_field_detail
         FIELDS TERMINATED BY '\Z'
         (urn, sort_id, parent_sort_id, parent_path, field_name, data_type,
          is_nullable, default_value, data_size, namespace, description)
         SET db_id = {db_id};
-
-        -- show warnings limit 20;
-
+        
         analyze table stg_dict_field_detail;
-
+        
         update stg_dict_field_detail
         set description = null
         where db_id = {db_id}
@@ -358,11 +343,11 @@ class HdfsLoad:
 
         '''.format(source_file=self.input_field_file, db_id=self.db_id)
     for state in load_field_cmd.split(";"):
-      self.logger.debug(state)
-      cursor.execute(state)
-      self.conn_mysql.commit()
+        self.logger.debug(state)
+        cursor.execute(state)
+        self.conn_mysql.commit()
     cursor.close()
-    self.logger.info("finish loading hdfs metadata db_id={db_id} to dict_field_detail".format(db_id=self.db_id))
+    self.logger.info("finish loading hbase metadata db_id={db_id} to dict_field_detail".format(db_id=self.db_id))
 
   def load_sample(self):
     cursor = self.conn_mysql.cursor()
@@ -402,26 +387,26 @@ class HdfsLoad:
     WHERE s.db_id = {db_id} AND d.ref_id = 0;
     '''.format(source_file=self.input_sample_file, db_id=self.db_id)
     for state in load_sample_cmd.split(";"):
-      self.logger.debug(state)
-      cursor.execute(state)
-      self.conn_mysql.commit()
+        self.logger.debug(state)
+        cursor.execute(state)
+        self.conn_mysql.commit()
     cursor.close()
-    self.logger.info("finish loading hdfs sample data db_id={db_id} to dict_dataset_sample".format(db_id=self.db_id))
-
+    self.logger.info("finish loading hbase sample data db_id={db_id} to dict_dataset_sample".format(db_id=self.db_id))
 
 if __name__ == "__main__":
   args = sys.argv[1]
 
-  l = HdfsLoad(args[Constant.WH_EXEC_ID_KEY])
+  l = HBaseLoad(args[Constant.WH_EXEC_ID_KEY])
 
   # set up connection
   username = args[Constant.WH_DB_USERNAME_KEY]
   password = args[Constant.WH_DB_PASSWORD_KEY]
   JDBC_DRIVER = args[Constant.WH_DB_DRIVER_KEY]
   JDBC_URL = args[Constant.WH_DB_URL_KEY]
-  l.input_file = args[Constant.HDFS_SCHEMA_RESULT_KEY]
-  l.input_field_file = args[Constant.HDFS_FIELD_RESULT_KEY]
-  l.input_sample_file = args[Constant.HDFS_SAMPLE_LOCAL_PATH_KEY]
+
+  l.input_file = args[Constant.HBASE_LOCAL_META_DATA_KEY]
+  l.input_field_file = args[Constant.HBASE_LOCAL_FIELD_META_DATA_KEY]
+  l.input_sample_file = args[Constant.HBASE_LOCAL_SAMPLE_KEY]
 
   l.db_id = args[Constant.DB_ID_KEY]
   l.wh_etl_exec_id = args[Constant.WH_EXEC_ID_KEY]
@@ -437,3 +422,7 @@ if __name__ == "__main__":
     l.load_sample()
   finally:
     l.conn_mysql.close()
+
+
+
+

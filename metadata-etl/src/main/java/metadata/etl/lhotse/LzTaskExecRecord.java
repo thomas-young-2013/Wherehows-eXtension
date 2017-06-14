@@ -31,6 +31,7 @@ public class LzTaskExecRecord extends AbstractRecord {
     public String projectName;
     public String workflowName;
     public Integer flowId;
+    public String brokerId;
 
     @Override
     public List<Object> fillAllFields() {
@@ -44,6 +45,7 @@ public class LzTaskExecRecord extends AbstractRecord {
         allFields.add(projectName);
         allFields.add(workflowName);
         allFields.add(flowId);
+        allFields.add(brokerId);
         return allFields;
     }
 
@@ -69,6 +71,7 @@ public class LzTaskExecRecord extends AbstractRecord {
                 ", projectName='" + projectName + '\'' +
                 ", workflowName='" + workflowName + '\'' +
                 ", flowId=" + flowId +
+                ", brokerId='" + brokerId + '\'' +
                 '}';
     }
 }

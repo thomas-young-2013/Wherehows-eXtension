@@ -71,3 +71,38 @@ modify_time=修改时间
 
 job=个任务
 metric=个度量
+
+view_as_json=以JSON查看
+view_as_tabular=以表格查看
+
+fullname=全名
+owneridtype=物主ID类型
+owner_type=物主类型
+property_is_not_ava=属性不可用，看看是不是格式或者没有内容
+
+owner_source = 物主源
+
+owne_sub_ype = 物主子类型
+
+confirmed = 确认信息
+data_type = 数据类型
+column = 列
+default_comments = 默认注释
+
+no_known_owners_for_this_dataset =    该数据集的拥有主数据不可用
+impact_analysis_is_not_available = 分析结果不可用
+sample_data_is_not_available = 样本数据不可用
+data = 数据
+job1 = 作业
+accessibility_is_not_available =可用性相关字段属性不可用
+no_comments = 没有评论可用
+next = 下一页
+
+job_path = 作业路径
+job_name = 作业名称
+job_type =作业类型
+created_time = 创建时间
+modified_time = 修改时间
+prev = 上一页
+
+
