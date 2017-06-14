@@ -51,26 +51,26 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String GET_PAGED_FLOWS = "SELECT SQL_CALC_FOUND_ROWS " +
 			"DISTINCT f.flow_id, f.flow_name, f.flow_path, f.flow_group, f.flow_level, f.app_id, ca.app_code, " +
-			"FROM_UNIXTIME(f.created_time) as created_time, FROM_UNIXTIME(f.modified_time) as modified_time " +
+			"FROM_UNIXTIME(f.source_created_time) as created_time, FROM_UNIXTIME(f.source_modified_time) as modified_time " +
 			"FROM flow f JOIN cfg_application ca ON f.app_id = ca.app_id " +
 			"WHERE (f.is_active is null or f.is_active = 'Y') ORDER BY 2 LIMIT ?, ?";
 
 	private final static String GET_PAGED_FLOWS_BY_APP_ID = "SELECT SQL_CALC_FOUND_ROWS " +
 			"DISTINCT f.flow_id, f.flow_name, f.flow_path, f.flow_group, f.flow_level, f.app_id, ca.app_code, " +
-			"FROM_UNIXTIME(f.created_time) as created_time, FROM_UNIXTIME(f.modified_time) as modified_time " +
+			"FROM_UNIXTIME(f.source_created_time) as created_time, FROM_UNIXTIME(f.source_modified_time) as modified_time " +
 			"FROM flow f JOIN cfg_application ca ON f.app_id = ca.app_id " +
 			"WHERE f.app_id = ? and (f.is_active is null or f.is_active = 'Y') ORDER BY 2 LIMIT ?, ?";
 
 	private final static String GET_PAGED_FLOWS_BY_APP_ID_AND_PROJECT_NAME = "SELECT SQL_CALC_FOUND_ROWS " +
 			"DISTINCT f.flow_id, f.flow_name, f.flow_path, f.flow_group, f.flow_level, f.app_id, ca.app_code, " +
-            "FROM_UNIXTIME(f.created_time) as created_time, FROM_UNIXTIME(f.modified_time) as modified_time " +
+            "FROM_UNIXTIME(f.source_created_time) as created_time, FROM_UNIXTIME(f.source_modified_time) as modified_time " +
 			"FROM flow f JOIN cfg_application ca ON f.app_id = ca.app_id " +
 			"WHERE f.app_id = ? and f.flow_group = ? and (f.is_active is null or f.is_active = 'Y') " +
 			"ORDER BY 2 LIMIT ?, ?";
 
 	private final static String GET_PAGED_FLOWS_WITHOUT_PROJECT_BY_APP_ID = "SELECT SQL_CALC_FOUND_ROWS " +
 			"DISTINCT f.flow_id, f.flow_name, f.flow_path, f.flow_group, f.flow_level, f.app_id, ca.app_code, " +
-            "FROM_UNIXTIME(f.created_time) as created_time, FROM_UNIXTIME(f.modified_time) as modified_time " +
+            "FROM_UNIXTIME(f.source_created_time) as created_time, FROM_UNIXTIME(f.source_modified_time) as modified_time " +
 			"FROM flow f JOIN cfg_application ca ON f.app_id = ca.app_id " +
 			"WHERE f.app_id = ? and f.flow_group is null and (f.is_active is null or f.is_active = 'Y') " +
 			"ORDER BY 2 LIMIT ?, ?";
@@ -255,10 +255,10 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 					{
 						flow.created = created.toString();
 					}
-					Object modified = row.get("source_modified_time");
+					Object modified = row.get("modified_time");
 					if (modified != null)
 					{
-						flow.modified = row.get("source_modified_time").toString();
+						flow.modified = row.get("modified_time").toString();
 					}
 
 					int jobCount = 0;
@@ -349,10 +349,10 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 						{
 							flow.created = DateFormat.format(created.toString());
 						}
-						Object modified = row.get("source_modified_time");
+						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
-							flow.modified = DateFormat.format(row.get("source_modified_time").toString());
+							flow.modified = DateFormat.format(row.get("modified_time").toString());
 						}
 
 						int jobCount = 0;
@@ -469,15 +469,15 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 								flow.path = flow.path.substring(0, index);
 							}
 						}
-						Object created = row.get("source_created_time");
+						Object created = row.get("created_time");
 						if (created != null)
 						{
 							flow.created = DateFormat.format(created.toString());
 						}
-						Object modified = row.get("source_modified_time");
+						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
-							flow.modified = DateFormat.format(row.get("source_modified_time").toString());
+							flow.modified = DateFormat.format(row.get("modified_time").toString());
 						}
 
 						int jobCount = 0;
@@ -587,13 +587,13 @@ public class FlowsDAO extends AbstractMySQLOpenSourceDAO
 							}
 						}
 						job.type = (String)row.get("job_type");
-						Object created = row.get("source_created_time");
+						Object created = row.get("created_time");
 						job.refFlowId = (Long)row.get("ref_flow_id");
 						if (created != null)
 						{
 							job.created = DateFormat.format(created.toString());
 						}
-						Object modified = row.get("source_modified_time");
+						Object modified = row.get("modified_time");
 						if (modified != null)
 						{
 							job.modified = DateFormat.format(modified.toString());
