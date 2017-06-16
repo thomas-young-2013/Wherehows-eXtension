@@ -70,6 +70,11 @@ public class HdfsUtils {
         return result;
     }
 
+    /*
+    * @param filePath: the parent path to find the target file
+    *        target:   the target file name
+    * @return the absolute file path
+    * */
     public static String findFileAbsPath(String filePath, String target) {
         if (filePath.endsWith("/")) filePath = filePath.substring(0, filePath.length()-1);
         try {
