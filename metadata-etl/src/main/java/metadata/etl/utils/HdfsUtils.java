@@ -70,6 +70,24 @@ public class HdfsUtils {
         return result;
     }
 
+    public static String findFileAbsPath(String filePath, String target) {
+        if (filePath.endsWith("/")) filePath = filePath.substring(0, filePath.length()-1);
+        try {
+            FileStatus[] status = fs.listStatus(new Path(filePath));
+            for (int i = status.length-1; i >= 0; i--) {
+                FileStatus file = status[i];
+                if (file.isDirectory()) {
+                    String res = findFileAbsPath(filePath+"/"+file.getPath().getName(), target);
+                    if (res != null) return res;
+                }
+                if (file.isFile() && file.getPath().getName().equals(target)) return filePath+"/"+file.getPath().getName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void main(String []args) {
         String path = args[0];
         try {
@@ -77,6 +95,7 @@ public class HdfsUtils {
             System.out.println(HdfsUtils.isFile(path));
             System.out.println(HdfsUtils.isDirectory(path));
             System.out.println(HdfsUtils.listFiles(path));
+            System.out.println(HdfsUtils.findFileAbsPath("/project/", "part-r-00002"));
         } catch (Exception e) {
             e.printStackTrace();
         }
