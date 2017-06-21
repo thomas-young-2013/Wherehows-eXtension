@@ -20,6 +20,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.Logger;
 import play.mvc.Security;
+import play.mvc.With;
 import utils.Tree;
 import views.html.index;
 import views.html.login;
@@ -29,6 +30,10 @@ import static play.data.Form.form;
 import org.apache.commons.lang3.StringUtils;
 import security.AuthenticationManager;
 
+
+
+
+@With(SecureCAS.class)
 public class Application extends Controller
 {
     private static String TREE_NAME_SUBFIX = ".tree.name";

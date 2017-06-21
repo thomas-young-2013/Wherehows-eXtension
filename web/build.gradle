@@ -30,6 +30,7 @@ dependencies{
     compile externalDependency.play_filter
     compile externalDependency.spring_jdbc
     compile externalDependency.mockito
+    compile externalDependency.cas_client
 
     provided project(":wherehows-common")
 
