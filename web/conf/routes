@@ -5,7 +5,7 @@
 # Home page
 GET     /                                   controllers.Application.index()
 
-GET     /login                              controllers.Application.login()
+GET     /login                              controllers.Application.casTest()
 
 GET     /logout                             controllers.Application.logout()
 
