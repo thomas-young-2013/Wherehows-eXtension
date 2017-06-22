@@ -90,7 +90,6 @@ public class XmlParser {
             List<Element> elements = element.getChildren();
             for (Element element1: elements) {
                 List<Element> elements1 = element1.getChildren();
-                if (elements1.size() != 4) logger.error("error: size != 4");
                 if (elements1.get(0).getText().equals(parts[partSize - 1])) {
                     return elements1.get(1).getText();
                 }

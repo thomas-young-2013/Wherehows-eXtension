@@ -20,18 +20,31 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.Logger;
 import play.mvc.Security;
+import play.mvc.With;
 import utils.Tree;
 import views.html.index;
 import views.html.login;
 import views.html.lineage;
 import views.html.schemaHistory;
+
+
+import static com.sun.xml.internal.ws.dump.LoggingDumpTube.Position.Before;
 import static play.data.Form.form;
 import org.apache.commons.lang3.StringUtils;
 import security.AuthenticationManager;
 
+
+
+//@With(SecureCAS.class)
 public class Application extends Controller
 {
     private static String TREE_NAME_SUBFIX = ".tree.name";
+
+    @Before
+    static void casTest() {
+        if(session("user") == null) index();
+    }
+
 
     @Security.Authenticated(Secured.class)
     public static Result index()
