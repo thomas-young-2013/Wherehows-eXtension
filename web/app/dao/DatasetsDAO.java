@@ -673,7 +673,8 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO {
             }
         }
         try {
-            if (userId != null && userId > 0 && usrDataIDs.contains(id)) {
+            if(usrDataIDs.contains(id)){
+            if (userId != null && userId > 0  ) {
                 dataset = (Dataset) getJdbcTemplate().queryForObject(
                         GET_DATASET_BY_ID_CURRENT_USER,
                         new DatasetWithUserRowMapper(),
@@ -681,12 +682,13 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO {
                         userId,
                         id);
 
-            } else {
+            } 
+            }/*else {
                 dataset = (Dataset) getJdbcTemplate().queryForObject(
                         GET_DATASET_BY_ID,
                         new DatasetRowMapper(),
                         id);
-            }
+            }*/
         } catch (EmptyResultDataAccessException e) {
             Logger.error("Dataset getDatasetByID failed, id = " + id);
             Logger.error("Exception = " + e.getMessage());
