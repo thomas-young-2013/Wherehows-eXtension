@@ -13,6 +13,7 @@
  */
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dao.FlowsDAO;
 import dao.UserDAO;
 import play.data.DynamicForm;
@@ -28,6 +29,8 @@ import views.html.schemaHistory;
 import static play.data.Form.form;
 import org.apache.commons.lang3.StringUtils;
 import security.AuthenticationManager;
+
+import java.util.Set;
 
 public class Application extends Controller
 {
@@ -178,11 +181,15 @@ public class Application extends Controller
         return redirect(controllers.routes.Application.login());
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result loadTree(String key)
     {
-        if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows"))
-        {
-            return ok(FlowsDAO.getFlowApplicationNodes());
+        String username = session("user");
+        if (username != null) {
+            if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows")) {
+                JsonNode jsonNode = FlowsDAO.getFlowApplicationNodes();
+                return ok(UserDAO.getUserGroupFileTree(jsonNode));
+            }
         }
         return ok(Tree.loadTreeJsonNode(key + TREE_NAME_SUBFIX));
     }

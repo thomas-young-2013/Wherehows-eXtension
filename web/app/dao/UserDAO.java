@@ -15,6 +15,7 @@ package dao;
 
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -56,6 +57,9 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String INSERT_USER_LOGIN_HISTORY =
 			"INSERT INTO user_login_history (username, authentication_type, `status`, message) VALUES (?, ?, ?, ?)";
+
+	private final static String GET_USR_GROUP_DATASETS = "select distinct dataset_id from " +
+			"dict_dataset_group_membership t  where t.group_id in (select group_id from user_group where user_name = ?)";
 
 	private final static String PASSWORD_COLUMN = "password_digest";
 
@@ -343,5 +347,26 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 		if (username != null && loginType != null && status != null) {
 			getJdbcTemplate().update(INSERT_USER_LOGIN_HISTORY, username, loginType, status, message);
 		}
+	}
+
+	public static Set<Integer> getUserGroupFilesId(String username) {
+		Set<Integer> fileIds = new HashSet<>();
+		List<Map<String, Object>> rows = null;
+
+		rows = getJdbcTemplate().queryForList(
+				GET_USR_GROUP_DATASETS,
+				username);
+		if (rows != null)
+		{
+			for (Map row : rows) {
+				Integer datasetId = (Integer) row.get("dataset_id");
+				fileIds.add(datasetId);
+			}
+		}
+		return fileIds;
+	}
+
+	public static JsonNode getUserGroupFileTree(JsonNode jsonNode) {
+		return null;
 	}
 }
