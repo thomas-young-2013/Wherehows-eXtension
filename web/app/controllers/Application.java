@@ -187,11 +187,10 @@ public class Application extends Controller
         String username = session("user");
         if (username != null) {
             if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows")) {
-                JsonNode jsonNode = FlowsDAO.getFlowApplicationNodes();
-                return ok(UserDAO.getUserGroupFileTree(jsonNode));
+                return ok(FlowsDAO.getFlowApplicationNodes());
             }
         }
-        return ok(Tree.loadTreeJsonNode(key + TREE_NAME_SUBFIX));
+        return ok(UserDAO.getUserGroupFileTree(username, key + TREE_NAME_SUBFIX));
     }
 
     public static Result loadFlowProjects(String app)

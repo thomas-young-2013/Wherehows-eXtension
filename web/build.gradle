@@ -23,6 +23,8 @@ configurations{
 
 dependencies{
     // User defined libraries (will be copied to lib/ before `play compile`)
+    compile project(':wherehows-common')
+
     compile externalDependency.play
     compile externalDependency.play_java_jdbc
     compile externalDependency.play_java_ws
@@ -30,6 +32,7 @@ dependencies{
     compile externalDependency.play_filter
     compile externalDependency.spring_jdbc
     compile externalDependency.mockito
+    compile externalDependency.json
 
     provided project(":wherehows-common")
 

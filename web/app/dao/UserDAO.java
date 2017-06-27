@@ -15,11 +15,13 @@ package dao;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import play.Logger;
+
+import utils.TreeFilter;
+import org.json.JSONObject;
 
 public class UserDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -366,7 +368,14 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 		return fileIds;
 	}
 
-	public static JsonNode getUserGroupFileTree(JsonNode jsonNode) {
-		return null;
+	public static String getUserGroupFileTree(String username, String key) {
+		Set<Integer> filesId  = getUserGroupFilesId(username);
+		try {
+			JSONObject json = TreeFilter.filter(key, filesId);
+			return json.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }
