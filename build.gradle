@@ -128,9 +128,7 @@ subprojects {
                               "dom4j"               : "dom4j:dom4j:1.6",
                               "commons_net"         : "commons-net:commons-net:2.0",
                               "hbase_client"        : "org.apache.hbase:hbase-client:1.2.4",
-                              "hbase_common"        : "org.apache.hbase:hbase-common:1.2.4",
-                              "json"                : "org.json:json:20160810"
-
+                              "hbase_common"        : "org.apache.hbase:hbase-common:1.2.4"
     ]
 
     task buildWithWarning(type: JavaCompile, dependsOn: build) {

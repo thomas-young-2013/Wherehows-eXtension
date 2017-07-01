@@ -32,9 +32,7 @@ dependencies{
     compile externalDependency.play_filter
     compile externalDependency.spring_jdbc
     compile externalDependency.mockito
-    compile externalDependency.json
-
-    provided project(":wherehows-common")
+    compile externalDependency.hive_exec
 
     // playManaged files('target/scala-2.9.1/classes_managed')
 }
