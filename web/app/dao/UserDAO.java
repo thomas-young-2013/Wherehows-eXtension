@@ -361,7 +361,7 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 		if (rows != null)
 		{
 			for (Map row : rows) {
-				Integer datasetId = (Integer) row.get("dataset_id");
+				Integer datasetId = Integer.parseInt((String) row.get("dataset_id"));
 				fileIds.add(datasetId);
 			}
 		}
