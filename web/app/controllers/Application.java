@@ -189,14 +189,20 @@ public class Application extends Controller
         if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows")) {
             return ok(FlowsDAO.getFlowApplicationNodes());
         }
-        if (StringUtils.isNotBlank(key)) {
-            String username = session("user");
-            if (username != null) {
-                String treeName = Play.application().configuration().getString(key + TREE_NAME_SUBFIX);
-                return ok(UserDAO.getUserGroupFileTree(username, treeName));
+        // switch here..
+        boolean isFiltered = false;
+        if (isFiltered) {
+            if (StringUtils.isNotBlank(key)) {
+                String username = session("user");
+                if (username != null) {
+                    String treeName = Play.application().configuration().getString(key + TREE_NAME_SUBFIX);
+                    return ok(UserDAO.getUserGroupFileTree(username, treeName));
+                }
             }
+            return ok(Json.toJson(""));
+        } else {
+            return ok(Tree.loadTreeJsonNode(key + TREE_NAME_SUBFIX));
         }
-        return ok(Json.toJson(""));
     }
 
     public static Result loadFlowProjects(String app)
