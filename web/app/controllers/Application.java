@@ -16,7 +16,9 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import dao.FlowsDAO;
 import dao.UserDAO;
+import play.Play;
 import play.data.DynamicForm;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.Logger;
@@ -184,13 +186,17 @@ public class Application extends Controller
     @Security.Authenticated(Secured.class)
     public static Result loadTree(String key)
     {
-        String username = session("user");
-        if (username != null) {
-            if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows")) {
-                return ok(FlowsDAO.getFlowApplicationNodes());
+        if (StringUtils.isNotBlank(key) && key.equalsIgnoreCase("flows")) {
+            return ok(FlowsDAO.getFlowApplicationNodes());
+        }
+        if (StringUtils.isNotBlank(key)) {
+            String username = session("user");
+            if (username != null) {
+                String treeName = Play.application().configuration().getString(key + TREE_NAME_SUBFIX);
+                return ok(UserDAO.getUserGroupFileTree(username, treeName));
             }
         }
-        return ok(UserDAO.getUserGroupFileTree(username, key + TREE_NAME_SUBFIX));
+        return ok(Json.toJson(""));
     }
 
     public static Result loadFlowProjects(String app)
