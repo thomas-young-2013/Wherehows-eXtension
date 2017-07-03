@@ -18,7 +18,7 @@ public class TreeFilter {
         set.add(8249);
         set.add(8265);
         JSONObject res = filter(key, set);
-        System.out.println(res.toString().get);
+        System.out.println(res.toString());
     }
 
     public static JSONObject filter(String key, Set<Integer> set) throws Exception {
