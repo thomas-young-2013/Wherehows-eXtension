@@ -351,8 +351,8 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 		}
 	}
 
-	public static Set<Integer> getUserGroupFilesId(String username) {
-		Set<Integer> fileIds = new HashSet<>();
+	public static Set<Long> getUserGroupFilesId(String username) {
+		Set<Long> fileIds = new HashSet<>();
 		List<Map<String, Object>> rows = null;
 
 		rows = getJdbcTemplate().queryForList(
@@ -361,7 +361,7 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 		if (rows != null)
 		{
 			for (Map row : rows) {
-				Integer datasetId = Integer.parseInt((String) row.get("dataset_id"));
+				Long datasetId = (Long) row.get("dataset_id");
 				fileIds.add(datasetId);
 			}
 		}
@@ -369,7 +369,7 @@ public class UserDAO extends AbstractMySQLOpenSourceDAO
 	}
 
 	public static String getUserGroupFileTree(String username, String key) {
-		Set<Integer> filesId  = getUserGroupFilesId(username);
+		Set<Long> filesId  = getUserGroupFilesId(username);
 		try {
 			JSONObject json = TreeFilter.filter(key, filesId);
 			return json.toString();

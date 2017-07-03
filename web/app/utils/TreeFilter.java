@@ -14,14 +14,14 @@ public class TreeFilter {
     public static void main( String[] args ) throws Exception {
 
         String key = "/home/hadoop/Desktop/codes/grammer/src/main/resources/dataset.json";
-        Set<Integer> set = new HashSet<Integer>();
-        set.add(8249);
-        set.add(8265);
+        Set<Long> set = new HashSet<Long>();
+        set.add(8249L);
+        set.add(8265L);
         JSONObject res = filter(key, set);
         System.out.println(res.toString());
     }
 
-    public static JSONObject filter(String key, Set<Integer> set) throws Exception {
+    public static JSONObject filter(String key, Set<Long> set) throws Exception {
         try {
             // String key = "/home/hadoop/Desktop/codes/grammer/src/main/resources/dataset.json";
             String result = getJSONStringFromFile(key);
@@ -121,13 +121,13 @@ public class TreeFilter {
     }
 
     public static void getUserFilesTree(JSONObject jsonObject, JSONObject jsonObject2,
-                                        Set<Integer> fileIdSet) throws Exception {
+                                        Set<Long> fileIdSet) throws Exception {
         if (jsonObject.getInt("folder") == 1) {
             JSONArray jsonArray = jsonObject.getJSONArray("children");
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject origin = (JSONObject) jsonArray.get(i);
                 if (origin.getInt("folder") == 0) {
-                    if (!fileIdSet.contains(origin.getInt("id"))) continue;
+                    if (!fileIdSet.contains(origin.getLong("id"))) continue;
                 }
 
                 JSONObject jsonObject1 = new JSONObject();
