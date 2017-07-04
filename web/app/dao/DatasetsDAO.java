@@ -2008,7 +2008,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 					}
 					Map<String, Object> paramMap = new HashMap<String, Object>();
 					paramMap.put("ids", ids);
-					rows = getJdbcTemplate().queryForList(GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES, ids);
+					rows = getNamedParameterJdbcTemplate().queryForList(GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES, paramMap);
 					for (Map row : rows) {
 						JSONObject jsonNode = new JSONObject();
 						createNode(jsonNode, row);
