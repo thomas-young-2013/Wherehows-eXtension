@@ -41,6 +41,8 @@ import play.Logger;
 import play.Play;
 import play.libs.Json;
 import models.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -344,6 +346,13 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			"s.id FROM dict_dataset d LEFT JOIN dict_dataset s " +
 			"ON s.urn = concat(?, SUBSTRING_INDEX(SUBSTRING_INDEX(d.urn, ?, -1), '/', 1)) " +
 			"WHERE d.urn LIKE ? ORDER BY d.urn";
+
+	private final static String GET_DATASET_LOGIC_TOP_LEVEL_NODES = "SELECT title, path, children_id as children, " +
+			"dataset_id, folder FROM dict_logic_dataset WHERE path IN(SELECT DISTINCT " +
+			"SUBSTRING_INDEX(path, \"/\", 2) as path FROM dict_logic_dataset ORDER BY 1)";
+
+	private final static String GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES = "SELECT title, path, children_id as children, " +
+			"dataset_id, folder FROM dict_logic_dataset WHERE id IN(:ids)";
 
 	private final static String GET_DATASET_VERSIONS = "SELECT DISTINCT version " +
 			"FROM dict_dataset_instance WHERE dataset_id = ? and version != '0' ORDER BY version_sort_id DESC";
@@ -1964,6 +1973,73 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				getDatasetReferences(dd.objectName, level + 1, dd.sortId, references);
 			}
 		}
+	}
+
+	/*
+	* get the json string: dataset's logical view.
+	* @argument: null.
+	* @return: JSON String.
+	* */
+	public static String getDatasetLogicalView() {
+		List<Map<String, Object>> rows = null;
+		rows = getJdbcTemplate().queryForList(GET_DATASET_LOGIC_TOP_LEVEL_NODES);
+		JSONObject resultNode = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		ArrayList<JSONObject> queue = new ArrayList<JSONObject>();
+		try {
+			for (Map row : rows) {
+				JSONObject jsonNode = new JSONObject();
+				createNode(jsonNode, row);
+				jsonArray.put(jsonNode);
+				queue.add(jsonNode);
+			}
+
+			// width first traverse.
+			while(!queue.isEmpty()) {
+				JSONObject head = queue.get(0);
+				queue.remove(0);
+
+				JSONArray array = new JSONArray();
+				String children = head.getString("children");
+				if (children.length() > 0) {
+					List<Long> ids = new ArrayList<>();
+					for (String segment: children.split(",")) {
+						ids.add(Long.parseLong(segment));
+					}
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("ids", ids);
+					rows = getJdbcTemplate().queryForList(GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES, ids);
+					for (Map row : rows) {
+						JSONObject jsonNode = new JSONObject();
+						createNode(jsonNode, row);
+						array.put(jsonNode);
+						queue.add(jsonNode);
+					}
+				}
+				head.put("children", array);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resultNode.put("children", jsonArray);
+		return resultNode.toString();
+	}
+
+	public static void createNode(JSONObject jsonObject, Map row) throws Exception {
+		String path = (String) row.get("path");
+		Integer level = path.split("/").length - 1;
+		String title = (String) row.get("title");
+		Long datasetId = (Long) row.get("dataset_id");
+		Integer folder = (datasetId == 0)?1:0;
+		jsonObject.put("path", path);
+		jsonObject.put("level", level);
+		jsonObject.put("title", title);
+		jsonObject.put("folder", folder);
+		Object children = row.get("children");
+		jsonObject.put("children", children == null?"":(String)children);
+		if (datasetId != 0) jsonObject.put("id", datasetId);
 	}
 
 	public static List<DatasetListViewNode> getDatasetListViewNodes(String urn) {

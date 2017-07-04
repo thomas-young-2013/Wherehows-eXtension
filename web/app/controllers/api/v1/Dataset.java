@@ -800,6 +800,11 @@ public class Dataset extends Controller
         return ok(result);
     }
 
+    public static Result getDatasetLogicNodes()
+    {
+        return ok(DatasetsDAO.getDatasetLogicalView());
+    }
+
     public static Result getDatasetVersions(Long datasetId, Integer dbId)
     {
         ObjectNode result = Json.newObject();
