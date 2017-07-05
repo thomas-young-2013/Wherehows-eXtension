@@ -2277,8 +2277,21 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			public Object doInTransaction(TransactionStatus status) {
 				int res = 0;
 				try {
-					res = getJdbcTemplate().update(CREATE_LOGIC_DATASET_FOLDER, name, path);
+					// res = getJdbcTemplate().update(CREATE_LOGIC_DATASET_FOLDER, name, path);
+					// insert the record and get the folder id.
+					KeyHolder keyHolder = new GeneratedKeyHolder();
+					getJdbcTemplate().update(new PreparedStatementCreator() {
+								public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+									PreparedStatement ps = getJdbcTemplate().getDataSource().getConnection().
+											prepareStatement(CREATE_LOGIC_DATASET_FOLDER, new String[]{ "title" ,"path"});
+									ps.setString(1, name);
+									ps.setString(2, path);
+									return ps;
+								}
+							}, keyHolder);
+					res = keyHolder.getKey().intValue();
 					if (res <= 0) throw new Exception();
+
 					String childrenList = children + (children.length() == 0?children:",") + res;
 					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, datasetId);
 					if (row <= 0) throw new Exception();
