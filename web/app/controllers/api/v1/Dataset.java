@@ -29,6 +29,7 @@ import play.mvc.Result;
 import play.Logger;
 import org.apache.commons.lang3.StringUtils;
 import dao.DatasetsDAO;
+import wherehows.common.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -931,6 +932,25 @@ public class Dataset extends Controller
                 result.put("status", "failed");
                 result.put("msg", errorMsg);
             }
+        /*} else {
+            result.put("status", "failed");
+            result.put("msg", "Authentication Required");
+        }*/
+        return ok(result);
+    }
+
+    public static Result removeLogicalDatasetFile(Long datasetId) {
+        ObjectNode result = Json.newObject();
+        // String username = session("user");
+        Map<String, String[]> params = request().body().asFormUrlEncoded();
+        //if (StringUtils.isNotBlank(username)) {
+        String errorMsg = DatasetsDAO.removeLogicalDatasetFile(datasetId, params);
+        if (StringUtils.isBlank(errorMsg)) {
+            result.put("status", "success");
+        } else {
+            result.put("status", "failed");
+            result.put("msg", errorMsg);
+        }
         /*} else {
             result.put("status", "failed");
             result.put("msg", "Authentication Required");

@@ -361,8 +361,13 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, children_id as children" +
 			" FROM dict_logic_dataset WHERE id = ?";
 
+	private final static String GET_LOGIC_DATASET_INFO_BY_PATH = "SELECT id, children_id as children" +
+			" FROM dict_logic_dataset WHERE path = ?";
+
 	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = ? WHERE " +
 			"id = ?";
+
+	private final static String DELETE_LOGIC_DATASET = "DELETE FROM dict_logic_dataset WHERE id = ?";
 
 	private final static String GET_DATASET_VERSIONS = "SELECT DISTINCT version " +
 			"FROM dict_dataset_instance WHERE dataset_id = ? and version != '0' ORDER BY version_sort_id DESC";
@@ -2258,8 +2263,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			List<Map<String, Object>> rows = null;
 			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
 			for (Map row: rows) {
-				Object tmp = row.get("children");
-				children = (tmp == null)?"":(String) tmp;
+				children = (String) row.get("children");
 				path = (String) row.get("path") + "/" + name;
 			}
 		}
@@ -2303,5 +2307,93 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			}
 		});
 		return object;
+	}
+
+	public static String removeLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
+		String msg = "";
+		if ((params == null) || params.size() == 0) return "parameter required missed!";
+
+		String type = "";
+		if (params.containsKey("type")) {
+			String[] textArray = params.get("type");
+			if (textArray != null && textArray.length > 0) {
+				type = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(type)) return "parameter required missed!";
+
+		String path = "";
+		if (params.containsKey("path")) {
+			String[] textArray = params.get("path");
+			if (textArray != null && textArray.length > 0) {
+				path = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(path)) return "parameter required missed!";
+
+		// if the folder is not in top level and delete itself and its children only, update the parent's children list.
+		if (path.split("/").length > 2) {
+			// get the parent info.
+			String parentPath = path.substring(path.lastIndexOf("/"));
+			String parentChildren = null;
+			Long parentId = 0L;
+			List<Map<String, Object>> rows = null;
+			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO_BY_PATH, parentPath);
+			for (Map row: rows) {
+				Object tmp = row.get("children");
+				parentChildren = (tmp == null)?"":(String) tmp;
+				parentId = (Long) row.get("id");
+			}
+			if (parentId == 0L) return "folder path invalid!";
+
+			// update the parent children info.
+			String childrenStr = "";
+			for (String id: parentChildren.split(",")) {
+				if (datasetId != Long.parseLong(id)) {
+					if (childrenStr.length() == 0) childrenStr = id;
+					else childrenStr += ","+id;
+				}
+			}
+			int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenStr, parentId);
+			if (row <= 0) return "update parent folder children list failed!";
+		}
+
+		if (type.equalsIgnoreCase("folder")) {
+			// remove the folder itself and its children.(recursively)
+			List<Long> queue = new ArrayList<>();
+			queue.add(datasetId);
+			while(!queue.isEmpty()) {
+				Long headDatasetId = queue.get(0);
+				queue.remove(0);
+
+				// get the head node's children.
+				String headChildrenStr = "";
+				List<Map<String, Object>> rows = null;
+				rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, headDatasetId);
+				for (Map row: rows) {
+					headChildrenStr = (String) row.get("children");
+				}
+				for (String tmp: headChildrenStr.split(",")) {
+					queue.add(Long.parseLong(tmp));
+				}
+
+				// remove this data set.
+				int row = getJdbcTemplate().update(DELETE_LOGIC_DATASET, headDatasetId);
+				if (row <= 0) {
+					Logger.warn("delete logical data set failed. Data set id is : " + Long.toString(headDatasetId));
+				}
+			}
+		} else {
+			if (type.equalsIgnoreCase("file")) {
+				// remove this data set.
+				int row = getJdbcTemplate().update(DELETE_LOGIC_DATASET, datasetId);
+				if (row <= 0) {
+					Logger.warn("delete logical data set failed. Data set id is : " + Long.toString(datasetId));
+				}
+			} else {
+				return "unknown type!";
+			}
+		}
+		return msg;
 	}
 }
