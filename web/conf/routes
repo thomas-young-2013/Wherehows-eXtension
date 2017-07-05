@@ -53,6 +53,8 @@ GET     /api/v1/list/flows/:application     controllers.api.v1.Flow.getFlowListV
 
 GET     /api/v1/list/flows/:application/:project      controllers.api.v1.Flow.getFlowListViewFlows(application:String, project:String)
 
+POST    /api/v1/logicaldatasets/:id/folder  controllers.api.v1.Dataset.createLogicalDatasetFolder(id: Long)
+
 GET     /api/v1/datasets                    controllers.api.v1.Dataset.getPagedDatasets()
 
 GET     /api/v1/datasets/:id                controllers.api.v1.Dataset.getDatasetByID(id:Int)

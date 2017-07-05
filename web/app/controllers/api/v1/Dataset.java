@@ -916,4 +916,25 @@ public class Dataset extends Controller
             return Promise.promise(() -> ok(result));
         }
     }
+
+    public static Result createLogicalDatasetFolder(Long datasetId) {
+        ObjectNode result = Json.newObject();
+        // String username = session("user");
+        Map<String, String[]> params = request().body().asFormUrlEncoded();
+        //if (StringUtils.isNotBlank(username)) {
+            String errorMsg = DatasetsDAO.createLogicalDatasetFolder(datasetId, params);
+            if (errorMsg.startsWith("success:")) {
+                result.put("status", "success");
+                Integer id = Integer.parseInt(errorMsg.split(":")[1]);
+                result.put("id", id);
+            } else {
+                result.put("status", "failed");
+                result.put("msg", errorMsg);
+            }
+        /*} else {
+            result.put("status", "failed");
+            result.put("msg", "Authentication Required");
+        }*/
+        return ok(result);
+    }
 }

@@ -34,8 +34,10 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import play.Logger;
 import play.Play;
@@ -353,6 +355,14 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES = "SELECT title, path, children_id as children, " +
 			"dataset_id, folder FROM dict_logic_dataset WHERE id IN(:ids)";
+
+	private final static String CREATE_LOGIC_DATASET_FOLDER = "INSERT INTO dict_logic_dataset(title, path) VALUES(?,?)";
+
+	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, children_id as children" +
+			" FROM dict_logic_dataset WHERE id = ?";
+
+	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = %d WHERE " +
+			"id = ?";
 
 	private final static String GET_DATASET_VERSIONS = "SELECT DISTINCT version " +
 			"FROM dict_dataset_instance WHERE dataset_id = ? and version != '0' ORDER BY version_sort_id DESC";
@@ -2223,5 +2233,61 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		}
 
 		return datasetPartitions;
+	}
+
+	public static String createLogicalDatasetFolder(Long datasetId, Map<String, String[]> params) {
+		String msg;
+		if ((params == null) || params.size() == 0) return "parameter required missed!";
+
+		String name = "";
+		if (params.containsKey("name")) {
+			String[] textArray = params.get("name");
+			if (textArray != null && textArray.length > 0) {
+				name = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(name)) return "parameter required missed!";
+
+		String path = null;
+		String children = null;
+		// get the parent folder info.
+		if (datasetId == 0) {
+			// the top folder.
+			path = "/" + name;
+		} else {
+			List<Map<String, Object>> rows = null;
+			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
+			for (Map row: rows) {
+				Object tmp = row.get("children");
+				children = (tmp == null)?"":(String) tmp;
+				path = (String) row.get("path");
+			}
+		}
+		if (path == null) return "parent folder does not exist!";
+		Integer folderId = (Integer)createFolderAction(name, path, children, datasetId);
+		if (folderId == 0) return "create folder failed!";
+		msg = "success:"+ folderId;
+		return msg;
+	}
+
+	public static Object createFolderAction(final String name, final String path, final String children,
+											final Long datasetId) {
+		TransactionTemplate transactionTemplate = getTransactionTemplate();
+		Object object = transactionTemplate.execute(new TransactionCallback<Object>() {
+			public Object doInTransaction(TransactionStatus status) {
+				int res = 0;
+				try {
+					res = getJdbcTemplate().update(CREATE_LOGIC_DATASET_FOLDER, name, path);
+					if (res <= 0) throw new Exception();
+					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, children+res, datasetId);
+					if (row <= 0) throw new Exception();
+				} catch (Exception e) {
+					status.setRollbackOnly();
+					e.printStackTrace();
+				}
+				return res;
+			}
+		});
+		return object;
 	}
 }
