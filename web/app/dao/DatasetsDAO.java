@@ -361,7 +361,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, children_id as children" +
 			" FROM dict_logic_dataset WHERE id = ?";
 
-	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = %d WHERE " +
+	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = ? WHERE " +
 			"id = ?";
 
 	private final static String GET_DATASET_VERSIONS = "SELECT DISTINCT version " +
