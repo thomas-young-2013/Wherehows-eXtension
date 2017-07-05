@@ -2260,7 +2260,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			for (Map row: rows) {
 				Object tmp = row.get("children");
 				children = (tmp == null)?"":(String) tmp;
-				path = (String) row.get("path");
+				path = (String) row.get("path") + "/" + name;
 			}
 		}
 		if (path == null) return "parent folder does not exist!";
@@ -2279,7 +2279,8 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				try {
 					res = getJdbcTemplate().update(CREATE_LOGIC_DATASET_FOLDER, name, path);
 					if (res <= 0) throw new Exception();
-					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, children+res, datasetId);
+					String childrenList = children + (children.length() == 0?children:",") + res;
+					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, datasetId);
 					if (row <= 0) throw new Exception();
 				} catch (Exception e) {
 					status.setRollbackOnly();
