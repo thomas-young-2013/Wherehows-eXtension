@@ -369,6 +369,11 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String DELETE_LOGIC_DATASET = "DELETE FROM dict_logic_dataset WHERE id = ?";
 
+	private final static String UPDATE_LOGIC_DATASET_NAME = "UPDATE dict_logic_dataset SET title = ?, path = ? WHERE " +
+		"id = ?";
+
+	private final static String UPDATE_LOGIC_DATASET_PATH = "UPDATE dict_logic_dataset SET path = ? WHERE id = ?";
+
 	private final static String GET_DATASET_VERSIONS = "SELECT DISTINCT version " +
 			"FROM dict_dataset_instance WHERE dataset_id = ? and version != '0' ORDER BY version_sort_id DESC";
 
@@ -2392,6 +2397,65 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				}
 			} else {
 				return "unknown type!";
+			}
+		}
+		return msg;
+	}
+
+	public static String renameLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
+		String msg = "";
+		if ((params == null) || params.size() == 0) return "parameter required missed!";
+
+		String name = "";
+		if (params.containsKey("name")) {
+			String[] textArray = params.get("name");
+			if (textArray != null && textArray.length > 0) {
+				name = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(name)) return "parameter required missed!";
+
+		String path = "";
+		if (params.containsKey("path")) {
+			String[] textArray = params.get("path");
+			if (textArray != null && textArray.length > 0) {
+				path = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(path)) return "parameter required missed!";
+
+		String newestPath = path.substring(0, path.lastIndexOf("/")+1) + name;
+		// rename this data set.
+		int res = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_NAME, name, newestPath, datasetId);
+		if (res <= 0) {
+			Logger.warn("rename logical data set failed. Data set id is : " + Long.toString(datasetId));
+			return "rename the file failed!";
+		}
+
+		// rename the children's path, recursively.
+		List<LogicalDatasetNode> queue = new ArrayList<>();
+		queue.add(new LogicalDatasetNode(datasetId, newestPath));
+		while(!queue.isEmpty()) {
+			LogicalDatasetNode headDatasetNode = queue.get(0);
+			queue.remove(0);
+
+			String headChildrenStr = "";
+			String headPath = "";
+			List<Map<String, Object>> rows = null;
+			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, headDatasetNode.id);
+			for (Map row: rows) {
+				headChildrenStr = (String) row.get("children");
+				headPath = (String) row.get("path");
+			}
+			for (String tmp: headChildrenStr.split(",")) {
+				String realPath = headDatasetNode.path + "/" + headPath.substring(headPath.lastIndexOf("/"));
+				queue.add(new LogicalDatasetNode(Long.parseLong(tmp), realPath));
+			}
+
+			// rename this data set.
+			int result = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_PATH, headDatasetNode.path, headDatasetNode.id);
+			if (result <= 0) {
+				Logger.warn("delete logical data set failed. Data set id is : " + Long.toString(headDatasetNode.id));
 			}
 		}
 		return msg;

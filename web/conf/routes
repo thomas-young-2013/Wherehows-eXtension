@@ -55,6 +55,10 @@ GET     /api/v1/list/flows/:application/:project      controllers.api.v1.Flow.ge
 
 POST    /api/v1/logicaldatasets/:id/folder  controllers.api.v1.Dataset.createLogicalDatasetFolder(id: Long)
 
+DELETE  /api/v1/logicaldatasets/:id/folder  controllers.api.v1.Dataset.removeLogicalDatasetFile(id: Long)
+
+POST    /api/v1/logicaldatasets/:id/rename  controllers.api.v1.Dataset.renameLogicalDatasetFile(id: Long)
+
 GET     /api/v1/datasets                    controllers.api.v1.Dataset.getPagedDatasets()
 
 GET     /api/v1/datasets/:id                controllers.api.v1.Dataset.getDatasetByID(id:Int)
