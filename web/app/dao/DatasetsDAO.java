@@ -2431,7 +2431,20 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		}
 		if (StringUtils.isBlank(path)) return "parameter required missed!";
 
+		// validation.
 		String newestPath = path.substring(0, path.lastIndexOf("/")+1) + name;
+		if (path.equals(newestPath)) {
+			return "file names are the same";
+		}else {
+			String headPath = "";
+			List<Map<String, Object>> rows = null;
+			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
+			for (Map row : rows) {
+				headPath = (String) row.get("path");
+				if (!headPath.equals(path)) return "path invalid!";
+			}
+		}
+
 		// rename this data set.
 		int res = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_NAME, name, newestPath, datasetId);
 		if (res <= 0) {
@@ -2440,29 +2453,32 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		}
 
 		// rename the children's path, recursively.
-		List<LogicalDatasetNode> queue = new ArrayList<>();
-		queue.add(new LogicalDatasetNode(datasetId, newestPath));
+		List<Long> queue = new ArrayList<>();
+		queue.add(datasetId);
 		while(!queue.isEmpty()) {
-			LogicalDatasetNode headDatasetNode = queue.get(0);
+			Long headDatasetId = queue.get(0);
 			queue.remove(0);
 
 			String headChildrenStr = "";
 			String headPath = "";
 			List<Map<String, Object>> rows = null;
-			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, headDatasetNode.id);
+			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, headDatasetId);
 			for (Map row: rows) {
 				headChildrenStr = (String) row.get("children");
 				headPath = (String) row.get("path");
 			}
 			for (String tmp: headChildrenStr.split(",")) {
-				String realPath = headDatasetNode.path + "/" + headPath.substring(headPath.lastIndexOf("/"));
-				queue.add(new LogicalDatasetNode(Long.parseLong(tmp), realPath));
+				if (tmp.length() == 0) break;
+				queue.add(Long.parseLong(tmp));
 			}
 
+			// path modify
+			String newestHeadPath = headPath.replace(path, newestPath);
+
 			// rename this data set.
-			int result = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_PATH, headDatasetNode.path, headDatasetNode.id);
+			int result = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_PATH, newestHeadPath, headDatasetId);
 			if (result <= 0) {
-				Logger.warn("delete logical data set failed. Data set id is : " + Long.toString(headDatasetNode.id));
+				Logger.warn("delete logical data set failed. Data set id is : " + Long.toString(headDatasetId));
 			}
 		}
 		return msg;
