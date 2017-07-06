@@ -367,8 +367,8 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = ? WHERE " +
 			"id = ?";
 
-	private final static String UPDATE_LOGIC_DATASET_DATASETID = "UPDATE dict_logic_dataset SET dataset_id = ? WHERE " +
-			"id = ?";
+	private final static String UPDATE_LOGIC_DATASET_DATASETID = "UPDATE dict_logic_dataset SET dataset_id = ?, " +
+			"folder = ? WHERE id = ?";
 
 	private final static String DELETE_LOGIC_DATASET = "DELETE FROM dict_logic_dataset WHERE id = ?";
 
@@ -2308,7 +2308,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 					if (row <= 0) throw new Exception();
 
 					if (!flag) {
-						row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_DATASETID, bindId, res);
+						row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_DATASETID, bindId, 0, res);
 						if (row <= 0) throw new Exception();
 					}
 				} catch (Exception e) {
@@ -2508,7 +2508,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			headChildrenStr = (String) row.get("children");
 			headPath = (String) row.get("path");
 		}
-		if (!headPath.equals(parentPath) && path.contains(name)) return "the path info invalid!";
+		if (!headPath.equals(parentPath) || !path.contains(name)) return "the path info invalid!";
 
 		Integer fileId = (Integer) createFolderAction(name, path, headChildrenStr, datasetId,
 				false, createdDatasetId);

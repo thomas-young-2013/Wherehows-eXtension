@@ -982,8 +982,10 @@ public class Dataset extends Controller
         Map<String, String[]> params = request().body().asFormUrlEncoded();
         //if (StringUtils.isNotBlank(username)) {
         String errorMsg = DatasetsDAO.createLogicalDatasetFile(datasetId, params);
-        if (StringUtils.isBlank(errorMsg)) {
+        if (errorMsg.startsWith("success:")) {
             result.put("status", "success");
+            Integer id = Integer.parseInt(errorMsg.split(":")[1]);
+            result.put("id", id);
         } else {
             result.put("status", "failed");
             result.put("msg", errorMsg);
