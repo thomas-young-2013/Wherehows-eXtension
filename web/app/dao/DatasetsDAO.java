@@ -2347,14 +2347,13 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		// if the folder is not in top level and delete itself and its children only, update the parent's children list.
 		if (path.split("/").length > 2) {
 			// get the parent info.
-			String parentPath = path.substring(path.lastIndexOf("/"));
+			String parentPath = path.substring(0, path.lastIndexOf("/"));
 			String parentChildren = null;
 			Long parentId = 0L;
 			List<Map<String, Object>> rows = null;
 			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO_BY_PATH, parentPath);
 			for (Map row: rows) {
-				Object tmp = row.get("children");
-				parentChildren = (tmp == null)?"":(String) tmp;
+				parentChildren = (String) row.get("children");
 				parentId = (Long) row.get("id");
 			}
 			if (parentId == 0L) return "folder path invalid!";
@@ -2387,6 +2386,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 					headChildrenStr = (String) row.get("children");
 				}
 				for (String tmp: headChildrenStr.split(",")) {
+					if (tmp.length() == 0) break;
 					queue.add(Long.parseLong(tmp));
 				}
 
