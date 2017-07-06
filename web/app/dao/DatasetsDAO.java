@@ -45,6 +45,7 @@ import play.libs.Json;
 import models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import play.mvc.WebSocket;
 
 public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -358,7 +359,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 
 	private final static String CREATE_LOGIC_DATASET_FOLDER = "INSERT INTO dict_logic_dataset(title, path) VALUES(?,?)";
 
-	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, children_id as children" +
+	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, folder, children_id as children" +
 			" FROM dict_logic_dataset WHERE id = ?";
 
 	private final static String GET_LOGIC_DATASET_INFO_BY_PATH = "SELECT id, children_id as children" +
@@ -2518,13 +2519,16 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		String parentPath = path.substring(0, path.lastIndexOf("/"));
 		String headChildrenStr = "";
 		String headPath = "";
+		Integer isFolder = 0;
 		List<Map<String, Object>> rows = null;
 		rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
 		for (Map row: rows) {
 			headChildrenStr = (String) row.get("children");
 			headPath = (String) row.get("path");
+			isFolder = (Integer) row.get("folder");
 		}
 		if (!headPath.equals(parentPath) || !path.contains(name)) return "the path info invalid!";
+        if (isFolder == 1) return "the parent file is not folder.";
 
 		Integer fileId = (Integer) createFolderAction(name, path, headChildrenStr, datasetId,
 				false, createdDatasetId);
