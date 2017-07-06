@@ -367,6 +367,9 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 	private final static String UPDATE_LOGIC_DATASET_CHILDREN = "UPDATE dict_logic_dataset SET children_id = ? WHERE " +
 			"id = ?";
 
+	private final static String UPDATE_LOGIC_DATASET_DATASETID = "UPDATE dict_logic_dataset SET dataset_id = ? WHERE " +
+			"id = ?";
+
 	private final static String DELETE_LOGIC_DATASET = "DELETE FROM dict_logic_dataset WHERE id = ?";
 
 	private final static String UPDATE_LOGIC_DATASET_NAME = "UPDATE dict_logic_dataset SET title = ?, path = ? WHERE " +
@@ -2273,20 +2276,19 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			}
 		}
 		if (path == null) return "parent folder does not exist!";
-		Integer folderId = (Integer)createFolderAction(name, path, children, datasetId);
+		Integer folderId = (Integer)createFolderAction(name, path, children, datasetId, true, null);
 		if (folderId == 0) return "create folder failed!";
 		msg = "success:"+ folderId;
 		return msg;
 	}
 
 	public static Object createFolderAction(final String name, final String path, final String children,
-											final Long datasetId) {
+											final Long datasetId, final boolean flag, final Long bindId) {
 		TransactionTemplate transactionTemplate = getTransactionTemplate();
 		Object object = transactionTemplate.execute(new TransactionCallback<Object>() {
 			public Object doInTransaction(TransactionStatus status) {
 				int res = 0;
 				try {
-					// res = getJdbcTemplate().update(CREATE_LOGIC_DATASET_FOLDER, name, path);
 					// insert the record and get the folder id.
 					KeyHolder keyHolder = new GeneratedKeyHolder();
 					getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -2304,6 +2306,11 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 					String childrenList = children + (children.length() == 0?children:",") + res;
 					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, datasetId);
 					if (row <= 0) throw new Exception();
+
+					if (!flag) {
+						row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_DATASETID, bindId, res);
+						if (row <= 0) throw new Exception();
+					}
 				} catch (Exception e) {
 					status.setRollbackOnly();
 					e.printStackTrace();
@@ -2460,4 +2467,54 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		}
 		return msg;
 	}
+
+	public static String createLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
+		String msg = "";
+		if ((params == null) || params.size() == 0) return "parameter required missed!";
+
+		String name = "";
+		if (params.containsKey("name")) {
+			String[] textArray = params.get("name");
+			if (textArray != null && textArray.length > 0) {
+				name = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(name)) return "parameter required missed!";
+
+		String path = "";
+		if (params.containsKey("path")) {
+			String[] textArray = params.get("path");
+			if (textArray != null && textArray.length > 0) {
+				path = textArray[0];
+			}
+		}
+		if (StringUtils.isBlank(path)) return "parameter required missed!";
+
+		Long createdDatasetId = 0L;
+		if (params.containsKey("dataset_id")) {
+			String[] textArray = params.get("dataset_id");
+			if (textArray != null && textArray.length > 0) {
+				createdDatasetId = Long.parseLong(textArray[0]);
+			}
+		}
+		if (createdDatasetId == 0L) return "parameter required missed!";
+
+		String parentPath = path.substring(0, path.lastIndexOf("/"));
+		String headChildrenStr = "";
+		String headPath = "";
+		List<Map<String, Object>> rows = null;
+		rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
+		for (Map row: rows) {
+			headChildrenStr = (String) row.get("children");
+			headPath = (String) row.get("path");
+		}
+		if (!headPath.equals(parentPath) && path.contains(name)) return "the path info invalid!";
+
+		Integer fileId = (Integer) createFolderAction(name, path, headChildrenStr, datasetId,
+				false, createdDatasetId);
+		if (fileId == 0) return "create file failed!";
+		msg = "success:"+ fileId;
+		return msg;
+	}
+
 }

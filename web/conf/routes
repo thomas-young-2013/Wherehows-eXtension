@@ -59,6 +59,8 @@ DELETE  /api/v1/logicaldatasets/:id/folder  controllers.api.v1.Dataset.removeLog
 
 POST    /api/v1/logicaldatasets/:id/rename  controllers.api.v1.Dataset.renameLogicalDatasetFile(id: Long)
 
+POST    /api/v1/logicaldatasets/:id/file/create  controllers.api.v1.Dataset.createLogicalDatasetFile(id: Long)
+
 GET     /api/v1/datasets                    controllers.api.v1.Dataset.getPagedDatasets()
 
 GET     /api/v1/datasets/:id                controllers.api.v1.Dataset.getDatasetByID(id:Int)
