@@ -2528,7 +2528,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			isFolder = (Integer) row.get("folder");
 		}
 		if (!headPath.equals(parentPath) || !path.contains(name)) return "the path info invalid!";
-        if (isFolder == 1) return "the parent file is not folder.";
+        if (isFolder == 0) return "the parent file is not folder.";
 
 		Integer fileId = (Integer) createFolderAction(name, path, headChildrenStr, datasetId,
 				false, createdDatasetId);
