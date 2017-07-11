@@ -46,6 +46,7 @@ import models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import play.mvc.WebSocket;
+import utils.ObjectNodeMaker;
 
 public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 {
@@ -358,6 +359,9 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			"dataset_id, folder FROM dict_logic_dataset WHERE id IN(:ids)";
 
 	private final static String CREATE_LOGIC_DATASET_FOLDER = "INSERT INTO dict_logic_dataset(title, path) VALUES(?,?)";
+
+	private final static String CREATE_LOGIC_DATASET_FILE = "INSERT INTO dict_logic_dataset(title, path, " +
+			"folder, dataset_id) VALUES(?,?,?,?)";
 
 	private final static String GET_LOGIC_DATASET_INFO = "SELECT path, folder, children_id as children" +
 			" FROM dict_logic_dataset WHERE id = ?";
@@ -2249,9 +2253,9 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return datasetPartitions;
 	}
 
-	public static String createLogicalDatasetFolder(Long datasetId, Map<String, String[]> params) {
-		String msg;
-		if ((params == null) || params.size() == 0) return "parameter required missed!";
+	public static ObjectNode createLogicalDatasetFolder(Long datasetId, Map<String, String[]> params) {
+		ObjectNode result = Json.newObject();
+		if ((params == null)||params.size()==0) return ObjectNodeMaker.getFailedMsg("parameter required missed!");
 
 		String name = "";
 		if (params.containsKey("name")) {
@@ -2260,13 +2264,13 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				name = textArray[0];
 			}
 		}
-		if (StringUtils.isBlank(name)) return "parameter required missed!";
+		if (StringUtils.isBlank(name)) return ObjectNodeMaker.getFailedMsg("parameter required missed!");
 
 		String path = null;
 		String children = null;
 		// get the parent folder info.
 		if (datasetId == 0) {
-			// the top folder.
+			// the top-level folder.
 			path = "/" + name;
 		} else {
 			List<Map<String, Object>> rows = null;
@@ -2276,11 +2280,84 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				path = (String) row.get("path") + "/" + name;
 			}
 		}
-		if (path == null) return "parent folder does not exist!";
+		if (path == null) return ObjectNodeMaker.getFailedMsg("parent folder does not exist!");
+
+		List<LogicalDatasetNode> fileLists = new ArrayList<>();
+		if (params.containsKey("filelist")) {
+			String[] textArray = params.get("filelist");
+			if (textArray != null && textArray.length > 0) {
+				JsonNode node = Json.parse(textArray[0]);
+				for (int i = 0; i < node.size(); i++) {
+					JsonNode fileNode = node.get(i);
+					if (fileNode != null) {
+						LogicalDatasetNode tempNode = new LogicalDatasetNode();
+						if (fileNode.has("path")) {
+							tempNode.path = fileNode.get("path").asText();
+						}
+						if (fileNode.has("name")) {
+							tempNode.name = fileNode.get("name").asText();
+						}
+						if (fileNode.has("dataset_id")) {
+							tempNode.datasetId = fileNode.get("dataset_id").asLong();
+						}
+						if (StringUtils.isBlank(tempNode.path) && StringUtils.isBlank(tempNode.name)) {
+							fileLists.add(tempNode);
+						}
+					}
+				}
+			}
+		}
+
+		// create the folder.
 		Integer folderId = (Integer)createFolderAction(name, path, children, datasetId, true, null);
-		if (folderId == 0) return "create folder failed!";
-		msg = "success:"+ folderId;
-		return msg;
+		if (folderId == 0) return ObjectNodeMaker.getFailedMsg("create folder failed!");
+
+		// create the files in file list.
+		List<Long> childrenIdList = new ArrayList<>();
+		TransactionTemplate txTemplate = getTransactionTemplate();
+		childrenIdList = txTemplate.execute(new TransactionCallback<List<Long>>() {
+			public List doInTransaction(TransactionStatus status) {
+				List<Long> ids = new ArrayList<>();
+				try {
+					// step one: create the sub files.
+					for (LogicalDatasetNode node : fileLists) {
+						KeyHolder keyHolder = new GeneratedKeyHolder();
+						getJdbcTemplate().update(new PreparedStatementCreator() {
+							public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+								PreparedStatement ps = getJdbcTemplate().getDataSource().getConnection().
+										prepareStatement(CREATE_LOGIC_DATASET_FILE, new String[]{"title", "path",
+												"folder", "dataset_id"});
+								ps.setString(1, node.name);
+								ps.setString(2, node.path);
+								ps.setString(3, "0");
+								ps.setString(4, node.datasetId.toString());
+								return ps;
+							}
+						}, keyHolder);
+						Long res = keyHolder.getKey().longValue();
+						if (res <= 0) throw new Exception();
+						ids.add(res);
+					}
+
+					// update parent folder's children list.
+					String childrenList = StringUtils.join(ids.toArray(), ",");
+					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, folderId);
+					if (row <= 0) throw new Exception();
+
+				} catch (Exception e) {
+					ids.clear();
+					e.printStackTrace();
+					status.setRollbackOnly();
+				}
+				return ids;
+			}
+		});
+
+		result.put("status", "success");
+		result.put("id", folderId);
+		if (fileLists.size() != childrenIdList.size()) result.put("msg", "create and bind file failed!");
+		else result.put("children", childrenIdList.toString());
+		return result;
 	}
 
 	public static Object createFolderAction(final String name, final String path, final String children,

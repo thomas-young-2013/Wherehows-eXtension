@@ -5,8 +5,12 @@ package models;
  */
 public class LogicalDatasetNode {
     public Long id;
+    public String name;
     public String path;
     public String children;
+    public Long datasetId;
+
+    public LogicalDatasetNode() {}
 
     public LogicalDatasetNode(Long id, String path) {
         this.id = id;
@@ -17,5 +21,11 @@ public class LogicalDatasetNode {
         this.id = id;
         this.path = path;
         this.children = children;
+    }
+
+    public LogicalDatasetNode(Long id, String path, Long datasetId) {
+        this.id = id;
+        this.path = path;
+        this.datasetId = datasetId;
     }
 }

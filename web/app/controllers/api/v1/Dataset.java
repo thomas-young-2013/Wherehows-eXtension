@@ -922,20 +922,13 @@ public class Dataset extends Controller
         // String username = session("user");
         Map<String, String[]> params = request().body().asFormUrlEncoded();
         //if (StringUtils.isNotBlank(username)) {
-            String errorMsg = DatasetsDAO.createLogicalDatasetFolder(datasetId, params);
-            if (errorMsg.startsWith("success:")) {
-                result.put("status", "success");
-                Integer id = Integer.parseInt(errorMsg.split(":")[1]);
-                result.put("id", id);
-            } else {
-                result.put("status", "failed");
-                result.put("msg", errorMsg);
-            }
+            return ok(DatasetsDAO.createLogicalDatasetFolder(datasetId, params));
+
         /*} else {
             result.put("status", "failed");
             result.put("msg", "Authentication Required");
         }*/
-        return ok(result);
+        // return ok(result);
     }
 
     public static Result removeLogicalDatasetFile(Long datasetId) {
