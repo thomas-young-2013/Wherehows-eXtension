@@ -25,6 +25,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.apache.commons.lang3.StringUtils;
@@ -2614,4 +2615,76 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return msg;
 	}
 
+	public static ArrayNode createLogicalDatasetFileBatch(Long datasetId, JsonNode jsonNode) {
+		ObjectNode json = Json.newObject();
+		ArrayNode res = json.arrayNode();
+
+		for (int i = 0; i < jsonNode.size(); i++) {
+			JsonNode obj = jsonNode.get(i);
+			String name = obj.get("name").asText();
+			String path =  obj.get("path").asText();
+			Long datasetRefId = obj.get("dataset_id").asLong();
+
+			ObjectNode itemResponse = Json.newObject();
+			Long fileId = (Long)insertFileIntoFolder(name, path, datasetId, false, datasetRefId);
+			itemResponse.put("name", name);
+			itemResponse.put("path", path);
+			if (fileId != 0L) {
+				itemResponse.put("success", "true");
+				itemResponse.put("id", fileId);
+			} else {
+				itemResponse.put("success", "false");
+			}
+			res.add(itemResponse);
+		}
+
+		return res;
+	}
+
+	public static Object insertFileIntoFolder(final String name, final String path, final Long parentId,
+											  final boolean flag, final Long bindId) {
+		TransactionTemplate transactionTemplate = getTransactionTemplate();
+		Object object = transactionTemplate.execute(new TransactionCallback<Object>() {
+			public Object doInTransaction(TransactionStatus status) {
+				long res = 0;
+				try {
+
+					String children = "";
+					List<Map<String, Object>> rows = null;
+					rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, parentId);
+					for (Map row: rows) {
+						children = (String) row.get("children");
+					}
+
+					// insert the record and get the folder id.
+					KeyHolder keyHolder = new GeneratedKeyHolder();
+					getJdbcTemplate().update(new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+							PreparedStatement ps = getJdbcTemplate().getDataSource().getConnection().
+									prepareStatement(CREATE_LOGIC_DATASET_FOLDER, new String[]{ "title" ,"path"});
+							ps.setString(1, name);
+							ps.setString(2, path);
+							return ps;
+						}
+					}, keyHolder);
+					res = keyHolder.getKey().longValue();
+					if (res <= 0) throw new Exception();
+
+					String childrenList = children + (children.length() == 0?children:",") + res;
+					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, parentId);
+					if (row <= 0) throw new Exception();
+
+					if (!flag) {
+						row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_DATASETID, bindId, 0, res);
+						if (row <= 0) throw new Exception();
+					}
+				} catch (Exception e) {
+					status.setRollbackOnly();
+					e.printStackTrace();
+				}
+				return res;
+			}
+		});
+		return object;
+	}
 }

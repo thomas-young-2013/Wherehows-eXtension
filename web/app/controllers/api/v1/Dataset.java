@@ -989,4 +989,16 @@ public class Dataset extends Controller
         }*/
         return ok(result);
     }
+
+    public static Result createLogicalDatasetFileBatch(Long datasetId) {
+        ObjectNode json = Json.newObject();
+        JsonNode req = request().body().asJson();
+        if (req == null) {
+            return badRequest("Expecting JSON data");
+        }
+
+        ObjectNode result = Json.newObject();
+        result.putArray("results").addAll(DatasetsDAO.createLogicalDatasetFileBatch(datasetId));
+        return ok(result);
+    }
 }
