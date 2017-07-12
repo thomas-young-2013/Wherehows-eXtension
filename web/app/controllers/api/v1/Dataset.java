@@ -804,11 +804,6 @@ public class Dataset extends Controller
         return ok(result);
     }
 
-    public static Result getDatasetLogicNodes()
-    {
-        return ok(DatasetsDAO.getDatasetLogicalView());
-    }
-
     public static Result getDatasetVersions(Long datasetId, Integer dbId)
     {
         ObjectNode result = Json.newObject();
@@ -1001,5 +996,45 @@ public class Dataset extends Controller
         ObjectNode result = Json.newObject();
         result.putArray("result").addAll(DatasetsDAO.createFileBatch(datasetId, req));
         return ok(result);
+    }
+
+    public static Result getPagedLogicalDatasets() {
+        ObjectNode result = Json.newObject();
+        String path = request().getQueryString("path");
+
+        int page = 1;
+        String pageStr = request().getQueryString("page");
+        if (StringUtils.isBlank(pageStr)) {
+            page = 1;
+        } else {
+            try {
+                page = Integer.parseInt(pageStr);
+            } catch(NumberFormatException e) {
+                Logger.error("Dataset Controller getPagedDatasets wrong page parameter. Error message: " + e.getMessage());
+                page = 1;
+            }
+        }
+
+        int size = 10;
+        String sizeStr = request().getQueryString("size");
+        if (StringUtils.isBlank(sizeStr)) {
+            size = 10;
+        } else {
+            try {
+                size = Integer.parseInt(sizeStr);
+            } catch(NumberFormatException e) {
+                Logger.error("Dataset Controller getPagedDatasets wrong size parameter. Error message: " + e.getMessage());
+                size = 10;
+            }
+        }
+
+        result.put("status", "success");
+        String username = session("user");
+        result.set("data", DatasetsDAO.getPagedLogicalDatasets(path, page, size, username));
+        return ok(result);
+    }
+
+    public static Result getDatasetLogicNodes() {
+        return ok(DatasetsDAO.getDatasetLogicalView());
     }
 }

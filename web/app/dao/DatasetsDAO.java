@@ -79,6 +79,41 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			"GROUP BY d.id, d.name, d.urn, d.source, d.schema, d.properties, f.dataset_id, " +
 			"watch_id, created, d.source_modified_time, modified";
 
+	private final static String GET_PAGED_LOGICAL_DATASET_COUNT = "SELECT COUNT(*) FROM dict_logic_dataset";
+
+	private final static String SELECT_PAGED_LOGICAL_DATASET_BY_PATH = "SELECT " +
+			"d.id, d.name, d.urn, d.source, d.properties, d.schema, " +
+			"GROUP_CONCAT(o.owner_id ORDER BY o.sort_id ASC SEPARATOR ',') as owner_id, " +
+			"GROUP_CONCAT(IFNULL(u.display_name, '*') ORDER BY o.sort_id ASC SEPARATOR ',') as owner_name, " +
+			"FROM_UNIXTIME(source_created_time) as created, d.source_modified_time, " +
+			"FROM_UNIXTIME(source_modified_time) as modified " +
+			"FROM ( SELECT * FROM dict_logic_dataset WHERE path LIKE ? ORDER BY path limit ?, ? ) ld " +
+			"LEFT JOIN dict_dataset d on d.id = ld.dataset_id" +
+			"LEFT JOIN dataset_owner o on (d.id = o.dataset_id and (o.is_deleted is null OR o.is_deleted != 'Y')) " +
+			"LEFT JOIN dir_external_user_info u on (o.owner_id = u.user_id and u.app_id = 300) " +
+			"GROUP BY d.id, d.name, d.urn, d.source, d.properties, d.schema, created, " +
+			"d.source_modified_time, modified";
+
+	private final static String SELECT_PAGED_LOGICAL_DATASET_BY_URN_CURRENT_USER  = "SELECT " +
+			"d.id, d.name, d.urn, d.source, d.schema, " +
+			"GROUP_CONCAT(o.owner_id ORDER BY o.sort_id ASC SEPARATOR ',') as owner_id, " +
+			"GROUP_CONCAT(IFNULL(u.display_name, '*') ORDER BY o.sort_id ASC SEPARATOR ',') as owner_name, " +
+			"d.properties, f.dataset_id, w.id as watch_id, " +
+			"FROM_UNIXTIME(source_created_time) as created, d.source_modified_time, " +
+			"FROM_UNIXTIME(source_modified_time) as modified " +
+			"FROM ( SELECT * FROM dict_logic_dataset WHERE path LIKE ? ORDER BY path limit ?, ? ) ld " +
+			"LEFT JOIN dict_dataset d on d.id = ld.dataset_id" +
+			"LEFT JOIN favorites f ON (" +
+			"d.id = f.dataset_id and f.user_id = ?) " +
+			"LEFT JOIN watch w ON (d.id = w.item_id and w.item_type = 'dataset' and w.user_id = ?) " +
+			"LEFT JOIN dataset_owner o on (d.id = o.dataset_id and (o.is_deleted is null OR o.is_deleted != 'Y')) " +
+			"LEFT JOIN dir_external_user_info u on (o.owner_id = u.user_id and u.app_id = 300) " +
+			"GROUP BY d.id, d.name, d.urn, d.source, d.schema, d.properties, f.dataset_id, " +
+			"watch_id, created, d.source_modified_time, modified";
+
+	private final static String GET_PAGED_LOGICAL_DATASET_COUNT_BY_URN  = "SELECT count(*) FROM dict_logic_dataset " +
+			"WHERE path LIKE ?";
+
 	private final static String GET_PAGED_DATASET_COUNT  = "SELECT count(*) FROM dict_dataset";
 
 	private final static String SELECT_PAGED_DATASET_BY_URN  = "SELECT " +
@@ -2007,7 +2042,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 	* @argument: null.
 	* @return: JSON String.
 	* */
-	public static String getDatasetLogicalView() {
+	/*public static String getDatasetLogicalView() {
 		List<Map<String, Object>> rows = null;
 		rows = getJdbcTemplate().queryForList(GET_DATASET_LOGIC_TOP_LEVEL_NODES);
 		JSONObject resultNode = new JSONObject();
@@ -2050,7 +2085,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			e.printStackTrace();
 		}
 
-		resultNode.put("children", jsonArray);
+		resultNode.put("data", jsonArray);
 		return resultNode.toString();
 	}
 
@@ -2067,7 +2102,7 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		Object children = row.get("children");
 		jsonObject.put("children", children == null?"":(String)children);
 		if (datasetId != 0) jsonObject.put("id", datasetId);
-	}
+	}*/
 
 	public static List<DatasetListViewNode> getDatasetListViewNodes(String urn) {
 
@@ -2252,10 +2287,6 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return datasetPartitions;
 	}
 
-	public static ObjectNode createFolderandFile(Long datasetId, JsonNode jsonNode) {
-
-	}
-
 	public static String removeLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
 		String msg = "";
 		if ((params == null) || params.size() == 0) return "parameter required missed!";
@@ -2419,56 +2450,6 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return msg;
 	}
 
-	public static String createLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
-		String msg = "";
-		if ((params == null) || params.size() == 0) return "parameter required missed!";
-
-		String name = "";
-		if (params.containsKey("name")) {
-			String[] textArray = params.get("name");
-			if (textArray != null && textArray.length > 0) {
-				name = textArray[0];
-			}
-		}
-		if (StringUtils.isBlank(name)) return "parameter required missed!";
-
-		String path = "";
-		if (params.containsKey("path")) {
-			String[] textArray = params.get("path");
-			if (textArray != null && textArray.length > 0) {
-				path = textArray[0];
-			}
-		}
-		if (StringUtils.isBlank(path)) return "parameter required missed!";
-
-		Long createdDatasetId = 0L;
-		if (params.containsKey("dataset_id")) {
-			String[] textArray = params.get("dataset_id");
-			if (textArray != null && textArray.length > 0) {
-				createdDatasetId = Long.parseLong(textArray[0]);
-			}
-		}
-		if (createdDatasetId == 0L) return "parameter required missed!";
-
-		String parentPath = path.substring(0, path.lastIndexOf("/"));
-		String headChildrenStr = "";
-		String headPath = "";
-		Integer isFolder = 0;
-		List<Map<String, Object>> rows = null;
-		rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
-		for (Map row: rows) {
-			headChildrenStr = (String) row.get("children");
-			headPath = (String) row.get("path");
-			isFolder = (Integer) row.get("folder");
-		}
-		if (!headPath.equals(parentPath) || !path.contains(name)) return "the path info invalid!";
-        if (isFolder == 0) return "the parent file is not folder.";
-
-		Long fileId = insertFileIntoFolder(name, path, datasetId, false, createdDatasetId);
-		if (fileId == 0) return "create file failed!";
-		msg = "success:"+ fileId;
-		return msg;
-	}
 	/*
 	* get dataset information.
 	* @params keys: dataset's field name
@@ -2575,5 +2556,257 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 			}
 		});
 		return res;
+	}
+
+	public static ObjectNode getPagedLogicalDatasets(String urn, Integer page, Integer size, String user) {
+		ObjectNode result = Json.newObject();
+
+		Integer userId = UserDAO.getUserIDByUserName(user);
+
+		TransactionTemplate txTemplate = getTransactionTemplate();
+		final Integer id = userId;
+
+		result = txTemplate.execute(new TransactionCallback<ObjectNode>() {
+			public ObjectNode doInTransaction(TransactionStatus status) {
+				ObjectNode resultNode = Json.newObject();
+				List<Dataset> pagedDatasets = new ArrayList<Dataset>();
+				List<Map<String, Object>> rows = null;
+
+				if (id != null && id > 0) {
+					rows = getJdbcTemplate().queryForList(
+							SELECT_PAGED_LOGICAL_DATASET_BY_URN_CURRENT_USER,
+							urn + "%",
+							(page - 1) * size, size,
+							id,
+							id);
+				} else {
+					rows = getJdbcTemplate().queryForList(
+							SELECT_PAGED_LOGICAL_DATASET_BY_PATH,
+							urn + "%",
+							(page - 1) * size, size);
+
+				}
+
+				long count = 0;
+				try {
+
+					if (StringUtils.isBlank(urn)) {
+						count = getJdbcTemplate().queryForObject(
+								GET_PAGED_LOGICAL_DATASET_COUNT,
+								Long.class);
+					} else {
+						count = getJdbcTemplate().queryForObject(
+								GET_PAGED_LOGICAL_DATASET_COUNT_BY_URN,
+								Long.class,
+								urn + "%");
+					}
+				} catch (EmptyResultDataAccessException e) {
+					Logger.error("Exception = " + e.getMessage());
+				}
+
+				for (Map row : rows) {
+
+					Dataset ds = new Dataset();
+					Timestamp modified = (Timestamp)row.get(DatasetWithUserRowMapper.DATASET_MODIFIED_TIME_COLUMN);
+					ds.id = (Long)row.get(DatasetWithUserRowMapper.DATASET_ID_COLUMN);
+					ds.name = (String)row.get(DatasetWithUserRowMapper.DATASET_NAME_COLUMN);
+					ds.source = (String)row.get(DatasetWithUserRowMapper.DATASET_SOURCE_COLUMN);
+					ds.urn = (String)row.get(DatasetWithUserRowMapper.DATASET_URN_COLUMN);
+					ds.schema = (String)row.get(DatasetWithUserRowMapper.DATASET_SCHEMA_COLUMN);
+					String strOwner = (String)row.get(DatasetWithUserRowMapper.DATASET_OWNER_ID_COLUMN);
+					String strOwnerName = (String)row.get(DatasetWithUserRowMapper.DATASET_OWNER_NAME_COLUMN);
+					Long sourceModifiedTime =
+							(Long)row.get(DatasetWithUserRowMapper.DATASET_SOURCE_MODIFIED_TIME_COLUMN);
+					String properties = (String)row.get(DatasetWithUserRowMapper.DATASET_PROPERTIES_COLUMN);
+					try
+					{
+						if (StringUtils.isNotBlank(properties))
+						{
+							ds.properties = Json.parse(properties);
+						}
+					}
+					catch (Exception e)
+					{
+						Logger.error(e.getMessage());
+					}
+
+					if (modified != null && sourceModifiedTime != null && sourceModifiedTime > 0)
+					{
+						ds.modified = modified;
+						ds.formatedModified = modified.toString();
+					}
+
+					String[] owners = null;
+					if (StringUtils.isNotBlank(strOwner))
+					{
+						owners = strOwner.split(",");
+					}
+					String[] ownerNames = null;
+					if (StringUtils.isNotBlank(strOwnerName))
+					{
+						ownerNames = strOwnerName.split(",");
+					}
+					ds.owners = new ArrayList<User>();
+					if (owners != null && ownerNames != null)
+					{
+						if (owners.length == ownerNames.length)
+						{
+							for (int i = 0; i < owners.length; i++)
+							{
+								User datasetOwner = new User();
+								datasetOwner.userName = owners[i];
+								if (datasetOwner.userName.equalsIgnoreCase(user))
+								{
+									ds.isOwned = true;
+								}
+								if (StringUtils.isBlank(ownerNames[i]) || ownerNames[i].equalsIgnoreCase("*"))
+								{
+									datasetOwner.name = owners[i];
+								}
+								else
+								{
+									datasetOwner.name = ownerNames[i];
+								}
+								ds.owners.add(datasetOwner);
+							}
+						}
+						else
+						{
+							Logger.error("getPagedDatasets get wrong owner and names. Dataset ID: "
+									+ Long.toString(ds.id) + " Owner: " + owners + " Owner names: " + ownerNames);
+						}
+					}
+
+					Integer favoriteId = (Integer)row.get(DatasetWithUserRowMapper.FAVORITE_DATASET_ID_COLUMN);
+					Long watchId = (Long)row.get(DatasetWithUserRowMapper.DATASET_WATCH_ID_COLUMN);
+
+					Long schemaHistoryRecordCount = 0L;
+					try
+					{
+						schemaHistoryRecordCount = getJdbcTemplate().queryForObject(
+								CHECK_SCHEMA_HISTORY,
+								Long.class,
+								ds.id);
+					}
+					catch (EmptyResultDataAccessException e)
+					{
+						Logger.error("Exception = " + e.getMessage());
+					}
+
+					if (StringUtils.isNotBlank(ds.urn))
+					{
+						if (ds.urn.substring(0, 4).equalsIgnoreCase(DatasetRowMapper.HDFS_PREFIX))
+						{
+							ds.hdfsBrowserLink = Play.application().configuration().getString(HDFS_BROWSER_URL_KEY) +
+									ds.urn.substring(DatasetRowMapper.HDFS_URN_PREFIX_LEN);
+						}
+					}
+					if (favoriteId != null && favoriteId > 0)
+					{
+						ds.isFavorite = true;
+					}
+					else
+					{
+						ds.isFavorite = false;
+					}
+					if (watchId != null && watchId > 0)
+					{
+						ds.watchId = watchId;
+						ds.isWatched = true;
+					}
+					else
+					{
+						ds.isWatched = false;
+						ds.watchId = 0L;
+					}
+					if (schemaHistoryRecordCount != null && schemaHistoryRecordCount > 0)
+					{
+						ds.hasSchemaHistory = true;
+					}
+					else
+					{
+						ds.hasSchemaHistory = false;
+					}
+					pagedDatasets.add(ds);
+				}
+
+				resultNode.put("count", count);
+				resultNode.put("page", page);
+				resultNode.put("itemsPerPage", size);
+				resultNode.put("totalPages", (int) Math.ceil(count / ((double) size)));
+				resultNode.set("datasets", Json.toJson(pagedDatasets));
+				return resultNode;
+			}
+		});
+		return result;
+	}
+
+	/*
+	* get the json string: dataset's logical view.
+	* @argument: null.
+	* @return: ObjectNode.
+	* */
+	public static ObjectNode getDatasetLogicalView() {
+		List<Map<String, Object>> rows = null;
+		rows = getJdbcTemplate().queryForList(GET_DATASET_LOGIC_TOP_LEVEL_NODES);
+
+		ObjectNode result = Json.newObject();
+		ArrayNode res = Json.newArray();
+		ArrayList<ObjectNode> queue = new ArrayList<ObjectNode>();
+		try {
+			for (Map row : rows) {
+				ObjectNode objectNode = Json.newObject();
+				createNode(objectNode, row);
+				res.add(objectNode);
+				queue.add(objectNode);
+			}
+
+			// width first traverse.
+			while(!queue.isEmpty()) {
+				ObjectNode head = queue.get(0);
+				queue.remove(0);
+
+				ObjectNode temp = Json.newObject();
+				ArrayNode array = temp.arrayNode();
+				String children = head.get("children").asText();
+				if (children.length() > 0) {
+					List<Long> ids = new ArrayList<>();
+					for (String segment: children.split(",")) {
+						ids.add(Long.parseLong(segment));
+					}
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("ids", ids);
+					rows = getNamedParameterJdbcTemplate().queryForList(GET_DATASET_LOGIC_CHILDREN_LEVEL_NODES, paramMap);
+					for (Map row : rows) {
+						ObjectNode jsonNode = Json.newObject();
+						createNode(jsonNode, row);
+						array.add(jsonNode);
+						queue.add(jsonNode);
+					}
+				}
+				head.putArray("children").addAll(array);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		result.putArray("data").addAll(res);
+		return result;
+	}
+
+	public static void createNode(ObjectNode jsonObject, Map row) throws Exception {
+		String path = (String) row.get("path");
+		Integer level = path.split("/").length - 1;
+		String title = (String) row.get("title");
+		Long datasetId = (Long) row.get("dataset_id");
+		Integer folder = (datasetId == 0)?1:0;
+		jsonObject.put("path", path);
+		jsonObject.put("level", level);
+		jsonObject.put("title", title);
+		jsonObject.put("folder", folder);
+		Object children = row.get("children");
+		jsonObject.put("children", children == null?"":(String)children);
+		if (datasetId != 0) jsonObject.put("id", datasetId);
 	}
 }
