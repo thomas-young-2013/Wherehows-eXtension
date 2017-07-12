@@ -35,10 +35,8 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import play.Logger;
 import play.Play;
@@ -2254,150 +2252,8 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return datasetPartitions;
 	}
 
-	public static ObjectNode createLogicalDatasetFolder(Long datasetId, Map<String, String[]> params) {
-		ObjectNode result = Json.newObject();
-		if ((params == null)||params.size()==0) return ObjectNodeMaker.getFailedMsg("parameter required missed!");
+	public static ObjectNode createFolderandFile(Long datasetId, JsonNode jsonNode) {
 
-		String name = "";
-		if (params.containsKey("name")) {
-			String[] textArray = params.get("name");
-			if (textArray != null && textArray.length > 0) {
-				name = textArray[0];
-			}
-		}
-		if (StringUtils.isBlank(name)) return ObjectNodeMaker.getFailedMsg("parameter required missed!");
-
-		String path = null;
-		String children = null;
-		// get the parent folder info.
-		if (datasetId == 0) {
-			// the top-level folder.
-			path = "/" + name;
-		} else {
-			List<Map<String, Object>> rows = null;
-			rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
-			for (Map row: rows) {
-				children = (String) row.get("children");
-				path = (String) row.get("path") + "/" + name;
-			}
-		}
-		if (path == null) return ObjectNodeMaker.getFailedMsg("parent folder does not exist!");
-
-		List<LogicalDatasetNode> fileLists = new ArrayList<>();
-		if (params.containsKey("filelist")) {
-			String[] textArray = params.get("filelist");
-			if (textArray != null && textArray.length > 0) {
-				JsonNode node = Json.parse(textArray[0]);
-				for (int i = 0; i < node.size(); i++) {
-					JsonNode fileNode = node.get(i);
-					if (fileNode != null) {
-						LogicalDatasetNode tempNode = new LogicalDatasetNode();
-						if (fileNode.has("path")) {
-							tempNode.path = fileNode.get("path").asText();
-						}
-						if (fileNode.has("name")) {
-							tempNode.name = fileNode.get("name").asText();
-						}
-						if (fileNode.has("dataset_id")) {
-							tempNode.datasetId = fileNode.get("dataset_id").asLong();
-						}
-						if (StringUtils.isBlank(tempNode.path) && StringUtils.isBlank(tempNode.name)) {
-							fileLists.add(tempNode);
-						}
-					}
-				}
-			}
-		}
-
-		// create the folder.
-		Integer folderId = (Integer)createFolderAction(name, path, children, datasetId, true, null);
-		if (folderId == 0) return ObjectNodeMaker.getFailedMsg("create folder failed!");
-
-		// create the files in file list.
-		List<Long> childrenIdList = new ArrayList<>();
-		TransactionTemplate txTemplate = getTransactionTemplate();
-		childrenIdList = txTemplate.execute(new TransactionCallback<List<Long>>() {
-			public List doInTransaction(TransactionStatus status) {
-				List<Long> ids = new ArrayList<>();
-				try {
-					// step one: create the sub files.
-					for (LogicalDatasetNode node : fileLists) {
-						KeyHolder keyHolder = new GeneratedKeyHolder();
-						getJdbcTemplate().update(new PreparedStatementCreator() {
-							public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-								PreparedStatement ps = getJdbcTemplate().getDataSource().getConnection().
-										prepareStatement(CREATE_LOGIC_DATASET_FILE, new String[]{"title", "path",
-												"folder", "dataset_id"});
-								ps.setString(1, node.name);
-								ps.setString(2, node.path);
-								ps.setString(3, "0");
-								ps.setString(4, node.datasetId.toString());
-								return ps;
-							}
-						}, keyHolder);
-						Long res = keyHolder.getKey().longValue();
-						if (res <= 0) throw new Exception();
-						ids.add(res);
-					}
-
-					// update parent folder's children list.
-					String childrenList = StringUtils.join(ids.toArray(), ",");
-					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, folderId);
-					if (row <= 0) throw new Exception();
-
-				} catch (Exception e) {
-					ids.clear();
-					e.printStackTrace();
-					status.setRollbackOnly();
-				}
-				return ids;
-			}
-		});
-
-		result.put("status", "success");
-		result.put("id", folderId);
-		if (fileLists.size() != childrenIdList.size()) result.put("msg", "create and bind file failed!");
-		else result.put("children", childrenIdList.toString());
-		return result;
-	}
-
-	public static Object createFolderAction(final String name, final String path, final String children,
-											final Long datasetId, final boolean flag, final Long bindId) {
-		TransactionTemplate transactionTemplate = getTransactionTemplate();
-		Object object = transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus status) {
-				int res = 0;
-				try {
-					// insert the record and get the folder id.
-					KeyHolder keyHolder = new GeneratedKeyHolder();
-					getJdbcTemplate().update(new PreparedStatementCreator() {
-								public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-									PreparedStatement ps = getJdbcTemplate().getDataSource().getConnection().
-											prepareStatement(CREATE_LOGIC_DATASET_FOLDER, new String[]{ "title" ,"path"});
-									ps.setString(1, name);
-									ps.setString(2, path);
-									return ps;
-								}
-							}, keyHolder);
-					res = keyHolder.getKey().intValue();
-					if (res <= 0) throw new Exception();
-
-					String childrenList = children + (children.length() == 0?children:",") + res;
-					int row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_CHILDREN, childrenList, datasetId);
-					if (row <= 0) throw new Exception();
-
-					if (!flag) {
-						row = getJdbcTemplate().update(UPDATE_LOGIC_DATASET_DATASETID, bindId, 0, res);
-						if (row <= 0) throw new Exception();
-					}
-				} catch (Exception e) {
-					status.setRollbackOnly();
-					e.printStackTrace();
-				}
-				return res;
-			}
-		});
-		return object;
 	}
 
 	public static String removeLogicalDatasetFile(Long datasetId, Map<String, String[]> params) {
@@ -2608,32 +2464,56 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		if (!headPath.equals(parentPath) || !path.contains(name)) return "the path info invalid!";
         if (isFolder == 0) return "the parent file is not folder.";
 
-		Integer fileId = (Integer) createFolderAction(name, path, headChildrenStr, datasetId,
-				false, createdDatasetId);
+		Long fileId = insertFileIntoFolder(name, path, datasetId, false, createdDatasetId);
 		if (fileId == 0) return "create file failed!";
 		msg = "success:"+ fileId;
 		return msg;
 	}
+	/*
+	* get dataset information.
+	* @params keys: dataset's field name
+	* @params datasetId: dataset's id
+	* @return values' list
+	* */
+	public static List<Object> getDatasetInfo(Long datasetId, List<String> keys) {
+		List<Object> res = new ArrayList();
+		List<Map<String, Object>> rows = null;
+		rows = getJdbcTemplate().queryForList(GET_LOGIC_DATASET_INFO, datasetId);
+		for (Map row: rows) {
+			for (String key: keys) {
+				res.add(row.get(key));
+			}
+		}
+		return res;
+	}
 
-	public static ArrayNode createLogicalDatasetFileBatch(Long datasetId, JsonNode jsonNode) {
+	/*
+	* create a batch of files.
+	* @params jsonNode: files are arranged in json array format
+	* @params datasetId: dataset's id
+	* @return each file's creation status in json array format
+	* */
+	public static ArrayNode createFileBatch(Long datasetId, JsonNode jsonNode) {
 		ObjectNode json = Json.newObject();
 		ArrayNode res = json.arrayNode();
+
+		String parentPath = (String) getDatasetInfo(datasetId, new ArrayList<String>(Arrays.asList("path"))).get(0);
 
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode obj = jsonNode.get(i);
 			String name = obj.get("name").asText();
-			String path =  obj.get("path").asText();
+			String path =  parentPath + "/" + name;
 			Long datasetRefId = obj.get("dataset_id").asLong();
 
 			ObjectNode itemResponse = Json.newObject();
-			Long fileId = (Long)insertFileIntoFolder(name, path, datasetId, false, datasetRefId);
+			Long fileId = insertFileIntoFolder(name, path, datasetId, false, datasetRefId);
 			itemResponse.put("name", name);
-			itemResponse.put("path", path);
 			if (fileId != 0L) {
-				itemResponse.put("success", "true");
+				itemResponse.put("status", "success");
 				itemResponse.put("id", fileId);
+				itemResponse.put("path", path);
 			} else {
-				itemResponse.put("success", "false");
+				itemResponse.put("status", "failed");
 			}
 			res.add(itemResponse);
 		}
@@ -2641,11 +2521,20 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 		return res;
 	}
 
-	public static Object insertFileIntoFolder(final String name, final String path, final Long parentId,
+	/*
+	* insert one file into folder.
+	* @params name: file name
+	* @params path: file's path
+	* @params parentId: parent dataset's id
+	* @params flag: true if inserting a folder
+	* @params bindId: bind dataset's id
+	* @return dataset's id, 0 if failed
+	* */
+	public static Long insertFileIntoFolder(final String name, final String path, final Long parentId,
 											  final boolean flag, final Long bindId) {
 		TransactionTemplate transactionTemplate = getTransactionTemplate();
-		Object object = transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus status) {
+		Long res = transactionTemplate.execute(new TransactionCallback<Long>() {
+			public Long doInTransaction(TransactionStatus status) {
 				long res = 0;
 				try {
 
@@ -2685,6 +2574,6 @@ public class DatasetsDAO extends AbstractMySQLOpenSourceDAO
 				return res;
 			}
 		});
-		return object;
+		return res;
 	}
 }

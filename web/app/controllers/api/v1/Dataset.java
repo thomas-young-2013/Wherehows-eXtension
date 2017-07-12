@@ -29,10 +29,14 @@ import play.mvc.Result;
 import play.Logger;
 import org.apache.commons.lang3.StringUtils;
 import dao.DatasetsDAO;
+import utils.ObjectNodeMaker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static dao.DatasetsDAO.getDatasetInfo;
 
 
 public class Dataset extends Controller
@@ -918,17 +922,36 @@ public class Dataset extends Controller
     }
 
     public static Result createLogicalDatasetFolder(Long datasetId) {
-        ObjectNode result = Json.newObject();
-        // String username = session("user");
-        Map<String, String[]> params = request().body().asFormUrlEncoded();
-        //if (StringUtils.isNotBlank(username)) {
-            return ok(DatasetsDAO.createLogicalDatasetFolder(datasetId, params));
+        JsonNode req = request().body().asJson();
+        if (req == null) {
+            return badRequest("Expecting JSON data");
+        }
 
-        /*} else {
-            result.put("status", "failed");
-            result.put("msg", "Authentication Required");
-        }*/
-        // return ok(result);
+        if (!req.has("name") || !req.has("filelist")) {
+            return ok(ObjectNodeMaker.getFailedMsg("parameter missed!"));
+        } else {
+            ObjectNode result = Json.newObject();
+            String name = req.get("name").asText();
+            String path = null;
+            // get the parent folder info.
+            if (datasetId == 0) {
+                path = "/" + name;
+            } else {
+                List<Object> res = getDatasetInfo(datasetId, new ArrayList<String>(Arrays.asList("path")));
+                if (!res.isEmpty()) path = (String) res.get(0);
+            }
+            if (path == null) return ok(ObjectNodeMaker.getFailedMsg("create folder failed!"));
+
+            // create the folder.
+            Long folderId = DatasetsDAO.insertFileIntoFolder(name, path, datasetId, true, null);
+            if (folderId == 0) return ok(ObjectNodeMaker.getFailedMsg("create folder failed!"));
+
+            result.put("status", "success");
+            result.put("id", folderId);
+            result.put("path", path);
+            result.putArray("filelist").addAll(DatasetsDAO.createFileBatch(folderId, req.get("filelist")));
+            return ok(result);
+        }
     }
 
     public static Result removeLogicalDatasetFile(Long datasetId) {
@@ -969,36 +992,14 @@ public class Dataset extends Controller
         return ok(result);
     }
 
-    public static Result createLogicalDatasetFile(Long datasetId) {
-        ObjectNode result = Json.newObject();
-        // String username = session("user");
-        Map<String, String[]> params = request().body().asFormUrlEncoded();
-        //if (StringUtils.isNotBlank(username)) {
-        String errorMsg = DatasetsDAO.createLogicalDatasetFile(datasetId, params);
-        if (errorMsg.startsWith("success:")) {
-            result.put("status", "success");
-            Integer id = Integer.parseInt(errorMsg.split(":")[1]);
-            result.put("id", id);
-        } else {
-            result.put("status", "failed");
-            result.put("msg", errorMsg);
-        }
-        /*} else {
-            result.put("status", "failed");
-            result.put("msg", "Authentication Required");
-        }*/
-        return ok(result);
-    }
-
     public static Result createLogicalDatasetFileBatch(Long datasetId) {
-        ObjectNode json = Json.newObject();
         JsonNode req = request().body().asJson();
         if (req == null) {
             return badRequest("Expecting JSON data");
         }
 
         ObjectNode result = Json.newObject();
-        result.putArray("results").addAll(DatasetsDAO.createLogicalDatasetFileBatch(datasetId));
+        result.putArray("result").addAll(DatasetsDAO.createFileBatch(datasetId, req));
         return ok(result);
     }
 }
