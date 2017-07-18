@@ -250,9 +250,6 @@ public class SchemaFetch {
     int i, x;
     // String data_source = checkDataSource(fullPath);
 
-    List<Path> webDisplayFile = new ArrayList<Path>();
-
-
     // TODO this part need to rewrite
     try {
       while (fstat.isDirectory()) {
@@ -304,7 +301,6 @@ public class SchemaFetch {
             break;
           }
 
-          webDisplayFile.add(fstat.getPath());
         }
         
         if (is_fstat_visible == 0) {
