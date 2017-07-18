@@ -120,6 +120,10 @@ public class SchemaFetch {
     String objName;
 
     try {
+      if (fs.isDirectory(path)) {
+        return 0;
+      }
+
       // System.err.println("  Probing " + path.toString());
       for (FileStatus fstat : fs.listStatus(path)) {
         objName = fstat.getPath().getName();
@@ -173,6 +177,7 @@ public class SchemaFetch {
 
     logger.info("  -- scanPath(" + curPath + ")\n");
     int x = isTable(path, scanFs);
+    System.out.println("isTable: " + curPath + "--> " + x);
     if (x > 0) {
       // System.err.println("  traceTable(" + path.toString() + ")");
       traceTableInfo(path, scanFs);
@@ -187,7 +192,9 @@ public class SchemaFetch {
           continue;
         }
         try {
-          if (isTable(n, scanFs) > 0) {
+          int t = isTable(n, scanFs);
+          System.out.println("isTable: " + curPath + "--> " + t);
+          if (t > 0) {
             traceTableInfo(n, scanFs);
           } else if (scanFs.listStatus(n).length > 0 || scanFs.getContentSummary(n).getLength() > 0) {
             scanPath(n, scanFs);
