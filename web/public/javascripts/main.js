@@ -3,7 +3,7 @@
     var token = $("#csrfToken").val();
 
     $("#settingsbtn").click(function(){
-      var url ='/api/v1/user/me'
+      var url ='/wherehows/api/v1/user/me'
       $
       .get
       ( url
@@ -26,7 +26,7 @@
         settings[name] = item.value
       })
       var token = $("#csrfToken").val().replace('/', '')
-      var url = "/api/v1/usersettings/me"
+      var url = "/wherehows/api/v1/usersettings/me"
       settings.csrfToken = token
       $.ajax({
         url: url,

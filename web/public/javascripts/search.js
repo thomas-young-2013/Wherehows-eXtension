@@ -93,7 +93,7 @@
     e.preventDefault();
   });
 
-  var datasetSourcesUrl = '/api/v1/advsearch/sources';
+  var datasetSourcesUrl = '/wherehows/api/v1/advsearch/sources';
   $.get(datasetSourcesUrl, function (data) {
     if (data && data.status == 'ok') {
       var advSearchSourceObj = $('#advSearchSource');
@@ -105,7 +105,7 @@
     }
   });
 
-  $.get('/api/v1/autocomplete/search', function (data) {
+  $.get('/wherehows/api/v1/autocomplete/search', function (data) {
     const possibleMatches = data.source;
     $('#searchInput').autocomplete({
       source: function ({term}, res) {
@@ -170,7 +170,7 @@
     }).on('autocompleteselect', handleSearchInput);
   });
 
-  $.get('/api/v1/advsearch/scopes', function (data) {
+  $.get('/wherehows/api/v1/advsearch/scopes', function (data) {
     $('.scopeInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -191,7 +191,7 @@
     });
   });
 
-  $.get('/api/v1/advsearch/tables', function (data) {
+  $.get('/wherehows/api/v1/advsearch/tables', function (data) {
     $('.tableInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -212,7 +212,7 @@
     });
   });
 
-  $.get('/api/v1/advsearch/fields', function (data) {
+  $.get('/wherehows/api/v1/advsearch/fields', function (data) {
     $('.fieldInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -233,7 +233,7 @@
     });
   });
 
-  $.get('/api/v1/advsearch/appcodes', function (data) {
+  $.get('/wherehows/api/v1/advsearch/appcodes', function (data) {
     $('.appcodeInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -254,7 +254,7 @@
     });
   });
 
-  $.get('/api/v1/advsearch/flowNames', function (data) {
+  $.get('/wherehows/api/v1/advsearch/flowNames', function (data) {
     $('.flowInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -275,7 +275,7 @@
     });
   });
 
-  $.get('/api/v1/advsearch/jobNames', function (data) {
+  $.get('/wherehows/api/v1/advsearch/jobNames', function (data) {
     $('.jobInput').autocomplete({
       minLength: 0,
       source: function (req, res) {
@@ -297,7 +297,7 @@
   });
 
   $('#scopeInInput').blur(function () {
-    $.get('/api/v1/advsearch/tables', {scopes: $('#scopeInInput').val()}, function (data) {
+    $.get('/wherehows/api/v1/advsearch/tables', {scopes: $('#scopeInInput').val()}, function (data) {
       $('.tableInput').autocomplete({
         minLength: 0,
         source: function (req, res) {
@@ -320,7 +320,7 @@
   });
 
   $('#tableInInput').blur(function () {
-    $.get('/api/v1/advsearch/fields', {tables: $('#tableInInput').val()}, function (data) {
+    $.get('/wherehows/api/v1/advsearch/fields', {tables: $('#tableInInput').val()}, function (data) {
       $('.fieldInput').autocomplete({
         minLength: 0,
         source: function (req, res) {

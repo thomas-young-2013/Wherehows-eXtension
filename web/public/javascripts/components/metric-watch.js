@@ -3,7 +3,7 @@
 App.MetricWatchComponent = Ember.Component.extend({
   actions: {
     watch: function(metric) {
-      var url = '/api/v1/metrics/' + metric.id + '/watch'
+      var url = '/wherehows/api/v1/metrics/' + metric.id + '/watch'
       var method = !metric.watchId ? 'POST' : 'DELETE'
       if(method.toLowerCase() === 'delete')
         url += '/' + metric.watchId

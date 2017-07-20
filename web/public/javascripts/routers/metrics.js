@@ -5,7 +5,7 @@ App.MetricsRoute = Ember.Route.extend({
     },
     actions: {
       getMetrics: function() {
-        var url = 'api/v1/metrics?size=10&page=' + metricsController.get('model.data.page');
+        var url = 'wherehows/api/v1/metrics?size=10&page=' + metricsController.get('model.data.page');
         currentTab = 'Metric';
         updateActiveTab();
         $.get(url, function(data) {
@@ -20,7 +20,7 @@ App.MetricsRoute = Ember.Route.extend({
 });
 App.MetricspageRoute = Ember.Route.extend({
     setupController: function(controller, param) {
-        var url = 'api/v1/metrics?size=10&page=' + param.page;
+        var url = 'wherehows/api/v1/metrics?size=10&page=' + param.page;
         currentTab = 'Metric';
         updateActiveTab();
         var breadcrumbs = [{"title":"METRICS_ROOT", "urn":"page/1"}];
@@ -34,7 +34,7 @@ App.MetricspageRoute = Ember.Route.extend({
                 metricsController.set('group', null);
             }
         });
-        var watcherEndpoint = "/api/v1/urn/watch?urn=METRICS_ROOT";
+        var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=METRICS_ROOT";
         $.get(watcherEndpoint, function(data){
             if(data.id && data.id !== 0) {
                 metricsController.set('urnWatched', true)
@@ -47,7 +47,7 @@ App.MetricspageRoute = Ember.Route.extend({
     },
     actions: {
       getMetrics: function() {
-        var url = 'api/v1/metrics?size=10&page=' + metricsController.get('model.data.page');
+        var url = 'wherehows/api/v1/metrics?size=10&page=' + metricsController.get('model.data.page');
         currentTab = 'Metric';
         updateActiveTab();
         $.get(url, function(data) {
@@ -72,7 +72,7 @@ App.MetricRoute = Ember.Route.extend({
         var name;
         var id = 0;
         if (params && params.id) {
-            var url = 'api/v1/metrics/' + params.id;
+            var url = 'wherehows/api/v1/metrics/' + params.id;
             id = params.id;
             if (params.category)
             {
@@ -114,11 +114,11 @@ App.MetricRoute = Ember.Route.extend({
         {
             metricsController.set('detailview', true);
         }
-        return Ember.$.getJSON('api/v1/metrics/' + params.id);
+        return Ember.$.getJSON('wherehows/api/v1/metrics/' + params.id);
     },
     actions: {
       getMetrics: function() {
-        var url = 'api/v1/metrics/' + this.get('controller.model.id')
+        var url = 'wherehows/api/v1/metrics/' + this.get('controller.model.id')
         var _this = this
         currentTab = 'Metric';
         updateActiveTab();
@@ -142,7 +142,7 @@ App.MetricnamepageRoute = Ember.Route.extend({
             && transition.resolvedModels.metricname.name)
         {
             var name = transition.resolvedModels.metricname.name;
-            var url = 'api/v1/metrics/name/' + name + '?page=' + params.page;
+            var url = 'wherehows/api/v1/metrics/name/' + name + '?page=' + params.page;
             var breadcrumbs = [{"title":name, "urn":"name/" + name + "/page/1"}];
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
@@ -154,7 +154,7 @@ App.MetricnamepageRoute = Ember.Route.extend({
                     metricsController.set('group', null);
                 }
             });
-            var watcherEndpoint = "/api/v1/urn/watch?urn=" + name;
+            var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + name;
             $.get(watcherEndpoint, function(data){
                 if(data.id && data.id !== 0) {
                     metricsController.set('urnWatched', true)
@@ -173,7 +173,7 @@ App.MetricnamepageRoute = Ember.Route.extend({
     },
     actions: {
       getMetrics: function() {
-        var url = 'api/v1/metrics/name/' + metricsController.get('dashboard')
+        var url = 'wherehows/api/v1/metrics/name/' + metricsController.get('dashboard')
         url += '?size=10&page=' + metricsController.get('model.data.page');
         currentTab = 'Metric';
         updateActiveTab();
@@ -201,7 +201,7 @@ App.MetricnamesubpageRoute = Ember.Route.extend({
             var name = transition.resolvedModels.metricname.name;
             var group = '';
             var breadcrumbs;
-            var url = 'api/v1/metrics/name/' + name;
+            var url = 'wherehows/api/v1/metrics/name/' + name;
             if (transition.resolvedModels.metricgroup && transition.resolvedModels.metricgroup.group)
             {
                 group = transition.resolvedModels.metricgroup.group;
@@ -220,7 +220,7 @@ App.MetricnamesubpageRoute = Ember.Route.extend({
                     metricsController.set('group', group);
                 }
             });
-            var watcherEndpoint = "/api/v1/urn/watch?urn=" + name + "/" + group;
+            var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + name + "/" + group;
             $.get(watcherEndpoint, function(data){
                 if(data.id && data.id !== 0) {
                     metricsController.set('urnWatched', true)
@@ -238,7 +238,7 @@ App.MetricnamesubpageRoute = Ember.Route.extend({
     },
     actions: {
       getMetrics: function() {
-        var url = 'api/v1/metrics/name/' + metricsController.get('dashboard')
+        var url = 'wherehows/api/v1/metrics/name/' + metricsController.get('dashboard')
         url += '/' + metricsController.get('group') + '?size=10&page=' + metricsController.get('model.data.page');
         currentTab = 'Metric';
         updateActiveTab();

@@ -135,7 +135,7 @@ App.PagedflowController = Ember.Controller.extend({
     }.property('model.data.page'),
     getUrnWatchId: function(urn){
         var controller = this;
-        var watcherEndpoint = "/api/v1/urn/watch?urn=" + urn
+        var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + urn
         $.get(watcherEndpoint, function(data){
             if(data.id && data.id !== 0) {
                 controller.set('urnWatched', true)
@@ -149,7 +149,7 @@ App.PagedflowController = Ember.Controller.extend({
     actions: {
         watchUrn: function(urn) {
             var _this = this
-            var url = "/api/v1/urn/watch"
+            var url = "/wherehows/api/v1/urn/watch"
             var token = $("#csrfToken").val().replace('/', '')
             if(!this.get('urnWatched')) {
                 $.ajax({

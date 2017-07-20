@@ -62,7 +62,7 @@ var g_downLevel = 1;
         var url = '';
         if (type == 'chains')
         {
-            url = 'api/v1/lineage/chains';
+            url = 'wherehows/api/v1/lineage/chains';
             $("#chainComboBox").on('change', function (event) {
                 var items = $("#chainComboBox").jqxComboBox('getSelectedItems');
                 var names = '';
@@ -74,7 +74,7 @@ var g_downLevel = 1;
                 });
                 if (names)
                 {
-                    var dataUrl = 'api/v1/lineage/appworxflow/' + names;
+                    var dataUrl = 'wherehows/api/v1/lineage/appworxflow/' + names;
                     $("#loading").show();
                     $.get(dataUrl, function(data) {
                         if (data && data.status == "ok"){
@@ -98,7 +98,7 @@ var g_downLevel = 1;
         }
         else if (type == 'dataset')
         {
-            url = '/api/v1/lineage/dataset/' + id + '?upLevel=' + g_upLevel + '&downLevel=' + g_downLevel;
+            url = '/wherehows/api/v1/lineage/dataset/' + id + '?upLevel=' + g_upLevel + '&downLevel=' + g_downLevel;
             $("#loading").show();
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
@@ -117,7 +117,7 @@ var g_downLevel = 1;
         }
         else if (type == 'metric')
         {
-            url = '/api/v1/lineage/metric/' + id + '?upLevel=' + g_upLevel + '&downLevel=' + g_downLevel;;
+            url = '/wherehows/api/v1/lineage/metric/' + id + '?upLevel=' + g_upLevel + '&downLevel=' + g_downLevel;;
             $("#loading").show();
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
@@ -131,7 +131,7 @@ var g_downLevel = 1;
         }
         else if (type == 'azkaban')
         {
-            url = '/api/v1/lineage/flow/' + application + '/' + project + '/' + flow;
+            url = '/wherehows/api/v1/lineage/flow/' + application + '/' + project + '/' + flow;
             $("#loading").show();
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
@@ -150,7 +150,7 @@ var g_downLevel = 1;
         }
         else if (type == 'appworx')
         {
-            url = '/api/v1/lineage/flow/' + application + '/' + project + '/' + flow;
+            url = '/wherehows/api/v1/lineage/flow/' + application + '/' + project + '/' + flow;
             $("#loading").show();
             $.get(url, function(data) {
                 if (data && data.status == "ok"){

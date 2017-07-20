@@ -10,7 +10,7 @@ App.MetricController = Ember.Controller.extend({
                 var id = parseInt(model.refID);
                 if (id > 0)
                 {
-                    return '/lineage/metric/' + model.refID;
+                    return '/wherehows/lineage/metric/' + model.refID;
                 }
             }
         }
@@ -42,7 +42,7 @@ App.MetricController = Ember.Controller.extend({
         },
         update: function(){
             var model = this.get("model")
-            var url = '/api/v1/metrics/' + model.id + '/update'
+            var url = '/wherehows/api/v1/metrics/' + model.id + '/update'
             var token = $("#csrfToken").val().replace('/', '')
             var _this = this
             var data = JSON.parse(JSON.stringify(model))
@@ -134,7 +134,7 @@ App.MetricsController = Ember.Controller.extend({
     }.property('model.data.page'),
     getUrnWatchId: function(urn){
         var controller = this;
-        var watcherEndpoint = "/api/v1/urn/watch?urn=" + urn;
+        var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + urn;
         $.get(watcherEndpoint, function(data){
             if(data.id && data.id !== 0) {
                 controller.set('urnWatched', true);
@@ -152,7 +152,7 @@ App.MetricsController = Ember.Controller.extend({
                 urn = "METRICS_ROOT";
             }
             var _this = this;
-            var url = "/api/v1/urn/watch";
+            var url = "/wherehows/api/v1/urn/watch";
             var token = $("#csrfToken").val().replace('/', '');
             if(!this.get('urnWatched')) {
                 $.ajax({

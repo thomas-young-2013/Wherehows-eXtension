@@ -487,7 +487,7 @@ App.DatasetRoute = Ember.Route.extend({
   },
 
   model({id}) {
-    return Ember.$.getJSON(`api/v1/datasets/${id}`);
+    return Ember.$.getJSON(`/wherehows/api/v1/datasets/${id}`);
   },
 
   actions: {
@@ -524,7 +524,7 @@ App.DatasetRoute = Ember.Route.extend({
     getDataset: function(){
       var _this = this
       $.get
-      ( '/api/v1/datasets/' + this.get('controller.model.id')
+      ( '/wherehows/api/v1/datasets/' + this.get('controller.model.id')
           , function(data){
             if(data.status == "ok") {
               _this.set('controller.model', data.dataset)
@@ -581,7 +581,7 @@ App.PageRoute = Ember.Route.extend({
         datasetController.set('detailview', false);
       }
     });
-    var watcherEndpoint = "/api/v1/urn/watch?urn=DATASETS_ROOT";
+    var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=DATASETS_ROOT";
     $.get(watcherEndpoint, function(data){
         if(data.id && data.id !== 0) {
             datasetController.set('urnWatched', true)
@@ -658,7 +658,7 @@ App.SubpageRoute = Ember.Route.extend({
             })
         }
     }
-    var watcherEndpoint = "/api/v1/urn/watch?urn=" + param.urn;
+    var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + param.urn;
     if (addSlash)
     {
       watcherEndpoint += '/';

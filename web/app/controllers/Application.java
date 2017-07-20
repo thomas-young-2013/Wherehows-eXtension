@@ -37,6 +37,7 @@ import java.util.Set;
 public class Application extends Controller
 {
     private static String TREE_NAME_SUBFIX = ".tree.name";
+    private static String URL_PREFIX = "/wherehows/";
 
     @Security.Authenticated(Secured.class)
     public static Result index()
@@ -128,7 +129,8 @@ public class Application extends Controller
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password))
         {
             flash("error", "Invalid username or password");
-            return redirect(controllers.routes.Application.login());
+            return redirect("/wherehows/login");
+            // return redirect(controllers.routes.Application.login());
         }
 
         try
@@ -140,11 +142,13 @@ public class Application extends Controller
             Logger.error("Authentication failed for user " + username);
             Logger.error(e.getMessage());
             flash("error", "Invalid username or password");
-            return redirect(controllers.routes.Application.login());
+            // return redirect(controllers.routes.Application.login());
+            return redirect(URL_PREFIX+"login");
         }
         session().clear();
         session("user", username);
-        return redirect(controllers.routes.Application.index());
+        // return redirect(controllers.routes.Application.index());
+        return redirect(URL_PREFIX);
     }
 
     public static Result signUp()
@@ -173,14 +177,16 @@ public class Application extends Controller
             flash("error", e.getMessage());
         }
 
-        return redirect(controllers.routes.Application.login());
+        // return redirect(controllers.routes.Application.login());
+        return redirect(URL_PREFIX+"login");
     }
 
     public static Result logout()
     {
         session().clear();
         flash("success", "You've been logged out");
-        return redirect(controllers.routes.Application.login());
+        // return redirect(controllers.routes.Application.login());
+        return redirect(URL_PREFIX+"login");
     }
 
     @Security.Authenticated(Secured.class)

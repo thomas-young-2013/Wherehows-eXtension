@@ -54,11 +54,11 @@
             var url;
             if (!schemaName)
             {
-                url = '/api/v1/schemaHistory/datasets?size=10&page=' + page;
+                url = '/wherehows/api/v1/schemaHistory/datasets?size=10&page=' + page;
             }
             else
             {
-                url = '/api/v1/schemaHistory/datasets?name=' + schemaName + '&size=10&page=' + page;
+                url = '/wherehows/api/v1/schemaHistory/datasets?name=' + schemaName + '&size=10&page=' + page;
             }
 
             if (datasetId && datasetId > 0)
@@ -94,7 +94,7 @@
 
         function updateTimeLine(id, highlightFirstRow)
         {
-            var historyUrl = '/api/v1/schemaHistory/historyData/' + id;
+            var historyUrl = '/wherehows/api/v1/schemaHistory/historyData/' + id;
             $.get(historyUrl, function(data) {
                 if(data && data.status == "ok")                {
 

@@ -11,7 +11,7 @@
                 highlight: true
             },
             source: {
-                url: "/tree/datasets"
+                url: "/wherehows/tree/datasets"
             }
         });
         /*
@@ -31,18 +31,18 @@
                 highlight: true
             },
             source: {
-                url: "/tree/flows"
+                url: "/wherehows/tree/flows"
             },
             lazyLoad: function(event, data){
                 var node = data.node;
                 var url = '#';
                 if (node.data.level == 1)
                 {
-                    url = "/tree/flow/" + node.title;
+                    url = "/wherehows/tree/flow/" + node.title;
                 }
                 else if (node.data.level == 2)
                 {
-                    url = "/tree/flow/" + node.data.parent + '/' + node.title;
+                    url = "/wherehows/tree/flow/" + node.data.parent + '/' + node.title;
                 }
                 data.result = {
                     url: url,

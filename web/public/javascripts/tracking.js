@@ -8,7 +8,7 @@
         var token = $("#csrfToken").val().replace('/', '')
         $.ajax({
             method: 'POST',
-            url: '/api/v1/tracking',
+            url: '/wherehows/api/v1/tracking',
             headers: {'Csrf-Token': token},
             dataType: 'json',
             contentType: 'application/json',

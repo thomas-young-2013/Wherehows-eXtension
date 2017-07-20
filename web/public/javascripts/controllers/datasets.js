@@ -64,7 +64,7 @@ App.DatasetsController = Ember.Controller.extend({
     }.property('model.data.page'),
     getUrnWatchId: function(urn){
         var controller = this;
-        var watcherEndpoint = "/api/v1/urn/watch?urn=" + urn
+        var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + urn
         $.get(watcherEndpoint, function(data){
             if(data.id && data.id !== 0) {
                 controller.set('urnWatched', true)
@@ -82,7 +82,7 @@ App.DatasetsController = Ember.Controller.extend({
                 urn = "DATASETS_ROOT";
             }
             var _this = this
-            var url = "/api/v1/urn/watch"
+            var url = "/wherehows/api/v1/urn/watch"
             var token = $("#csrfToken").val().replace('/', '')
             if(!this.get('urnWatched')) {
                 //this.set('urnWatched', false)
@@ -184,7 +184,7 @@ App.DatasetController = Ember.Controller.extend({
         {
             if (model.id)
             {
-                return '/lineage/dataset/' + model.id;
+                return '/wherehows/lineage/dataset/' + model.id;
             }
         }
         return '';
@@ -196,7 +196,7 @@ App.DatasetController = Ember.Controller.extend({
         {
             if (model.id)
             {
-                return '/schemaHistory#/schemas/' + model.id;
+                return '/wherehows/schemaHistory#/schemas/' + model.id;
             }
         }
         return '';
@@ -230,7 +230,7 @@ App.DatasetController = Ember.Controller.extend({
         {
             return;
         }
-        var versionUrl = 'api/v1/datasets/' + model.id + "/versions/db/" + dbId;
+        var versionUrl = 'wherehows/api/v1/datasets/' + model.id + "/versions/db/" + dbId;
         $.get(versionUrl, function(data) {
             if (data && data.status == "ok" && data.versions && data.versions.length > 0) {
                 _this.set("hasversions", true);
@@ -279,7 +279,7 @@ App.DatasetController = Ember.Controller.extend({
                 return;
             }
             _this.set('hasSchemas', false);
-            var schemaUrl = "/api/v1/datasets/" + model.id + "/schema/" + version;
+            var schemaUrl = "/wherehows/api/v1/datasets/" + model.id + "/schema/" + version;
             $.get(schemaUrl, function(data) {
                 if (data && data.status == "ok"){
                     setTimeout(function() {
@@ -373,7 +373,7 @@ App.DatasetController = Ember.Controller.extend({
             {
                 return;
             }
-            var url = "/api/v1/datasets/" + model.id + "/owners";
+            var url = "/wherehows/api/v1/datasets/" + model.id + "/owners";
             var token = $("#csrfToken").val().replace('/', '');
             $.ajax({
                 url: url,

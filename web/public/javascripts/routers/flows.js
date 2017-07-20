@@ -17,7 +17,7 @@ App.FlowspageRoute = Ember.Route.extend({
             }
         });
         updateActiveTab();
-        var url = 'api/v1/flows?size=10&page=' + params.page;
+        var url = 'wherehows/api/v1/flows?size=10&page=' + params.page;
         var breadcrumbs = [{"title": 'FLOWS_ROOT', "urn": "page/1"}];
         $.get(url, function(data) {
             if (data && data.status == "ok"){
@@ -58,13 +58,13 @@ App.FlowssubpageRoute = Ember.Route.extend({
             flowsController.set('currentName', application);
             var breadcrumbs = [{"title": 'FLOWS_ROOT', "urn": "page/1"},
                 {"title": application, "urn": "name/" + application + "/page/1?urn=" + application}];
-            var listUrl = 'api/v1/list/flows/' + application;
+            var listUrl = 'wherehows/api/v1/list/flows/' + application;
             $.get(listUrl, function(data) {
                 if (data && data.status == "ok"){
                     renderFlowListView(data.nodes);
                 }
             });
-            var url = 'api/v1/flows/' + application + '?size=10&page=' + params.page;
+            var url = 'wherehows/api/v1/flows/' + application + '?size=10&page=' + params.page;
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
                     flowsController.set('model', data);
@@ -81,8 +81,8 @@ App.FlowssubpageRoute = Ember.Route.extend({
             application = links[0];
             project = links[1];
             flowsController.set('currentName', project);
-            var url = 'api/v1/flows/' + application + '/' + project + '?size=10&page=' + params.page;
-            var listUrl = 'api/v1/list/flows/' + application + '/' + project;
+            var url = 'wherehows/api/v1/flows/' + application + '/' + project + '?size=10&page=' + params.page;
+            var listUrl = 'wherehows/api/v1/list/flows/' + application + '/' + project;
             $.get(listUrl, function(data) {
                 if (data && data.status == "ok"){
                     renderFlowListView(data.nodes);
@@ -124,13 +124,13 @@ App.PagedflowRoute = Ember.Route.extend({
             var flow = transition.resolvedModels.flow.id;
             var lineageUrl = '/lineage/flow/' + application + '/' + project + '/' + flow;
             controller.set('lineageUrl', lineageUrl);
-            var listUrl = 'api/v1/list/flows/' + application + '/' + project;
+            var listUrl = 'wherehows/api/v1/list/flows/' + application + '/' + project;
             $.get(listUrl, function(data) {
                 if (data && data.status == "ok"){
                     renderFlowListView(data.nodes, flow);
                 }
             });
-            var url = 'api/v1/flow/' + application + '/' + flow + '?size=10&page=' +
+            var url = 'wherehows/api/v1/flow/' + application + '/' + flow + '?size=10&page=' +
                 transition.resolvedModels.pagedflow.page;
             $.get(url, function(data) {
                 if (data && data.status == "ok"){
@@ -147,7 +147,7 @@ App.PagedflowRoute = Ember.Route.extend({
                     }
                 }
             });
-            var watcherEndpoint = "/api/v1/urn/watch?urn=" + application + "/" + project + "/" + flow;
+            var watcherEndpoint = "/wherehows/api/v1/urn/watch?urn=" + application + "/" + project + "/" + flow;
             $.get(watcherEndpoint, function(data){
                 if(data.id && data.id !== 0) {
                     controller.set('urnWatched', true)

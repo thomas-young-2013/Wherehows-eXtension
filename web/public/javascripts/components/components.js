@@ -105,7 +105,7 @@ App.DatasetSchemaComponent = Ember.Component.extend({
     getSchema: function(){
       var _this = this
       var id = _this.get('dataset.id')
-      var columnUrl = 'api/v1/datasets/' + id + "/columns";
+      var columnUrl = 'wherehows/api/v1/datasets/' + id + "/columns";
       _this.set("isTable", true);
       _this.set("isJSON", false);
       $.get(columnUrl, function(data) {
@@ -280,7 +280,7 @@ App.DatasetAuthorComponent = Ember.Component.extend({
       {
         return;
       }
-      var url = "/api/v1/datasets/" + model.id + "/owners";
+      var url = "/wherehows/api/v1/datasets/" + model.id + "/owners";
       var token = $("#csrfToken").val().replace('/', '');
       $.ajax({
         url: url,
@@ -324,7 +324,7 @@ App.MetricDetailComponent = Ember.Component.extend({
 App.DatasetFavoriteComponent = Ember.Component.extend({
   actions: {
     favorites: function(dataset) {
-      var url = '/api/v1/datasets/' + dataset.id + '/favorite'
+      var url = '/wherehows/api/v1/datasets/' + dataset.id + '/favorite'
       var method = !dataset.isFavorite ? 'POST' : 'DELETE'
       var token = $("#csrfToken").val().replace('/', '')
       var _this = this
@@ -350,7 +350,7 @@ App.DatasetFavoriteComponent = Ember.Component.extend({
 App.DatasetOwnerComponent = Ember.Component.extend({
   actions: {
     owned: function(dataset) {
-      var url = '/api/v1/datasets/' + dataset.id + '/own';
+      var url = '/wherehows/api/v1/datasets/' + dataset.id + '/own';
       var method = !dataset.isOwned ? 'POST' : 'DELETE';
       var token = $("#csrfToken").val().replace('/', '');
       var _this = this;
@@ -582,7 +582,7 @@ App.DatasetCommentsComponent = Ember.Component.extend({
     var _this = this;
     datasetCommentsComponent = this;
     var datasetId = this.get('dataset.model.id')
-    var url = '/api/v1/datasets/' + datasetId + '/comments'
+    var url = '/wherehows/api/v1/datasets/' + datasetId + '/comments'
     params =
     { size: (params || {}).size || this.get('itemsPerPage')
     , page: (params || {}).page || this.get('page')
@@ -721,7 +721,7 @@ App.DatasetCommentsComponent = Ember.Component.extend({
       $("#convertTableModal").modal('show');
     },
     remove: function(comment) {
-      var url = '/api/v1/datasets/' + comment.datasetId + '/comments/' + comment.id
+      var url = '/wherehows/api/v1/datasets/' + comment.datasetId + '/comments/' + comment.id
       var token = $("#csrfToken").val().replace('/', '')
       var _this = this
       $.ajax({
@@ -751,7 +751,7 @@ App.DatasetCommentsComponent = Ember.Component.extend({
       var cmnt = {}
       cmnt.text = comment.text
       cmnt.type = comment.type
-      var url = '/api/v1/datasets/' + comment.datasetId + '/comments/' + comment.id
+      var url = '/wherehows/api/v1/datasets/' + comment.datasetId + '/comments/' + comment.id
       cmnt.csrfToken = token
       $.ajax({
         url: url,
@@ -779,7 +779,7 @@ App.DatasetCommentsComponent = Ember.Component.extend({
       cmnt.text = comment.text
       cmnt.type = comment.type
       cmnt.id = comment.id
-      var url = '/api/v1/datasets/' + cmnt.datasetId + '/comments'
+      var url = '/wherehows/api/v1/datasets/' + cmnt.datasetId + '/comments'
       cmnt.csrfToken = token
       console.log('comment data: ', cmnt)
       $.ajax({
@@ -836,7 +836,7 @@ App.DatasetCommentsComponent = Ember.Component.extend({
 App.DatasetWatchComponent = Ember.Component.extend({
   actions: {
     watch: function(dataset) {
-      var url = '/api/v1/datasets/' + dataset.id + '/watch'
+      var url = '/wherehows/api/v1/datasets/' + dataset.id + '/watch'
       var method = !dataset.watchId ? 'POST' : 'DELETE'
       if(method.toLowerCase() === 'delete')
         url += '/' + dataset.watchId

@@ -212,7 +212,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
     this.set('similarColumns.loading', true)
     var datasetId = this.get('datasetId')
     var columnId = this.get('schema.id')
-    var url = "/api/v1/datasets/" + datasetId
+    var url = "/wherehows/api/v1/datasets/" + datasetId
     url += ("/columns/" + columnId + "/similar")
     $.get
     ( url
@@ -249,7 +249,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
     var _this = this
     var datasetId = this.get('datasetId')
     var columnId = this.get('schema.id')
-    var url = "/api/v1/datasets/" + datasetId
+    var url = "/wherehows/api/v1/datasets/" + datasetId
     url += ("/columns/" + columnId + "/comments/similar")
     $.get
     ( url
@@ -269,7 +269,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
     var datasetId = this.get('datasetId')
     var columnId = this.get('schema.id')
     var _this = this
-    var url = '/api/v1/datasets/' + datasetId + '/columns/' + columnId + '/comments'
+    var url = '/wherehows/api/v1/datasets/' + datasetId + '/columns/' + columnId + '/comments'
     url += '?page=' + page + '&size=' + size
     $.get
     ( url
@@ -408,7 +408,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
       var cmnt = this.get('comment')
       var dsid = this.get('datasetId')
       var cid = this.get('schema.id')
-      var url = '/api/v1/datasets/' + dsid + '/columns/' + cid + '/comments'
+      var url = '/wherehows/api/v1/datasets/' + dsid + '/columns/' + cid + '/comments'
       cmnt.csrfToken = token;
       if (this.get('isEdit'))
       {
@@ -453,7 +453,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
       var token = $("#csrfToken").val().replace('/', '')
       var dsid = this.get('datasetId')
       var cid = this.get('schema.id')
-      var url = '/api/v1/datasets/' + dsid + '/columns/' + cid
+      var url = '/wherehows/api/v1/datasets/' + dsid + '/columns/' + cid
       url += '/comments/' + comment.id
       var cmnt = {}
       cmnt.csrfToken = token
@@ -556,7 +556,7 @@ App.SchemaCommentComponent = Ember.Component.extend({
         , field_id: fieldId
         }
       var token = $("#csrfToken").val().replace("/", "")
-      var uri = '/api/v1/datasets/'
+      var uri = '/wherehows/api/v1/datasets/'
       uri += params.dataset_id + '/columns/'
       uri += params.field_id + '/comments'
       uri += '?csrfToken=' + token
