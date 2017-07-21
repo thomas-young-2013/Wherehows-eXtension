@@ -933,7 +933,7 @@ public class Dataset extends Controller
                 path = "/" + name;
             } else {
                 List<Object> res = getDatasetInfo(datasetId, new ArrayList<String>(Arrays.asList("path")));
-                if (!res.isEmpty()) path = (String) res.get(0);
+                if (!res.isEmpty()) path = (String) res.get(0) + "/" + name;
             }
             if (path == null) return ok(ObjectNodeMaker.getFailedMsg("create folder failed!"));
 
@@ -994,7 +994,7 @@ public class Dataset extends Controller
         }
 
         ObjectNode result = Json.newObject();
-        result.putArray("result").addAll(DatasetsDAO.createFileBatch(datasetId, req));
+        result.putArray("result").addAll(DatasetsDAO.createFileBatch(datasetId, req.get("filelist")));
         return ok(result);
     }
 
