@@ -9,7 +9,7 @@ GET     /login                              controllers.Application.login()
 
 GET     /logout                             controllers.Application.logout()
 
-POST    /authenticate                       controllers.Application.authenticate()
+GET     /authenticate                       controllers.Application.authenticate()
 
 POST    /signUp                             controllers.Application.signUp()
 

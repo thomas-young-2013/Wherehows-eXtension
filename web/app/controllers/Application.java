@@ -13,16 +13,20 @@
  */
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import dao.FlowsDAO;
 import dao.UserDAO;
 import play.Play;
+import play.cache.Cache;
 import play.data.DynamicForm;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.Logger;
 import play.mvc.Security;
+import play.mvc.With;
+import security.CASUser;
+import security.CASUtils;
+import security.SecureAction;
 import utils.Tree;
 import views.html.index;
 import views.html.login;
@@ -32,13 +36,13 @@ import static play.data.Form.form;
 import org.apache.commons.lang3.StringUtils;
 import security.AuthenticationManager;
 
-import java.util.Set;
-
 public class Application extends Controller
 {
     private static String TREE_NAME_SUBFIX = ".tree.name";
     private static String URL_PREFIX = "/wherehows/";
+    private static final String APP_URL = Play.application().configuration().getString("application.url");
 
+    @With(SecureAction.class)
     @Security.Authenticated(Secured.class)
     public static Result index()
     {
@@ -115,40 +119,62 @@ public class Application extends Controller
 
     public static Result login()
     {
-        //You cann generate the Csrf token such as String csrfToken = SecurityPlugin.getInstance().getCsrfToken();
-        String csrfToken = "";
-        return ok(login.render(csrfToken));
+        String uuid = session("uuid");
+        if(uuid == null) {
+            uuid = java.util.UUID.randomUUID().toString();
+            session("uuid", uuid);
+        }
+
+        String originUrl = (String) Cache.get("url_" + session().get("uuid"));
+        if (originUrl == null || StringUtils.isEmpty(originUrl)) {
+            originUrl = APP_URL;
+            Cache.set("url_" + session().get("uuid"), StringUtils.isEmpty(originUrl) ? "/" : originUrl, 60*10);
+        }
+
+        Logger.debug("[SecureCAS]: adding url " + originUrl + " into cache with key " + "url_" + session().get("uuid"));
+
+        // we redirect the user to the cas login page
+        String casLoginUrl = CASUtils.getCasLoginUrl(false);
+        return redirect(casLoginUrl);
     }
 
     public static Result authenticate()
     {
-        DynamicForm loginForm = form().bindFromRequest();
-        String username = loginForm.get("username");
-        String password = loginForm.get("password");
+        Boolean isAuthenticated = Boolean.FALSE;
+        String ticket = request().getQueryString("ticket");
+        try {
+            if (ticket != null) {
+                Logger.debug("[SecureCAS]: Try to validate ticket " + ticket);
+                CASUser user = CASUtils.valideCasTicket(ticket);
+                if (user != null) {
+                    isAuthenticated = Boolean.TRUE;
+                    String username = user.getUsername();
+                    // session.put("username", username);
+                    session("user", username);
+                    Cache.set("TK_" + ticket, username);
+                    // we invoke the implementation of onAuthenticate
+                    // Security.invoke("onAuthenticated", user);
+                }
+            }
 
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password))
-        {
-            flash("error", "Invalid username or password");
-            return redirect("/wherehows/login");
-            // return redirect(controllers.routes.Application.login());
+            if (isAuthenticated) {
+                // we redirect to the original URL
+                String url = (String) Cache.get("url_" + session("uuid"));
+                Logger.debug("[SecureCAS]: find url " + url + " into cache for the key " + "url_" + session("uuid"));
+                // Cache.delete("url_" + session.getId());
+                Cache.remove("url_" + session("uuid"));
+                if (url == null) {
+                    url = "/";
+                }
+                Logger.debug("[SecureCAS]: redirect to url -> " + url);
+                return redirect(url);
+            } else {
+                return badRequest();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        try
-        {
-            AuthenticationManager.authenticateUser(username, password);
-        }
-        catch (Exception e)
-        {
-            Logger.error("Authentication failed for user " + username);
-            Logger.error(e.getMessage());
-            flash("error", "Invalid username or password");
-            // return redirect(controllers.routes.Application.login());
-            return redirect(URL_PREFIX+"login");
-        }
-        session().clear();
-        session("user", username);
-        // return redirect(controllers.routes.Application.index());
-        return redirect(URL_PREFIX);
+        return badRequest();
     }
 
     public static Result signUp()
