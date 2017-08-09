@@ -23,10 +23,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.Logger;
 import play.mvc.Security;
-import play.mvc.With;
 import security.CASUser;
 import security.CASUtils;
-import security.SecureAction;
 import utils.Tree;
 import views.html.index;
 import views.html.login;
@@ -42,7 +40,6 @@ public class Application extends Controller
     private static String URL_PREFIX = "/wherehows/";
     private static final String APP_URL = Play.application().configuration().getString("application.url");
 
-    @With(SecureAction.class)
     @Security.Authenticated(Secured.class)
     public static Result index()
     {

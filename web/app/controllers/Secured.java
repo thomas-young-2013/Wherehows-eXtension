@@ -14,8 +14,7 @@
 package controllers;
 
 import org.apache.commons.lang3.StringUtils;
-import play.Logger;
-import play.Play;
+
 import play.cache.Cache;
 import play.mvc.Security;
 import play.mvc.Http.Context;
