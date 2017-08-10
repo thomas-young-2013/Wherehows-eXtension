@@ -39,9 +39,14 @@ public class Secured extends Security.Authenticator
       ctx.session().put("uuid", uuid);
     }
 
-    String originUrl = ctx.request().path();
-    Cache.set("url_" + session().get("uuid"), StringUtils.isEmpty(originUrl) ? "/" : originUrl);
+    if (Cache.get("url_" + session().get("uuid")) == null) {
+      String originUrl = ctx.request().path();
+      Cache.set("url_" + session().get("uuid"), StringUtils.isEmpty(originUrl) ? "/" : originUrl);
+    }
 
-    return redirect("/wherehows/login");
+    String ticket = ctx.request().getQueryString("ticket");
+    if (ticket == null) return redirect("/login");
+
+    return redirect("/authenticate?ticket=" + ticket);
   }
 }

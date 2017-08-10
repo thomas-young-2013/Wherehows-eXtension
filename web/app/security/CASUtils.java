@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import static play.mvc.Controller.request;
 import static play.mvc.Controller.session;
 
 /**
@@ -80,7 +81,7 @@ public class CASUtils {
     private static String getCasServiceUrl() {
         /*String casServiceUrl = Router.getFullUrl("modules.cas.SecureCAS.authenticate");
         return casServiceUrl;*/
-        return "/authenticate";
+        return (String) Cache.get("url_" + session().get("uuid"));
     }
 
     /**
