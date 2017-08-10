@@ -16,22 +16,33 @@
  */
 package security;
 
+import com.ning.http.client.AsyncHttpClientConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import play.Logger;
 import play.Play;
+import play.api.libs.ws.WSClientConfig;
+import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder;
+import play.api.libs.ws.ning.NingWSClientConfig;
+import play.api.libs.ws.ning.NingWSClientConfigFactory;
+import play.api.libs.ws.ssl.SSLConfigFactory;
 import play.cache.Cache;
+import play.libs.F;
 import play.libs.ws.WS;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSResponse;
+import scala.concurrent.duration.Duration;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
-import static play.mvc.Controller.request;
 import static play.mvc.Controller.session;
 
 /**
@@ -199,7 +210,41 @@ public class CASUtils {
         Logger.debug("[SecureCAS]: validate cas ticket by calling " + casValidationTicketUrl);
         // com.ning.http.client.Response validationResponse =
         // client.prepareGet(casValidationTicketUrl).execute().get();
-        Document response = WS.url(casValidationTicketUrl).get().get(10L).asXml();
+        // Document response = WS.url(casValidationTicketUrl).get().get(10L).asXml();
+        // WSResponse response1 = WS.url(casValidationTicketUrl);
+        F.Promise<Document> documentPromise = WS.url(casValidationTicketUrl).get().map(response -> {
+            return response.asXml();
+        });
+
+        /*scala.Option<String> noneString = scala.None$.empty();
+
+        WSClientConfig wsClientConfig = new WSClientConfig(
+                Duration.apply(120, TimeUnit.SECONDS), // connectionTimeout
+                Duration.apply(120, TimeUnit.SECONDS), // idleTimeout
+                Duration.apply(120, TimeUnit.SECONDS), // requestTimeout
+                true, // followRedirects
+                false, // useProxyProperties
+                noneString, // userAgent
+                true, // compressionEnabled / enforced
+                SSLConfigFactory.defaultConfig());
+
+        NingWSClientConfig clientConfig = NingWSClientConfigFactory.forClientConfig(wsClientConfig);
+
+        // Build a secure config out of the client config:
+        NingAsyncHttpClientConfigBuilder secureBuilder = new NingAsyncHttpClientConfigBuilder(clientConfig);
+        AsyncHttpClientConfig secureDefaults = secureBuilder.build();
+
+        // You can directly use the builder for specific options once you have secure TLS defaults...
+        AsyncHttpClientConfig customConfig = new AsyncHttpClientConfig.Builder(secureDefaults)
+                .setProxyServer(new com.ning.http.client.ProxyServer("127.0.0.1", 38080))
+                .setCompressionEnforced(true)
+                .build();
+        WSClient customClient = new play.libs.ws.ning.NingWSClient(customConfig);
+
+        F.Promise<WSResponse> responsePromise = customClient.url(casValidationTicketUrl).get();
+
+        Document response = responsePromise.get(10000L).asXml();*/
+        Document response = documentPromise.get(10000L);
 
         /** Parsing validation response **/
         // search node "cas:authenticationSuccess"
